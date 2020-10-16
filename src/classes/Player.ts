@@ -1,8 +1,8 @@
 export default class Player {
-  name:String;
-  credits:Number;
+  name:string;
+  credits:number;
 
-  constructor(name:String) {
+  constructor(name:string) {
     this.name = name;
     this.credits = 0;
   }
