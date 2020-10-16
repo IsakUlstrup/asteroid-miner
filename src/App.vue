@@ -13,6 +13,7 @@ import Space from "@/scenes/Space.vue";
 import Station from "@/scenes/Station.vue";
 
 import TestShip from "@/classes/TestShip";
+import Player from "@/classes/Player";
 
 export default defineComponent({
   name: "App",
@@ -25,6 +26,7 @@ export default defineComponent({
     const currentScene = shallowRef(Space);
 
     const ship = reactive(new TestShip());
+    const player = reactive(new Player("Player One"));
 
     return {
       currentScene,
