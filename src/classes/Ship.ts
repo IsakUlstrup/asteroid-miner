@@ -28,6 +28,19 @@ export default class Ship {
   update(dt:number) {
     this.totalHeating = 0;
     
+    // reactors
+    this.reactors.forEach(reactor => {
+      if (this.energy < this.maxEnergy) {
+        reactor.active = true;
+      } else {
+        reactor.active = false;
+      }
+
+      this.energy += reactor.effect * (dt * this.dtModifier);
+      this.heat += reactor.heating * (dt * this.dtModifier);
+      this.totalHeating += reactor.heating * (dt * this.dtModifier);
+      if (this.energy > this.maxEnergy) this.energy = this.maxEnergy;
+    });
 
     // lasers
     this.lasers.forEach(laser => {
@@ -47,20 +60,6 @@ export default class Ship {
 
       this.energy -= cooler.energyUse * (dt * this.dtModifier);
       this.heat -= cooler.effect * (dt * this.dtModifier);
-    });
-
-    // reactors
-    this.reactors.forEach(reactor => {
-      if (this.energy < this.maxEnergy) {
-        reactor.active = true;
-      } else {
-        reactor.active = false;
-      }
-
-      this.energy += reactor.effect * (dt * this.dtModifier);
-      this.heat += reactor.heating * (dt * this.dtModifier);
-      this.totalHeating += reactor.heating * (dt * this.dtModifier);
-      if (this.energy > this.maxEnergy) this.energy = this.maxEnergy;
     });
 
     // passive cooling
@@ -91,6 +90,9 @@ export default class Ship {
   }
   lootItem(item:Item) {
     this.inventory.push(item);
+  }
+  removeItem(item:Item) {
+    this.inventory.splice(this.inventory.indexOf(item), 1);
   }
   get components() {
     return [...this.reactors, ...this.coolers, ...this.lasers];

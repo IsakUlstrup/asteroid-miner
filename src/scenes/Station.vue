@@ -1,0 +1,38 @@
+<template>
+  <h1>Space station</h1>
+  <p>A place for trading, crafting, fuel etc.</p>
+  <h3>Ship inventory</h3>
+  <ul>
+    <li v-for="item in ship.inventory" :key="item">
+      {{item.name}}
+      <input type="button" value="Sell" @click="sellItem(item)">
+    </li>
+  </ul>
+</template>
+
+<script lang="ts">
+import { defineComponent } from "vue";
+
+import Ship from "@/classes/Ship";
+import Item from "@/classes/Item";
+
+export default defineComponent({
+  name: "Station",
+  components: {
+  },
+  props: {
+    ship:Ship
+  },
+  setup(props) {
+    function sellItem(item:Item) {
+      console.log("selling item:", item);
+      if (props.ship) props.ship.removeItem(item);
+    }
+    return {
+      sellItem
+    };
+  }
+});
+</script>
+
+<style lang="scss"></style>
