@@ -1,7 +1,7 @@
 <template>
   <!-- <input v-for="scene in scenes" :key="scene" type="button" :value="scene.name" @click="currentScene = scene"> -->
   <section class="current-scene">
-    <component :is="currentScene" :ship="ship" @travel="travelTo" @arrive="arrive" :destination="destination" />
+    <component :is="currentScene" :dt="timing.dt" :ship="ship" @travel="travelTo" @arrive="arrive" :destination="destination" />
   </section>
 </template>
 
@@ -30,6 +30,23 @@ export default defineComponent({
 
     const ship = reactive(new TestShip());
     // const player = reactive(new Player("Player One"));
+
+    const timing = ref({
+      dt:0,
+      last:0
+    });
+
+    // main game loop
+    function loop() {
+      window.requestAnimationFrame(loop);
+      const now = performance.now();
+      timing.value.dt = now - timing.value.last;
+
+      ship.update(timing.value.dt);
+
+      timing.value.last = now;
+    }
+    loop();
 
     function arrive(scene:string) {
       console.log("arriving:", scene);
@@ -61,7 +78,8 @@ export default defineComponent({
       ship,
       arrive,
       destination,
-      travelTo
+      travelTo,
+      timing
     };
   }
 });

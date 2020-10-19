@@ -11,7 +11,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, onMounted, ref, toRefs } from "vue";
+import { defineComponent, onMounted, watch, ref, toRefs } from "vue";
 import PlayerShip from "@/components/PlayerShip.vue";
 import ShipControls from "@/components/ShipControls.vue";
 
@@ -27,20 +27,24 @@ export default defineComponent({
   },
   props: {
     ship:Ship,
-    destination:String
+    destination:String,
+    dt: {
+      type: Number,
+      required: true,
+      default: 0
+    }
   },
   emits: ["arrive", "travel"],
   setup(props, context) {
-    const {ship} = toRefs(props);
+    const { ship, dt } = toRefs(props);
+    
+
+
     const progress = ref({
       distance: 100,
       current: 0
     });
     const speedMultiplier = .01;
-    const timing = ref({
-      dt: 0,
-      last: 0
-    });
 
     function updateProgress(dt:number) {
       let speed = 0;
@@ -50,7 +54,7 @@ export default defineComponent({
         })
       }
 
-      progress.value.current += speed * speedMultiplier * timing.value.dt;
+      progress.value.current += speed * speedMultiplier * dt;
       if (progress.value.current >= progress.value.distance) {
         progress.value.current = progress.value.distance;
         // call for scene change
@@ -58,25 +62,13 @@ export default defineComponent({
       }
       // console.log(`current: ${progress.value.current}, distance: ${progress.value.distance}, dt: ${timing.value.dt}`);
     }
-
-    function loop() {
-      if (progress.value.current >= progress.value.distance) return;
-      window.requestAnimationFrame(loop);
-      const now = performance.now();
-      timing.value.dt = now - timing.value.last;
-
-      updateProgress(timing.value.dt);
-
-      timing.value.last = now;
+    function update(dt:number) {
+      updateProgress(dt);
     }
+    watch(dt, update);
 
     onMounted( () => {
       progress.value.current = 0;
-      const now = performance.now();
-      timing.value.dt = now - timing.value.last;
-      timing.value.last = now;
-      // console.log(`current: ${progress.value.current}, distance: ${progress.value.distance}`);
-      loop();
     });
     
     return {

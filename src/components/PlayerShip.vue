@@ -52,10 +52,6 @@ export default defineComponent({
   components: {
   },
   props: {
-    dt: {
-      type:Number,
-      default:0
-    },
     ship: {
       type:Ship,
       required: true

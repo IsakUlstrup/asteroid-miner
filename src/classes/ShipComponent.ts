@@ -45,6 +45,11 @@ export default class ShipComponent extends Item {
     }
   }
 
+  enable(state:boolean) {
+    console.log("enable component", state);
+    this.enabled = state;
+  }
+
   use() {
     if (! this.enabled) {
       console.log("Attempted to use disabled component", this.name);

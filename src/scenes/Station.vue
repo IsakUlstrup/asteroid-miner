@@ -17,7 +17,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from "vue";
+import { defineComponent, watch, toRefs } from "vue";
 
 import Ship from "@/classes/Ship";
 import Item from "@/classes/Item";
@@ -28,10 +28,21 @@ export default defineComponent({
   },
   props: {
     ship:Ship,
-    destination:String
+    destination:String,
+    dt: {
+      type: Number,
+      required: true,
+      default: 0
+    }
   },
   emits: ["arrive", "travel"],
   setup(props, context) {
+    const { ship, dt } = toRefs(props);
+    function update(dt:number) {
+      return;
+    }
+    watch(dt, update);
+
     function sellItem(item:Item) {
       console.log("selling item:", item);
       if (props.ship) props.ship.removeItem(item);

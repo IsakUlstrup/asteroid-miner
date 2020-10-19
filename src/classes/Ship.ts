@@ -48,7 +48,8 @@ export default class Ship {
     });
 
     // engines
-    this.enabledEngines.forEach(engine => {
+    this.engines.forEach(engine => {
+      if (this.energy <= 0) engine.enabled = false;
       this.energy -= engine.energyUse;
       this.heat += engine.heating;
     });

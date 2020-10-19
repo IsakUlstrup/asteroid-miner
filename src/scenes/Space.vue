@@ -2,7 +2,7 @@
   <div class="space scene" id="space-wrapper">
     <section class="space" ref="space">
       <div class="ship">
-        <player-ship :dt="timing.dt" :ship="ship" />
+        <player-ship :ship="ship" />
         <div class="lasers">
           <laser-beam v-if="mining && ship.enabledLasers.length > 0" :x2="mousePosition.x" :y2="mousePosition.y" :thickness="2" :color="'cyan'" />
         </div>
@@ -29,7 +29,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, onMounted, ref, reactive, toRefs } from "vue";
+import { defineComponent, onMounted, ref, reactive, toRefs, watch } from "vue";
 import PlayerShip from "@/components/PlayerShip.vue";
 import LaserBeam from "@/components/LaserBeam.vue";
 import ShipControls from "@/components/ShipControls.vue";
@@ -50,15 +50,17 @@ export default defineComponent({
   },
   props: {
     ship:Ship,
-    destination:String
+    destination:String,
+    dt: {
+      type: Number,
+      required: true,
+      default: 0
+    }
   },
   emits: ["arrive", "travel"],
   setup(props, context) {
-    const { ship } = toRefs(props);
-    const timing = ref({
-      dt:0,
-      last:0
-    });
+    const { dt } = toRefs(props);
+
 
     const loot:Item[] = [];
 
@@ -66,10 +68,6 @@ export default defineComponent({
     const asteroids:Asteroid[] = [];
     const space = ref<HTMLDivElement>();
     const miningTarget = ref<Asteroid>();
-
-    // ship.addReactor(new Reactor());
-    // ship.addCooler(new Cooler());
-    // ship.addMiningLaser(new MiningLaser());
 
     const mousePosition = ref({
       x: 0,
@@ -91,7 +89,7 @@ export default defineComponent({
       });
 
       space.value.addEventListener("mousedown", event => {
-        if (ship && ship.value && ship.value.enabledLasers.length > 0) mining.value = true;
+        if (props.ship && props.ship.enabledLasers.length > 0) mining.value = true;
       });
 
       space.value.addEventListener("mouseup", event => {
@@ -129,36 +127,29 @@ export default defineComponent({
     }
     function mine(dt:number) {
       if (asteroids.length <= 0) return;
-      if (ship && ship.value && ship.value.components[0].active && typeof miningTarget.value !== "undefined") miningTarget.value.hp -= ship.value.enabledLasers[0].power * dt * .01;
+      if (props.ship && props.ship.components[0].active && typeof miningTarget.value !== "undefined") miningTarget.value.hp -= props.ship.enabledLasers[0].power * dt * .01;
     }
     function lootItem(item:Item) {
-      if (ship && ship.value) ship.value.lootItem(item);
+      if (props.ship) props.ship.lootItem(item);
       loot.splice(loot.indexOf(item), 1);
     }
 
-    function loop() {
-      window.requestAnimationFrame(loop);
-      const now = performance.now();
-      timing.value.dt = now - timing.value.last;
-
-      if (ship && ship.value) ship.value.update(timing.value.dt);
-      if (ship && ship.value && ship.value.enabledLasers.length > 0 && mining.value === true) {
+    function update(dt:number) {
+      if (props.ship && props.ship.enabledLasers.length > 0 && mining.value === true) {
         // activate lasers
-        ship.value.activateLasers();
-        mine(timing.value.dt);
+        props.ship.activateLasers();
+        mine(dt);
       } else {
-        if (ship && ship.value) ship.value.deactivateLasers();
+        if (props.ship ) props.ship.deactivateLasers();
       }
       // if (mining.value) mine(timing.value.dt);
       updateAsteriods();
       addAsteroids();
-
-      timing.value.last = now;
     }
+    watch(dt, update);
 
-    loop();
+    // loop();
     return {
-      timing,
       asteroids,
       loot,
       lootItem,
