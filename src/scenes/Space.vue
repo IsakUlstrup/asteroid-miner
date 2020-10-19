@@ -6,7 +6,6 @@
         <div class="lasers">
           <laser-beam v-if="mining && ship.enabledLasers.length > 0" :x2="mousePosition.x" :y2="mousePosition.y" :thickness="2" :color="'cyan'" />
         </div>
-        <input type="button" value="travel home" @click="travelHome">
       </div>
     
       <div class="encounter">
@@ -24,6 +23,7 @@
     </section>
     <section class="ship-controls">
       <ship-controls :ship="ship" />
+      <input type="button" value="travel home" @click="travelHome">
     </section>
   </div>
 </template>
