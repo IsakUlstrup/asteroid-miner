@@ -5,6 +5,7 @@
       <progress min="0" :max="progress.distance" :value="progress.current" />
       <br>
       <player-ship :ship="ship" />
+      <ship-controls :ship="ship" />
     </div>
   </div>
 </template>
@@ -12,6 +13,7 @@
 <script lang="ts">
 import { defineComponent, onMounted, ref, toRefs } from "vue";
 import PlayerShip from "@/components/PlayerShip.vue";
+import ShipControls from "@/components/ShipControls.vue";
 
 import Ship from "@/classes/Ship";
 // import component from '*.vue';
@@ -20,7 +22,8 @@ import Ship from "@/classes/Ship";
 export default defineComponent({
   name: "Travel",
   components: {
-    PlayerShip
+    PlayerShip,
+    ShipControls
   },
   props: {
     ship:Ship,
@@ -33,14 +36,21 @@ export default defineComponent({
       distance: 100,
       current: 0
     });
-    const speed = .01;
+    const speedMultiplier = .01;
     const timing = ref({
       dt: 0,
       last: 0
     });
 
     function updateProgress(dt:number) {
-      progress.value.current += speed * timing.value.dt;
+      let speed = 0;
+      if (ship && ship.value) {
+        ship.value.enabledEngines.forEach(e => {
+          speed += e.use();
+        })
+      }
+
+      progress.value.current += speed * speedMultiplier * timing.value.dt;
       if (progress.value.current >= progress.value.distance) {
         progress.value.current = progress.value.distance;
         // call for scene change

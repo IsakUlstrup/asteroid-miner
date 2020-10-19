@@ -3,6 +3,7 @@ import Item from "./Item";
 import Reactor from "./Reactor";
 import Cooler from "./Cooler";
 import MiningLaser from "./MiningLaser";
+import Engine from "./Engine"
 
 export default class Ship {
   energy = 0;
@@ -19,6 +20,7 @@ export default class Ship {
   reactors:Reactor[] = [];
   coolers:Cooler[] = [];
   lasers:MiningLaser[] = [];
+  engines:Engine[] = [];
 
   dtModifier = .1;
 
@@ -40,6 +42,12 @@ export default class Ship {
       this.heat += reactor.heating * (dt * this.dtModifier);
       this.totalHeating += reactor.heating * (dt * this.dtModifier);
       if (this.energy > this.maxEnergy) this.energy = this.maxEnergy;
+    });
+
+    // engines
+    this.enabledEngines.forEach(engine => {
+      this.energy -= engine.energyUse;
+      this.heat += engine.heating;
     });
 
     // lasers
@@ -88,6 +96,9 @@ export default class Ship {
   addMiningLaser(laser:MiningLaser) {
     this.lasers.push(laser);
   }
+  addEngine(engine:Engine) {
+    this.engines.push(engine);
+  }
   lootItem(item:Item) {
     this.inventory.push(item);
   }
@@ -95,10 +106,13 @@ export default class Ship {
     this.inventory.splice(this.inventory.indexOf(item), 1);
   }
   get components() {
-    return [...this.reactors, ...this.coolers, ...this.lasers];
+    return [...this.reactors, ...this.coolers, ...this.lasers, ...this.engines];
   }
   get enabledLasers() {
     return this.lasers.filter(l => l.enabled);
+  }
+  get enabledEngines() {
+    return this.engines.filter(e => e.enabled);
   }
   get inventoryVolume() {
     let volume = 0;
