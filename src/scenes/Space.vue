@@ -1,11 +1,12 @@
 <template>
-  <div id="space-wrapper">
+  <div class="space scene" id="space-wrapper">
     <section class="space" ref="space">
       <div class="ship">
         <player-ship :dt="timing.dt" :ship="ship" />
         <div class="lasers">
           <laser-beam v-if="mining && ship.enabledLasers.length > 0" :x2="mousePosition.x" :y2="mousePosition.y" :thickness="2" :color="'cyan'" />
         </div>
+        <input type="button" value="travel home" @click="travelHome">
       </div>
     
       <div class="encounter">
@@ -48,9 +49,11 @@ export default defineComponent({
     ShipControls
   },
   props: {
-    ship:Ship
+    ship:Ship,
+    destination:String
   },
-  setup(props) {
+  emits: ["arrive", "travel"],
+  setup(props, context) {
     const { ship } = toRefs(props);
     const timing = ref({
       dt:0,
@@ -95,6 +98,10 @@ export default defineComponent({
         mining.value = false;
       });
     });
+
+    function travelHome() {
+      context.emit("travel", "Station");
+    }
 
     function setTarget(event:MouseEvent) {
       // only disable target if mouse moves to anything but laser beam
@@ -159,7 +166,8 @@ export default defineComponent({
       mousePosition,
       space,
       miningTarget,
-      setTarget
+      setTarget,
+      travelHome
     }
   }
 });

@@ -1,13 +1,17 @@
 <template>
-  <h1>Space station</h1>
-  <p>A place for trading, crafting, fuel etc.</p>
-  <h3>Ship inventory</h3>
-  <ul>
-    <li v-for="item in ship.inventory" :key="item">
-      {{item.name}}
-      <input type="button" value="Sell" @click="sellItem(item)">
-    </li>
-  </ul>
+  <div class="station scene">
+    <h1>Space station</h1>
+    <p>A place for trading, crafting, fuel etc.</p>
+    <h3>Ship inventory</h3>
+    <ul>
+      <li v-for="item in ship.inventory" :key="item">
+        {{item.name}}
+        <input type="button" value="Sell" @click="sellItem(item)">
+      </li>
+    </ul>
+    <br>
+    <input type="button" value="return to space" @click="travelToSpace">
+  </div>
 </template>
 
 <script lang="ts">
@@ -21,18 +25,29 @@ export default defineComponent({
   components: {
   },
   props: {
-    ship:Ship
+    ship:Ship,
+    destination:String
   },
-  setup(props) {
+  emits: ["arrive", "travel"],
+  setup(props, context) {
     function sellItem(item:Item) {
       console.log("selling item:", item);
       if (props.ship) props.ship.removeItem(item);
     }
+    function travelToSpace() {
+      context.emit("travel", "Space");
+    }
     return {
-      sellItem
+      sellItem,
+      travelToSpace
     };
   }
 });
 </script>
 
-<style lang="scss"></style>
+<style lang="scss" scoped>
+.station {
+  color: white;
+  background: url("../assets/bg3.jpg");
+}
+</style>
