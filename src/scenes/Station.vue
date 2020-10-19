@@ -5,14 +5,14 @@
     <h3>Ship inventory</h3>
     <ul>
       <li v-for="item in ship.inventory" :key="item">
-        {{item.name}}
-        <input type="button" value="Sell" @click="sellItem(item)">
+        {{ item.name }}
+        <input type="button" value="Sell" @click="sellItem(item)" />
       </li>
     </ul>
-    <br>
-    <input type="button" value="return to space" @click="travelToSpace">
-    <br>
-    <input type="button" value="refuel" @click="ship.refuel">
+    <br />
+    <input type="button" value="return to space" @click="travelToSpace" />
+    <br />
+    <input type="button" value="refuel" @click="ship.refuel" />
   </div>
 </template>
 
@@ -24,11 +24,13 @@ import Item from "@/classes/Item";
 
 export default defineComponent({
   name: "Station",
-  components: {
-  },
+  components: {},
   props: {
-    ship:Ship,
-    destination:String,
+    ship: {
+      type: Ship,
+      required: true
+    },
+    destination: String,
     dt: {
       type: Number,
       required: true,
@@ -37,13 +39,13 @@ export default defineComponent({
   },
   emits: ["arrive", "travel"],
   setup(props, context) {
-    const { ship, dt } = toRefs(props);
-    function update(dt:number) {
-      return;
+    const { dt } = toRefs(props);
+    function update(dt: number) {
+      return dt;
     }
     watch(dt, update);
 
-    function sellItem(item:Item) {
+    function sellItem(item: Item) {
       console.log("selling item:", item);
       if (props.ship) props.ship.removeItem(item);
     }

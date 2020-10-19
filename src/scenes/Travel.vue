@@ -1,9 +1,9 @@
 <template>
   <div class="travel scene">
     <div class="status">
-      <h1>Traveling to: {{destination}}</h1>
+      <h1>Traveling to: {{ destination }}</h1>
       <progress min="0" :max="progress.distance" :value="progress.current" />
-      <br>
+      <br />
       <player-ship :ship="ship" />
       <ship-controls :ship="ship" />
     </div>
@@ -26,8 +26,8 @@ export default defineComponent({
     ShipControls
   },
   props: {
-    ship:Ship,
-    destination:String,
+    ship: Ship,
+    destination: String,
     dt: {
       type: Number,
       required: true,
@@ -37,21 +37,18 @@ export default defineComponent({
   emits: ["arrive", "travel"],
   setup(props, context) {
     const { ship, dt } = toRefs(props);
-    
-
-
     const progress = ref({
       distance: 100,
       current: 0
     });
-    const speedMultiplier = .01;
+    const speedMultiplier = 0.01;
 
-    function updateProgress(dt:number) {
+    function updateProgress(dt: number) {
       let speed = 0;
       if (ship && ship.value) {
         ship.value.enabledEngines.forEach(e => {
           speed += e.use();
-        })
+        });
       }
 
       progress.value.current += speed * speedMultiplier * dt;
@@ -62,15 +59,14 @@ export default defineComponent({
       }
       // console.log(`current: ${progress.value.current}, distance: ${progress.value.distance}, dt: ${timing.value.dt}`);
     }
-    function update(dt:number) {
+    function update(dt: number) {
       updateProgress(dt);
     }
     watch(dt, update);
 
-    onMounted( () => {
+    onMounted(() => {
       progress.value.current = 0;
     });
-    
     return {
       progress
     };
@@ -84,7 +80,7 @@ export default defineComponent({
   text-align: center;
 }
 .status {
-  background: rgba($color: #fff, $alpha: .3);
+  background: rgba($color: #fff, $alpha: 0.3);
   border-radius: 1rem;
   padding: 3rem;
   display: inline-block;

@@ -6,7 +6,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, shallowRef, ref, reactive, Component, DefineComponent } from "vue";
+import { defineComponent, shallowRef, ref, reactive } from "vue";
 
 // scenes
 import Space from "@/scenes/Space.vue";
@@ -14,7 +14,7 @@ import Station from "@/scenes/Station.vue";
 import Travel from "@/scenes/Travel.vue";
 
 import TestShip from "@/classes/TestShip";
-import Player from "@/classes/Player";
+// import Player from "@/classes/Player";
 
 export default defineComponent({
   name: "App",

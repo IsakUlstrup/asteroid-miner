@@ -3,57 +3,42 @@
     <h3>{{ ship.name }}</h3>
 
     <label for="energy">Energy: {{ ship.energy.toFixed(0) }}</label>
-    <br>
+    <br />
     <meter id="energy" :value="ship.energy" min="0" low="25" max="100"></meter>
-    <br>
+    <br />
     <label for="heat">Heat: {{ ship.heat.toFixed(0) }}</label>
-    <br>
+    <br />
     <meter id="heat" :value="ship.heat" min="0" high="85" max="100"></meter>
-    <br>
+    <br />
     <label for="fuel">Fuel: {{ ship.remainingFuel.toFixed(0) }}</label>
-    <br>
-    <meter id="fuel" :value="ship.remainingFuel" min="0" :low="ship.fuelCapacity * .25" :max="ship.fuelCapacity"></meter>
-    
-    <!-- <p>Fuel: {{ ship.remainingFuel }}/{{ ship.fuelCapacity }}</p> -->
-
-    <!-- <table>
-      <tr>
-        <td>Energy:</td>
-        <td>{{ ship.energy.toFixed(0) }}</td>
-      </tr>
-      <tr>
-        <td>Heat</td>
-        <td>{{ ship.heat.toFixed(0) }}</td>
-      </tr>
-      <tr>
-        <td>Total energy use</td>
-        <td>{{ ship.totalEnergyUsage.toFixed(1) }}</td>
-      </tr>
-      <tr>
-        <td>Total heating</td>
-        <td>{{ ship.totalHeating.toFixed(1) }}</td>
-      </tr>
-    </table> -->
-    <h3>Inventory ({{ ship.inventoryVolume}} / {{ship.inventorySize}})</h3>
+    <br />
+    <meter
+      id="fuel"
+      :value="ship.remainingFuel"
+      min="0"
+      :low="ship.fuelCapacity * 0.25"
+      :max="ship.fuelCapacity"
+    ></meter>
+    <h3>Inventory ({{ ship.inventoryVolume }} / {{ ship.inventorySize }})</h3>
     <ul class="inventory">
-      <li class="item" v-for="item in ship.inventory" :key="item.id">{{ item.name }}</li>
+      <li class="item" v-for="item in ship.inventory" :key="item.id">
+        {{ item.name }}
+      </li>
     </ul>
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent, watch, toRefs, reactive } from "vue";
+import { defineComponent } from "vue";
 // import ShipDisplay from "@/components/ShipDisplay.vue";
 import Ship from "@/classes/Ship";
 
-
 export default defineComponent({
   name: "PlayerShip",
-  components: {
-  },
+  components: {},
   props: {
     ship: {
-      type:Ship,
+      type: Ship,
       required: true
     }
   }
@@ -75,7 +60,7 @@ meter {
   background: #db07bf;
   color: white;
   padding: 2rem;
-  border-radius: .5rem;
+  border-radius: 0.5rem;
   display: inline-block;
 }
 .inventory {
