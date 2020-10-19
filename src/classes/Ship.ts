@@ -3,7 +3,8 @@ import Item from "./Item";
 import Reactor from "./Reactor";
 import Cooler from "./Cooler";
 import MiningLaser from "./MiningLaser";
-import Engine from "./Engine"
+import Engine from "./Engine";
+import FuelTank from "./FuelTank";
 
 export default class Ship {
   energy = 0;
@@ -21,6 +22,7 @@ export default class Ship {
   coolers:Cooler[] = [];
   lasers:MiningLaser[] = [];
   engines:Engine[] = [];
+  fuelTanks:FuelTank[] = [];
 
   dtModifier = .1;
 
@@ -32,7 +34,7 @@ export default class Ship {
     
     // reactors
     this.reactors.forEach(reactor => {
-      if (this.energy < this.maxEnergy) {
+      if (this.energy < this.maxEnergy && this.remainingFuel > 0) {
         reactor.active = true;
       } else {
         reactor.active = false;
@@ -40,7 +42,8 @@ export default class Ship {
 
       this.energy += reactor.effect * (dt * this.dtModifier);
       this.heat += reactor.heating * (dt * this.dtModifier);
-      this.totalHeating += reactor.heating * (dt * this.dtModifier);
+      this.useFuel(reactor.effect * (dt * this.dtModifier) * reactor.fuelConsumption);
+      // this.totalHeating += reactor.heating * (dt * this.dtModifier);
       if (this.energy > this.maxEnergy) this.energy = this.maxEnergy;
     });
 
@@ -99,6 +102,18 @@ export default class Ship {
   addEngine(engine:Engine) {
     this.engines.push(engine);
   }
+  addFuelTank(tank:FuelTank) {
+    this.fuelTanks.push(tank);
+  }
+  refuel() {
+    this.fuelTanks.forEach(tank => {
+      tank.current = tank.capacity;
+    });
+  }
+  useFuel(amount:number) {
+    const amountPerTank = amount / this.fuelTanks.length;
+    this.fuelTanks.forEach(t => t.current -= amountPerTank);
+  }
   lootItem(item:Item) {
     this.inventory.push(item);
   }
@@ -106,13 +121,27 @@ export default class Ship {
     this.inventory.splice(this.inventory.indexOf(item), 1);
   }
   get components() {
-    return [...this.reactors, ...this.coolers, ...this.lasers, ...this.engines];
+    return [...this.reactors, ...this.coolers, ...this.lasers, ...this.engines, ...this.fuelTanks];
   }
   get enabledLasers() {
     return this.lasers.filter(l => l.enabled);
   }
   get enabledEngines() {
     return this.engines.filter(e => e.enabled);
+  }
+  get remainingFuel() {
+    let fuel = 0;
+    this.fuelTanks.forEach(tank => {
+      fuel += tank.current;
+    });
+    return fuel;
+  }
+  get fuelCapacity() {
+    let capacity = 0;
+    this.fuelTanks.forEach(tank => {
+      capacity += tank.capacity;
+    });
+    return capacity;
   }
   get inventoryVolume() {
     let volume = 0;

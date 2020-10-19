@@ -11,6 +11,8 @@
     </ul>
     <br>
     <input type="button" value="return to space" @click="travelToSpace">
+    <br>
+    <input type="button" value="refuel" @click="ship.refuel">
   </div>
 </template>
 

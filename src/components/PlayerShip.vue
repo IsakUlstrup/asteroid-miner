@@ -4,13 +4,17 @@
 
     <label for="energy">Energy: {{ ship.energy.toFixed(0) }}</label>
     <br>
-    <meter id="energy" :value="ship.energy" min="0" low="25" max="100"></meter><br>
-
+    <meter id="energy" :value="ship.energy" min="0" low="25" max="100"></meter>
     <br>
-
     <label for="heat">Heat: {{ ship.heat.toFixed(0) }}</label>
     <br>
-    <meter id="heat" :value="ship.heat" min="0" high="85" max="100"></meter><br>
+    <meter id="heat" :value="ship.heat" min="0" high="85" max="100"></meter>
+    <br>
+    <label for="fuel">Fuel: {{ ship.remainingFuel.toFixed(0) }}</label>
+    <br>
+    <meter id="fuel" :value="ship.remainingFuel" min="0" :low="ship.fuelCapacity * .25" :max="ship.fuelCapacity"></meter>
+    
+    <!-- <p>Fuel: {{ ship.remainingFuel }}/{{ ship.fuelCapacity }}</p> -->
 
     <!-- <table>
       <tr>
