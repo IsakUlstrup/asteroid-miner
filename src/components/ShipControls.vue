@@ -31,6 +31,13 @@
         v-model="component.power"
       />
     </li>
+    <li class="component">
+      <strong>navigation</strong>
+      <br />
+      <input type="button" value="travel home" @click="travelHome" />
+      <!-- <br />
+      <input type="button" value="next field" @click="travelToNextField" /> -->
+    </li>
   </ul>
 </template>
 
@@ -46,6 +53,21 @@ export default defineComponent({
       type: Ship,
       required: true
     }
+  },
+  emits: ["travel"],
+  setup(props, context) {
+    function travelHome() {
+      context.emit("travel", "Station");
+    }
+
+    function travelToNextField() {
+      context.emit("travel", "Space");
+    }
+
+    return {
+      travelHome,
+      travelToNextField
+    }
   }
 });
 </script>
@@ -56,7 +78,6 @@ ul {
   display: flex;
   align-items: center;
   flex-wrap: wrap;
-  background: rgba($color: #fff, $alpha: 0.8);
 
   li {
     margin: 1rem;

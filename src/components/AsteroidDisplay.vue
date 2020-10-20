@@ -1,10 +1,9 @@
 <template>
   <div class="asteroid">
     <h3>{{ asteroid.name }}</h3>
+    HP: {{ asteroid.hp.toFixed(0) }}
     <div class="details">
       CMYK: {{ asteroid.c.toFixed(0) }}, {{ asteroid.m.toFixed(0) }}, {{ asteroid.y.toFixed(0) }}, {{ asteroid.k.toFixed(0) }}
-      <br />
-      HP: {{ asteroid.hp.toFixed(0) }}
     </div>
   </div>
 </template>

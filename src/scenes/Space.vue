@@ -37,8 +37,8 @@
       </div>
     </section>
     <section class="ship-controls">
-      <ShipControls :ship="ship" />
-      <input type="button" value="travel home" @click="travelHome" />
+      <ShipControls :ship="ship" @travel="travelHome" />
+      <!-- <input type="button" value="travel home" @click="travelHome" /> -->
     </section>
   </div>
 </template>
@@ -152,6 +152,7 @@ export default defineComponent({
       if (asteroids.length <= 0) return;
       asteroids.forEach(a => {
         if (a.hp <= 0) {
+          mining.value = false;
           asteroids.splice(asteroids.indexOf(a), 1);
           loot.push(new Item("Ore"));
         }
@@ -216,24 +217,31 @@ export default defineComponent({
   background: url("../assets/bg2.jpg");
   background-size: cover;
   display: flex;
+  justify-content: end;
   flex-direction: column;
   // flex-wrap: wrap;
-  width: 100%;
+  // width: 100%;
   // height: 100vh;
   user-select: none;
 
   section {
-    flex: 5;
+    flex: auto;
     padding: 5rem;
-    // flex-grow: 100%;
   }
   .ship-controls {
-    flex: 1;
-    padding: 0;
+    flex: 0.5;
+    background: rgba($color: #fff, $alpha: 0.8);
+    padding: 3rem;
+    overflow-y: scroll;
   }
   @media only screen and (max-width: 600px) {
     section {
       padding: 1rem;
+    }
+
+    .ship-controls {
+      flex: auto;
+      padding: 0;
     }
   }
 
