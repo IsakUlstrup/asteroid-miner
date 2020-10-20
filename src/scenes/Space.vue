@@ -17,16 +17,16 @@
       <div class="encounter">
         <ul v-if="asteroids.length > 0">
           <li
-            class="asteriod"
-            v-for="asteriod in asteroids"
-            :key="asteriod.name"
-            @touchstart="miningTarget = asteriod"
-            @mouseenter="miningTarget = asteriod"
+            class="asteroid"
+            v-for="asteroid in asteroids"
+            :key="asteroid.name"
+            @touchstart="touchMine($event, asteroid)"
+            @mouseenter="miningTarget = asteroid"
             @mouseleave="setTarget"
           >
-            <h3>{{ asteriod.name }}</h3>
-            <p>asteriod</p>
-            <p>hp: {{ asteriod.hp.toFixed(0) }}</p>
+            <h3>{{ asteroid.name }}</h3>
+            <p>asteroid</p>
+            <p>hp: {{ asteroid.hp.toFixed(0) }}</p>
           </li>
         </ul>
         <ul v-if="loot.length > 0" class="loot">
@@ -100,25 +100,9 @@ export default defineComponent({
         mousePosition.value.y = event.clientY;
       });
 
-      space.value.addEventListener('touchstart', event => {
-        event.preventDefault();
-        const touches = event.changedTouches;
-        // console.log(touches[0].pageX, touches[0].pageY);
-        mousePosition.value.x = touches[0].pageX;
-        mousePosition.value.y = touches[0].pageY;
-        if (props.ship && props.ship.enabledLasers.length > 0)
-          mining.value = true;
-      }, false);
-
-      space.value.addEventListener("touchmove", event => {
-        event.preventDefault();
-        const touches = event.changedTouches;
-        mousePosition.value.x = touches[0].pageX;
-        mousePosition.value.y = touches[0].pageY;
-      });
-
       space.value.addEventListener('touchend', () => {
         mining.value = false;
+        miningTarget.value = undefined;
       }, false);
 
       space.value.addEventListener("mouseleave", () => {
@@ -135,8 +119,14 @@ export default defineComponent({
       });
     });
 
-    function touchTest(event:TouchEvent, astreoid:Asteroid) {
-      console.log(event, astreoid);
+    function touchMine(event:TouchEvent, astreoid:Asteroid) {
+      event.preventDefault();
+      const touches = event.changedTouches;
+      miningTarget.value = astreoid;
+
+      mousePosition.value.x = touches[0].pageX;
+      mousePosition.value.y = touches[0].pageY;
+      if (props.ship && props.ship.enabledLasers.length > 0) mining.value = true;
     }
 
     function travelHome() {
@@ -155,6 +145,7 @@ export default defineComponent({
     function addAsteroids() {
       if (loot.length > 0) return;
       if (asteroids.length <= 0) {
+        asteroids.push(new Asteroid());
         asteroids.push(new Asteroid());
       }
     }
@@ -215,7 +206,7 @@ export default defineComponent({
       setTarget,
       travelHome,
       mouseTarget,
-      touchTest
+      touchMine
     };
   }
 });
@@ -252,11 +243,12 @@ export default defineComponent({
     flex: 20%;
     box-shadow: 0 0 4px black;
   }
-  .asteriod {
+  .asteroid {
     background: brown;
     display: inline-block;
     padding: 2rem;
     border-radius: 0.3rem;
+    margin: 2rem;
   }
 
   .ship {
