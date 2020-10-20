@@ -8,7 +8,7 @@
             v-if="mining && ship.enabledLasers.length > 0"
             :x2="mousePosition.x"
             :y2="mousePosition.y"
-            :thickness="2"
+            :thickness="6"
             :color="'cyan'"
           />
         </div>
@@ -20,6 +20,7 @@
             class="asteriod"
             v-for="asteriod in asteroids"
             :key="asteriod.name"
+            @touchstart="miningTarget = asteriod"
             @mouseenter="miningTarget = asteriod"
             @mouseleave="setTarget"
           >
@@ -34,6 +35,7 @@
               type="button"
               :value="'Loot ' + item.name"
               @mousedown="lootItem(item)"
+              @touchstart="lootItem(item)"
             />
           </li>
         </ul>
@@ -53,9 +55,6 @@ import LaserBeam from "@/components/LaserBeam.vue";
 import ShipControls from "@/components/ShipControls.vue";
 
 import Ship from "@/classes/Ship";
-// import MiningLaser from "@/classes/MiningLaser";
-// import Cooler from "@/classes/Cooler";
-// import Reactor from "@/classes/Reactor";
 import Asteroid from "@/classes/Asteroid";
 import Item from "@/classes/Item";
 
@@ -85,6 +84,7 @@ export default defineComponent({
     const asteroids: Asteroid[] = [];
     const space = ref<HTMLDivElement>();
     const miningTarget = ref<Asteroid>();
+    const mouseTarget = ref<Element>();
     const mousePosition = ref({
       x: 0,
       y: 0
@@ -100,6 +100,27 @@ export default defineComponent({
         mousePosition.value.y = event.clientY;
       });
 
+      space.value.addEventListener('touchstart', event => {
+        event.preventDefault();
+        const touches = event.changedTouches;
+        // console.log(touches[0].pageX, touches[0].pageY);
+        mousePosition.value.x = touches[0].pageX;
+        mousePosition.value.y = touches[0].pageY;
+        if (props.ship && props.ship.enabledLasers.length > 0)
+          mining.value = true;
+      }, false);
+
+      space.value.addEventListener("touchmove", event => {
+        event.preventDefault();
+        const touches = event.changedTouches;
+        mousePosition.value.x = touches[0].pageX;
+        mousePosition.value.y = touches[0].pageY;
+      });
+
+      space.value.addEventListener('touchend', () => {
+        mining.value = false;
+      }, false);
+
       space.value.addEventListener("mouseleave", () => {
         mining.value = false;
       });
@@ -113,6 +134,10 @@ export default defineComponent({
         mining.value = false;
       });
     });
+
+    function touchTest(event:TouchEvent, astreoid:Asteroid) {
+      console.log(event, astreoid);
+    }
 
     function travelHome() {
       context.emit("travel", "Station");
@@ -158,6 +183,9 @@ export default defineComponent({
     }
 
     function update(dt: number) {
+      // mouseTarget.value = document.elementFromPoint(mousePosition.value.x, mousePosition.value.y) || undefined;
+      // if (mouseTarget.value) console.log(mouseTarget.value.attributes);
+
       if (
         props.ship &&
         props.ship.enabledLasers.length > 0 &&
@@ -185,7 +213,9 @@ export default defineComponent({
       space,
       miningTarget,
       setTarget,
-      travelHome
+      travelHome,
+      mouseTarget,
+      touchTest
     };
   }
 });
