@@ -18,10 +18,10 @@ export default class Asteroid {
   m: number;
   y: number;
   k: number;
-  constructor(c: number, m: number, y: number, k: number) {
-    this.c = c;
-    this.m = m;
-    this.y = y;
-    this.k = k;
+  constructor() {
+    this.c = Math.random() * 100;
+    this.m = Math.random() * 100;
+    this.y = Math.random() * 100;
+    this.k = Math.random() * 10;
   }
 }

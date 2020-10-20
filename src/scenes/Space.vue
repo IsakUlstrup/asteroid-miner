@@ -142,8 +142,10 @@ export default defineComponent({
     function addAsteroids() {
       if (loot.length > 0) return;
       if (asteroids.length <= 0) {
-        asteroids.push(new Asteroid(100, 0, 0, 0));
-        asteroids.push(new Asteroid(0, 60, 40, 0));
+        const amount = parseInt((Math.random() * 5).toFixed(0));
+        for (let index = 0; index < amount; index++) {
+          asteroids.push(new Asteroid());
+        }
       }
     }
     function updateAsteriods() {

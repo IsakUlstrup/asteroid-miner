@@ -1,10 +1,10 @@
 <template>
   <div class="asteroid">
     <h3>{{ asteroid.name }}</h3>
-    <p>C: {{ asteroid.c }}</p>
-    <p>M: {{ asteroid.m }}</p>
-    <p>Y: {{ asteroid.y }}</p>
-    <p>K: {{ asteroid.k }}</p>
+    <p>C: {{ asteroid.c.toFixed(0) }}</p>
+    <p>M: {{ asteroid.m.toFixed(0) }}</p>
+    <p>Y: {{ asteroid.y.toFixed(0) }}</p>
+    <p>K: {{ asteroid.k.toFixed(0) }}</p>
     <p>HP: {{ asteroid.hp.toFixed(0) }}</p>
   </div>
 </template>
