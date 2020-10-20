@@ -15,20 +15,15 @@
       </div>
 
       <div class="encounter">
-        <ul v-if="asteroids.length > 0">
-          <li
-            class="asteroid"
-            v-for="asteroid in asteroids"
-            :key="asteroid.name"
-            @touchstart="touchMine($event, asteroid)"
-            @mouseenter="miningTarget = asteroid"
-            @mouseleave="setTarget"
-          >
-            <h3>{{ asteroid.name }}</h3>
-            <p>asteroid</p>
-            <p>hp: {{ asteroid.hp.toFixed(0) }}</p>
-          </li>
-        </ul>
+        <AsteroidDisplay
+          v-for="asteroid in asteroids"
+          :key="asteroid.name"
+          @touchstart="touchMine($event, asteroid)"
+          @mouseenter="miningTarget = asteroid"
+          @mouseleave="setTarget"
+          :asteroid="asteroid"
+        />
+
         <ul v-if="loot.length > 0" class="loot">
           <li v-for="item in loot" :key="item.name">
             <input
@@ -53,6 +48,7 @@ import { defineComponent, onMounted, ref, toRefs, watch } from "vue";
 import PlayerShip from "@/components/PlayerShip.vue";
 import LaserBeam from "@/components/LaserBeam.vue";
 import ShipControls from "@/components/ShipControls.vue";
+import AsteroidDisplay from "@/components/AsteroidDisplay.vue";
 
 import Ship from "@/classes/Ship";
 import Asteroid from "@/classes/Asteroid";
@@ -63,7 +59,8 @@ export default defineComponent({
   components: {
     PlayerShip,
     LaserBeam,
-    ShipControls
+    ShipControls,
+    AsteroidDisplay
   },
   props: {
     ship: {
@@ -145,8 +142,8 @@ export default defineComponent({
     function addAsteroids() {
       if (loot.length > 0) return;
       if (asteroids.length <= 0) {
-        asteroids.push(new Asteroid());
-        asteroids.push(new Asteroid());
+        asteroids.push(new Asteroid(100, 0, 0, 0));
+        asteroids.push(new Asteroid(0, 60, 40, 0));
       }
     }
     function updateAsteriods() {
@@ -242,13 +239,6 @@ export default defineComponent({
     background: rgba($color: #fff, $alpha: 0.9);
     flex: 20%;
     box-shadow: 0 0 4px black;
-  }
-  .asteroid {
-    background: brown;
-    display: inline-block;
-    padding: 2rem;
-    border-radius: 0.3rem;
-    margin: 2rem;
   }
 
   .ship {
