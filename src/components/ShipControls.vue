@@ -1,5 +1,4 @@
 <template>
-  <h2>Ship components</h2>
   <ul>
     <li
       class="component"
@@ -52,24 +51,35 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-h2 {
-  margin-bottom: 2rem;
-}
 ul {
   list-style: none;
   display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  background: rgba($color: #fff, $alpha: 0.8);
 
   li {
-    margin-right: 3rem;
+    margin: 1rem;
   }
 }
 label {
-  margin-left: 1rem;
+  padding: 1rem;
   font-weight: bold;
 }
 .component {
   border: 1px solid #262626;
-  padding: 2rem;
+  padding: 1rem;
   border-radius: 0.3rem;
+}
+
+@media only screen and (max-width: 600px) {
+  .component {
+    font-size: 1rem;
+
+    input[type="range"] {
+      display: inline-block;
+      width: 50%;
+    }
+  }
 }
 </style>

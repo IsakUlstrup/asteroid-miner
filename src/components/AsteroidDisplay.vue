@@ -1,11 +1,11 @@
 <template>
   <div class="asteroid">
     <h3>{{ asteroid.name }}</h3>
-    <p>C: {{ asteroid.c.toFixed(0) }}</p>
-    <p>M: {{ asteroid.m.toFixed(0) }}</p>
-    <p>Y: {{ asteroid.y.toFixed(0) }}</p>
-    <p>K: {{ asteroid.k.toFixed(0) }}</p>
-    <p>HP: {{ asteroid.hp.toFixed(0) }}</p>
+    <div class="details">
+      CMYK: {{ asteroid.c.toFixed(0) }}, {{ asteroid.m.toFixed(0) }}, {{ asteroid.y.toFixed(0) }}, {{ asteroid.k.toFixed(0) }}
+      <br />
+      HP: {{ asteroid.hp.toFixed(0) }}
+    </div>
   </div>
 </template>
 
@@ -62,5 +62,18 @@ export default defineComponent({
   padding: 2rem;
   border-radius: 0.3rem;
   margin: 2rem;
+}
+@media only screen and (max-width: 600px) {
+  .details {
+    display: none;
+  }
+  .asteroid {
+    padding: 1rem;
+    margin: 0.5rem;
+
+    h3 {
+      font-size: 1.4rem;
+    }
+  }
 }
 </style>

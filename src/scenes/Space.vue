@@ -37,7 +37,7 @@
       </div>
     </section>
     <section class="ship-controls">
-      <ship-controls :ship="ship" />
+      <ShipControls :ship="ship" />
       <input type="button" value="travel home" @click="travelHome" />
     </section>
   </div>
@@ -219,13 +219,22 @@ export default defineComponent({
   flex-direction: column;
   // flex-wrap: wrap;
   width: 100%;
-  height: 100vh;
+  // height: 100vh;
   user-select: none;
 
   section {
-    flex: 100%;
+    flex: 5;
     padding: 5rem;
     // flex-grow: 100%;
+  }
+  .ship-controls {
+    flex: 1;
+    padding: 0;
+  }
+  @media only screen and (max-width: 600px) {
+    section {
+      padding: 1rem;
+    }
   }
 
   .space {
@@ -234,21 +243,6 @@ export default defineComponent({
     div {
       flex: 1;
     }
-  }
-
-  .ship-controls {
-    border-top: 1px solid #262626;
-    background: rgba($color: #fff, $alpha: 0.9);
-    flex: 20%;
-    box-shadow: 0 0 4px black;
-  }
-
-  .ship {
-    float: left;
-  }
-
-  .lasers {
-    float: left;
   }
 
   .loot {

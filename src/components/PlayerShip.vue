@@ -3,7 +3,6 @@
     <h3>{{ ship.name }}</h3>
 
     <label for="energy">Energy: {{ ship.energy.toFixed(0) }}</label>
-    <br />
     <meter id="energy" :value="ship.energy" min="0" low="25" max="100"></meter>
     <br />
     <label for="heat">Heat: {{ ship.heat.toFixed(0) }}</label>
@@ -50,11 +49,11 @@ ul {
   list-style: none;
 }
 li {
-  margin: 3rem 0;
+  margin: 2rem 0;
 }
 meter {
   width: 100%;
-  height: 3rem;
+  height: 1rem;
 }
 .player-ship {
   background: #db07bf;
