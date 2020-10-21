@@ -2,6 +2,7 @@
   <ul>
     <li
       class="component"
+      :class="{active: component.active}"
       v-for="component in ship.components"
       :key="component.name"
     >
@@ -85,6 +86,10 @@ label {
   border: 1px solid #262626;
   padding: 1rem;
   border-radius: 0.3rem;
+}
+.active {
+  border: 1px solid green;
+  box-shadow: 0 0 4px green;
 }
 
 @media only screen and (max-width: 600px) {

@@ -37,7 +37,7 @@ export default class Ship {
     
     // reactors
     this.reactors.forEach(reactor => {
-      if (this.energy < this.maxEnergy && this.remainingFuel > 0) {
+      if (this.energy < this.maxEnergy && this.remainingFuel > 0 && reactor.power > 0) {
         reactor.active = true;
       } else {
         reactor.active = false;
@@ -67,7 +67,7 @@ export default class Ship {
     // coolers
     this.coolers.forEach(cooler => {
       if (this.energy <= 0) cooler.power = 0;
-      if (this.heat > 0) {
+      if (this.heat > 0 && cooler.power > 0) {
         cooler.active = true;
       } else {
         cooler.active = false;
