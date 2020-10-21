@@ -1,5 +1,6 @@
 // import ShipComponent from "./ShipComponent";
 import Item from "./Item";
+import Ore from "./Ore";
 import Reactor from "./Reactor";
 import Cooler from "./Cooler";
 import MiningLaser from "./MiningLaser";
@@ -16,8 +17,8 @@ export default class Ship {
   coolingRate = .001;
   totalEnergyUsage = 0;
   totalHeating = 0;
-  inventory:Item[] = [];
-  inventorySize = 50;
+  inventory:Ore[] = [];
+  inventorySize = 500;
   reactors:Reactor[] = [];
   coolers:Cooler[] = [];
   lasers:MiningLaser[] = [];
@@ -125,11 +126,17 @@ export default class Ship {
     const amountPerTank = amount / this.fuelTanks.length;
     this.fuelTanks.forEach(t => t.current -= amountPerTank);
   }
-  lootItem(item:Item) {
-    this.inventory.push(item);
+  lootOre(ore: Ore) {
+    const availableSpace = this.inventorySize - this.inventoryVolume;
+    if (availableSpace > ore.volume * ore.quantity) {
+      this.inventory.push(ore);
+      return true;
+    } else {
+      return false;
+    }
   }
-  removeItem(item:Item) {
-    this.inventory.splice(this.inventory.indexOf(item), 1);
+  removeOre(ore: Ore) {
+    this.inventory.splice(this.inventory.indexOf(ore), 1);
   }
   get components() {
     return [...this.reactors, ...this.coolers, ...this.lasers, ...this.engines, ...this.fuelTanks];
@@ -154,9 +161,16 @@ export default class Ship {
     });
     return capacity;
   }
+  canLoot(volume: number) {
+    if ((this.inventorySize - this.inventoryVolume) > volume) {
+      return true;
+    } else {
+      return false;
+    }
+  }
   get inventoryVolume() {
     let volume = 0;
-    this.inventory.forEach(item => volume += item.volume);
+    this.inventory.forEach(item => volume += item.volume * item.quantity);
     return volume;
   }
 }

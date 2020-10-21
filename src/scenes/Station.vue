@@ -6,7 +6,7 @@
     <ul>
       <li v-for="item in ship.inventory" :key="item">
         {{ item.name }}
-        <input type="button" value="Sell" @click="sellItem(item)" />
+        <input type="button" :value="'Sell(' + item.quantity * 100 + ' credits)'" @click="sellOre(item)" />
       </li>
     </ul>
     <br />
@@ -28,6 +28,7 @@ import PlayerShip from "@/components/PlayerShip.vue";
 import Ship from "@/classes/Ship";
 import Item from "@/classes/Item";
 import Player from "@/classes/Player";
+import Ore from "@/classes/Ore";
 
 export default defineComponent({
   name: "Station",
@@ -67,9 +68,9 @@ export default defineComponent({
       props.ship.refuel(amount);
     }
 
-    function sellItem(item: Item) {
-      props.player.addCredits(100);
-      props.ship.removeItem(item);
+    function sellOre(ore: Ore) {
+      props.player.addCredits(ore.quantity * 100);
+      props.ship.removeOre(ore);
     }
     function travelToSpace() {
       props.ship.setPause(false);
@@ -77,7 +78,7 @@ export default defineComponent({
     }
 
     return {
-      sellItem,
+      sellOre,
       travelToSpace,
       refuel
     };

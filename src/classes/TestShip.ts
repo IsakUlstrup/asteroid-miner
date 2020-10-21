@@ -13,5 +13,7 @@ export default class TestShip extends Ship {
     this.addMiningLaser(new MiningLaser());
     this.addEngine(new Engine());
     this.addFuelTank(new FuelTank());
+
+    this.inventorySize = 1000;
   }
 }

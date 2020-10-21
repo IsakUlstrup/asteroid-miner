@@ -21,7 +21,7 @@
     <h3>Inventory ({{ ship.inventoryVolume }} / {{ ship.inventorySize }})</h3>
     <ul class="inventory">
       <li class="item" v-for="item in ship.inventory" :key="item.id">
-        {{ item.name }}
+        {{ item.name }} ({{ item.quantity }})
       </li>
     </ul>
   </div>

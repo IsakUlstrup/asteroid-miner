@@ -27,10 +27,11 @@
         <ul v-if="loot.length > 0" class="loot">
           <li v-for="item in loot" :key="item.name">
             <input
+              :disabled="!ship.canLoot(item.volume * item.quantity)"
               type="button"
-              :value="'Loot ' + item.name"
-              @mousedown="lootItem(item)"
-              @touchstart="lootItem(item)"
+              :value="'Loot ' + item.quantity + ' ' + item.name"
+              @mousedown="lootOre(item)"
+              @touchstart="lootOre(item)"
             />
           </li>
         </ul>
@@ -53,6 +54,7 @@ import AsteroidDisplay from "@/components/AsteroidDisplay.vue";
 import Ship from "@/classes/Ship";
 import Asteroid from "@/classes/Asteroid";
 import Item from "@/classes/Item";
+import Ore from "@/classes/Ore";
 
 export default defineComponent({
   name: "Space",
@@ -77,7 +79,7 @@ export default defineComponent({
   emits: ["arrive", "travel"],
   setup(props, context) {
     const { dt } = toRefs(props);
-    const loot: Item[] = [];
+    const loot: Ore[] = [];
     const asteroids: Asteroid[] = [];
     const space = ref<HTMLDivElement>();
     const miningTarget = ref<Asteroid>();
@@ -153,8 +155,11 @@ export default defineComponent({
       asteroids.forEach(a => {
         if (a.hp <= 0) {
           mining.value = false;
+          // console.log(a.dropOre());
+          const ores = a.dropOre();
+          ores.forEach(o => loot.push(o));
           asteroids.splice(asteroids.indexOf(a), 1);
-          loot.push(new Item("Ore"));
+          // loot.push(new Item("Ore"));
         }
       });
     }
@@ -168,9 +173,14 @@ export default defineComponent({
         miningTarget.value.hp -= props.ship.enabledLasers[0].power * dt * 0.01;
       }
     }
-    function lootItem(item: Item) {
-      if (props.ship) props.ship.lootItem(item);
-      loot.splice(loot.indexOf(item), 1);
+    // function lootItem(item: Item) {
+    //   if (props.ship) props.ship.lootItem(item);
+    //   loot.splice(loot.indexOf(item), 1);
+    // }
+    function lootOre(ore: Ore) {
+      if (props.ship.lootOre(ore)) {
+        loot.splice(loot.indexOf(ore), 1);
+      }
     }
 
     function update(dt: number) {
@@ -198,7 +208,7 @@ export default defineComponent({
     return {
       asteroids,
       loot,
-      lootItem,
+      lootOre,
       mining,
       mousePosition,
       space,
