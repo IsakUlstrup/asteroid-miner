@@ -145,9 +145,9 @@ export default class Ship {
     return this.lasers.filter(l => l.power > 0);
     // return this.lasers;
   }
-  get enabledEngines() {
-    // return this.engines.filter(e => e.enabled);
-    return this.engines;
+  get poweredEngines() {
+    return this.engines.filter(e => e.power > 0);
+    // return this.engines;
   }
   get remainingFuel() {
     let fuel = 0;

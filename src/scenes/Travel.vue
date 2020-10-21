@@ -26,7 +26,10 @@ export default defineComponent({
     ShipControls
   },
   props: {
-    ship: Ship,
+    ship: {
+      type: Ship,
+      required: true
+    },
     destination: String,
     dt: {
       type: Number,
@@ -46,8 +49,9 @@ export default defineComponent({
     function updateProgress(dt: number) {
       let speed = 0;
       if (ship && ship.value) {
-        ship.value.enabledEngines.forEach(e => {
-          speed += e.use();
+        ship.value.poweredEngines.forEach(e => {
+          e.active = true;
+          speed += e.effect;
         });
       }
 
@@ -55,6 +59,9 @@ export default defineComponent({
       if (progress.value.current >= progress.value.distance) {
         progress.value.current = progress.value.distance;
         // call for scene change
+        ship.value.poweredEngines.forEach(e => {
+          e.active = false;
+        });
         context.emit("arrive", props.destination);
       }
       // console.log(`current: ${progress.value.current}, distance: ${progress.value.distance}, dt: ${timing.value.dt}`);
