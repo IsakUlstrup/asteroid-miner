@@ -141,9 +141,9 @@ export default class Ship {
   get components() {
     return [...this.reactors, ...this.coolers, ...this.lasers, ...this.engines, ...this.fuelTanks];
   }
-  get enabledLasers() {
-    // return this.lasers.filter(l => l.enabled);
-    return this.lasers;
+  get poweredLasers() {
+    return this.lasers.filter(l => l.power > 0);
+    // return this.lasers;
   }
   get enabledEngines() {
     // return this.engines.filter(e => e.enabled);

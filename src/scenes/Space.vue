@@ -5,7 +5,7 @@
         <player-ship :ship="ship" />
         <div class="lasers">
           <laser-beam
-            v-if="mining && ship.enabledLasers.length > 0"
+            v-if="mining && ship.poweredLasers.length > 0"
             :x2="mousePosition.x"
             :y2="mousePosition.y"
             :thickness="6"
@@ -109,7 +109,7 @@ export default defineComponent({
       });
 
       space.value.addEventListener("mousedown", () => {
-        if (props.ship && props.ship.enabledLasers.length > 0)
+        if (props.ship.poweredLasers.length > 0)
           mining.value = true;
       });
 
@@ -125,7 +125,7 @@ export default defineComponent({
 
       mousePosition.value.x = touches[0].pageX;
       mousePosition.value.y = touches[0].pageY;
-      if (props.ship && props.ship.enabledLasers.length > 0) mining.value = true;
+      if (props.ship && props.ship.poweredLasers.length > 0) mining.value = true;
     }
 
     function travelHome() {
@@ -166,11 +166,10 @@ export default defineComponent({
     function mine(dt: number) {
       if (asteroids.length <= 0) return;
       if (
-        props.ship &&
-        props.ship.components[0].active &&
+        props.ship.poweredLasers.length > 0 &&
         typeof miningTarget.value !== "undefined"
       ) {
-        miningTarget.value.hp -= props.ship.enabledLasers[0].power * dt * 0.01;
+        miningTarget.value.hp -= props.ship.poweredLasers[0].power * dt * 0.01;
       }
     }
     // function lootItem(item: Item) {
@@ -188,8 +187,7 @@ export default defineComponent({
       // if (mouseTarget.value) console.log(mouseTarget.value.attributes);
 
       if (
-        props.ship &&
-        props.ship.enabledLasers.length > 0 &&
+        props.ship.poweredLasers.length > 0 &&
         mining.value === true
       ) {
         // activate lasers
