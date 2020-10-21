@@ -6,4 +6,8 @@ export default class Player {
     this.name = name;
     this.credits = 0;
   }
+
+  addCredits(amount: number) {
+    this.credits += amount;
+  }
 }

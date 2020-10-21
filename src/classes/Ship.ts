@@ -23,6 +23,7 @@ export default class Ship {
   lasers:MiningLaser[] = [];
   engines:Engine[] = [];
   fuelTanks:FuelTank[] = [];
+  pause = false;
 
   dtModifier = .1;
 
@@ -30,6 +31,7 @@ export default class Ship {
     this.name = name;
   }
   update(dt:number) {
+    if (this.pause === true) return;
     this.totalHeating = 0;
     
     // reactors
@@ -80,6 +82,9 @@ export default class Ship {
     if (this.heat > this.maxHeat) this.heat = this.maxHeat;
     if (this.energy < 0) this.energy = 0;
   }
+  setPause(state: boolean) {
+    this.pause = state;
+  }
   activateLasers() {
     this.lasers.forEach(laser => {
       if (!laser.enabled) return;
@@ -106,10 +111,15 @@ export default class Ship {
   addFuelTank(tank:FuelTank) {
     this.fuelTanks.push(tank);
   }
-  refuel() {
+  refuel(amount: number) {
+    const amountPerTank = amount / this.fuelTanks.length;
     this.fuelTanks.forEach(tank => {
-      tank.current = tank.capacity;
+      tank.current += amountPerTank;
+      if (tank.current > tank.capacity) tank.current = tank.capacity;
     });
+  }
+  recharge() {
+    this.energy = this.maxEnergy;
   }
   useFuel(amount:number) {
     const amountPerTank = amount / this.fuelTanks.length;

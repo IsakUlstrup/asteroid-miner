@@ -12,22 +12,35 @@
     <br />
     <input type="button" value="return to space" @click="travelToSpace" />
     <br />
-    <input type="button" value="refuel" @click="ship.refuel" />
+    <PlayerShip :ship="ship" />
+    <br />
+    <input type="button" :disabled="player.credits < 10 || ship.remainingFuel >= ship.fuelCapacity" value="refuel 10 units (10 credits)" @click="refuel(10)" />
+    <h3>Player</h3>
+    <p>name: {{ player.name }}</p>
+    <p>credits: {{ player.credits }}</p>
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent, watch, toRefs } from "vue";
+import { defineComponent, watch, toRefs, onMounted } from "vue";
+import PlayerShip from "@/components/PlayerShip.vue";
 
 import Ship from "@/classes/Ship";
 import Item from "@/classes/Item";
+import Player from "@/classes/Player";
 
 export default defineComponent({
   name: "Station",
-  components: {},
+  components: {
+    PlayerShip
+  },
   props: {
     ship: {
       type: Ship,
+      required: true
+    },
+    player: {
+      type: Player,
       required: true
     },
     destination: String,
@@ -45,16 +58,28 @@ export default defineComponent({
     }
     watch(dt, update);
 
+    onMounted(() => {
+      props.ship.setPause(true);
+      props.ship.recharge();
+    });
+
+    function refuel(amount: number) {
+      props.ship.refuel(amount);
+    }
+
     function sellItem(item: Item) {
-      console.log("selling item:", item);
-      if (props.ship) props.ship.removeItem(item);
+      props.player.addCredits(100);
+      props.ship.removeItem(item);
     }
     function travelToSpace() {
+      props.ship.setPause(false);
       context.emit("travel", "Space");
     }
+
     return {
       sellItem,
-      travelToSpace
+      travelToSpace,
+      refuel
     };
   }
 });
@@ -62,6 +87,7 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .station {
+  padding: 5rem;
   color: white;
   background: url("../assets/bg3.jpg");
 }

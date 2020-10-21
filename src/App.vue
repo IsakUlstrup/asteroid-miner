@@ -1,7 +1,6 @@
 <template>
-  <!-- <input v-for="scene in scenes" :key="scene" type="button" :value="scene.name" @click="currentScene = scene"> -->
   <section class="current-scene">
-    <component :is="currentScene" :dt="timing.dt" :ship="ship" @travel="travelTo" @arrive="arrive" :destination="destination" />
+    <component :is="currentScene" :dt="timing.dt" :ship="ship" :player="player" @travel="travelTo" @arrive="arrive" :destination="destination" />
   </section>
 </template>
 
@@ -14,7 +13,7 @@ import Station from "@/scenes/Station.vue";
 import Travel from "@/scenes/Travel.vue";
 
 import TestShip from "@/classes/TestShip";
-// import Player from "@/classes/Player";
+import Player from "@/classes/Player";
 
 export default defineComponent({
   name: "App",
@@ -26,10 +25,9 @@ export default defineComponent({
   setup() {
     const scenes = [Space, Station, Travel];
     const currentScene = shallowRef(scenes[0]);
-    // currentScene = shallowRef(Space);
 
     const ship = reactive(new TestShip());
-    // const player = reactive(new Player("Player One"));
+    const player = reactive(new Player("Player One"));
 
     const timing = ref({
       dt:0,
@@ -79,7 +77,8 @@ export default defineComponent({
       arrive,
       destination,
       travelTo,
-      timing
+      timing,
+      player
     };
   }
 });
