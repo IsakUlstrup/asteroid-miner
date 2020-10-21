@@ -5,13 +5,7 @@
       v-for="component in ship.components"
       :key="component.name"
     >
-      <input
-        type="checkbox"
-        :id="component.name"
-        name="enable-component"
-        v-model="component.enabled"
-      />
-      <label :for="component.name">{{ component.name }}</label>
+      <strong>{{ component.name }}</strong>
       <p>{{ component.description }}</p>
       <p>active: {{ component.active }}</p>
       heating: {{ component.heating.toFixed(1) }}

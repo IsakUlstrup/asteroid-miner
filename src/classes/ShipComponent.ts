@@ -1,7 +1,6 @@
 import Item from "@/classes/Item";
 
 export default class ShipComponent extends Item {
-  enabled: boolean;
   active: boolean;
   power: number;
   baseEnergyUse: number;
@@ -13,9 +12,8 @@ export default class ShipComponent extends Item {
     super(name, description);
     this.baseEnergyUse = energyUse;
     this.baseHeating = heating;
-    this.power = 1;
+    this.power = 0;
     this.active = false;
-    this.enabled = false;
     this._effect = 1;
     this.inactiveModifier = 0.1;
   }
@@ -37,7 +35,7 @@ export default class ShipComponent extends Item {
   }
 
   upkeep() {
-    if (!this.enabled) return;
+    // if (!this.enabled) return;
 
     return {
       heating: this.heating,
@@ -45,16 +43,16 @@ export default class ShipComponent extends Item {
     };
   }
 
-  enable(state: boolean) {
-    console.log("enable component", state);
-    this.enabled = state;
-  }
+  // enable(state: boolean) {
+  //   console.log("enable component", state);
+  //   this.enabled = state;
+  // }
 
   use() {
-    if (!this.enabled) {
-      console.log("Attempted to use disabled component", this.name);
-      return;
-    }
+    // if (!this.enabled) {
+    //   console.log("Attempted to use disabled component", this.name);
+    //   return;
+    // }
 
     this.active = true;
     const effect = this.effect;
@@ -66,15 +64,15 @@ export default class ShipComponent extends Item {
     return this.active ? 1 : this.inactiveModifier;
   }
   get effect() {
-    if (!this.enabled) return 0;
+    // if (!this.enabled) return 0;
     return this._effect * this.power * this.activityModifier;
   }
   get energyUse() {
-    if (!this.enabled) return 0;
+    // if (!this.enabled) return 0;
     return this.baseEnergyUse * this.power * this.activityModifier;
   }
   get heating() {
-    if (!this.enabled) return 0;
+    // if (!this.enabled) return 0;
     return this.baseHeating * this.power * this.activityModifier;
   }
 }

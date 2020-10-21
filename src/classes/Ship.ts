@@ -52,21 +52,21 @@ export default class Ship {
 
     // engines
     this.engines.forEach(engine => {
-      if (this.energy <= 0) engine.enabled = false;
+      if (this.energy <= 0) engine.power = 0;
       this.energy -= engine.energyUse;
       this.heat += engine.heating;
     });
 
     // lasers
     this.lasers.forEach(laser => {
-      if (this.energy <= 0) laser.enabled = false;
+      if (this.energy <= 0) laser.power = 0;
       this.energy -= laser.energyUse * (dt * this.dtModifier);
       this.heat += laser.heating * (dt * this.dtModifier);
     });
 
     // coolers
     this.coolers.forEach(cooler => {
-      if (this.energy <= 0) cooler.enabled = false;
+      if (this.energy <= 0) cooler.power = 0;
       if (this.heat > 0) {
         cooler.active = true;
       } else {
@@ -88,7 +88,7 @@ export default class Ship {
   }
   activateLasers() {
     this.lasers.forEach(laser => {
-      if (!laser.enabled) return;
+      if (laser.power === 0) return;
       laser.active = true;
     });
   }
@@ -142,10 +142,12 @@ export default class Ship {
     return [...this.reactors, ...this.coolers, ...this.lasers, ...this.engines, ...this.fuelTanks];
   }
   get enabledLasers() {
-    return this.lasers.filter(l => l.enabled);
+    // return this.lasers.filter(l => l.enabled);
+    return this.lasers;
   }
   get enabledEngines() {
-    return this.engines.filter(e => e.enabled);
+    // return this.engines.filter(e => e.enabled);
+    return this.engines;
   }
   get remainingFuel() {
     let fuel = 0;
