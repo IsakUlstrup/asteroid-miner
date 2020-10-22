@@ -238,7 +238,7 @@ export default defineComponent({
   }
   .ship-controls {
     flex: 0.5;
-    background: rgba($color: #fff, $alpha: 0.8);
+    background: #262626;
     padding: 3rem;
     overflow-y: scroll;
   }

@@ -93,6 +93,7 @@ export default defineComponent({
 
 html {
   font-size: 62.5%;
+  font-family: Arial, Helvetica, sans-serif;
 }
 
 body {
