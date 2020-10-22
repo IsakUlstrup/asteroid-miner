@@ -249,6 +249,9 @@ export default defineComponent({
     padding: 3rem;
     overflow-y: scroll;
   }
+  .encounter {
+    text-align: center;
+  }
   @media only screen and (max-width: 600px) {
     section {
       padding: 1rem;

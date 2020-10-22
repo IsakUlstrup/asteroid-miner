@@ -29,15 +29,15 @@ export default defineComponent({
 .component-wrapper {
   margin: 1rem;
   .indent {
-    box-shadow: 0 0 0.8rem rgba($color: #000000, $alpha: 1) inset;
+    box-shadow: 0 0 0.4rem rgba($color: #000000, $alpha: 1) inset;
     border-radius: 1rem;
-    border: 0.1rem solid #000;
+    border: 0.1rem solid #333;
     padding: 0.6rem;
     background: transparent;
   }
   .face {
     background: linear-gradient(to bottom, #fff, #ddd);
-    border: 0.1rem solid #999;
+    border-bottom: 0.1rem solid #eee;
     border-radius: 0.7rem;
     padding: 1rem;
   }
