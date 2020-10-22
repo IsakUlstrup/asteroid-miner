@@ -1,4 +1,5 @@
 <template>
+  <div class="ship-controls">
   <ul>
     <ComponentShipStatus :ship="ship" />
     <ComponentWrapper
@@ -56,6 +57,7 @@
       </li>
     </ComponentWrapper> -->
   </ul>
+  </div>
 </template>
 
 <script lang="ts">
@@ -108,6 +110,9 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
+.ship-controls {
+  overflow-y: scroll;
+}
 ul {
   list-style: none;
   display: flex;

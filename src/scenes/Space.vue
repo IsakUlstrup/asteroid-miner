@@ -231,12 +231,13 @@ export default defineComponent({
 #space-wrapper {
   background: url("../assets/bg2.jpg");
   background-size: cover;
+  background-position: center;
   display: flex;
   justify-content: end;
   flex-direction: column;
   // flex-wrap: wrap;
   // width: 100%;
-  // height: 100vh;
+  height: 100vh;
   user-select: none;
 
   section {
@@ -244,7 +245,7 @@ export default defineComponent({
     padding: 5rem;
   }
   .ship-controls {
-    flex: 2;
+    flex: 1;
     background: #262626;
     padding: 3rem;
     overflow-y: scroll;
@@ -254,11 +255,11 @@ export default defineComponent({
   }
   @media only screen and (max-width: 600px) {
     section {
-      padding: 1rem;
+      padding: 3rem;
     }
 
     .ship-controls {
-      flex: 4;
+      flex: 5;
       padding: 3rem;
     }
   }

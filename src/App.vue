@@ -94,14 +94,16 @@ export default defineComponent({
 html {
   font-size: 62.5%;
   font-family: Arial, Helvetica, sans-serif;
+  background: #262626;
 }
 
 body {
   font-size: 1.4rem;
 }
-.scene {
+.current-scene {
   width: 100%;
-  height: 100vh;
-  overflow-y: scroll;
+  height: 100vh; /* Use vh as a fallback for browsers that do not support Custom Properties */
+  height: calc(var(--vh, 1vh) * 100);
+  overflow: auto;
 }
 </style>
