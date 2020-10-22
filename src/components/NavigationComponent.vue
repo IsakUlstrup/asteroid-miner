@@ -6,23 +6,27 @@
     <br />
     <input type="button" value="asteroid field" @click="travelTo('asteroidField')" />
     <br />
-    engine power: {{ power }}
-    <br />
-    <input
-      type="range"
-      name="component-efficiency"
-      min="0"
-      max="1"
-      step="0.1"
-      v-model="power"
-    />
+    engine power:
+    <ul>
+      <li v-for="engine in ship.engines" :key="engine">
+        <input
+          type="range"
+          name="engine-power"
+          min="0"
+          max="1"
+          step="0.1"
+          v-model="engine.power"
+        />
+      </li>
+    </ul>
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, watch } from "vue";
+import { defineComponent, onMounted, ref, watch } from "vue";
 
 import ShipComponent from "@/classes/ShipComponent";
+import Ship from "@/classes/Ship";
 
 export default defineComponent({
   name: "NavigationComponent",
@@ -31,33 +35,25 @@ export default defineComponent({
       type: ShipComponent,
       required: true
     },
-    shipEnginePower: {
-      type: Number,
-      default: 0
+    ship: {
+      type: Ship,
+      required: true
     }
   },
   setup(props, context) {
-    const power = ref(0);
-
     function travelTo(destination: string) {
       context.emit("travel", destination);
     }
-
-    function enginePower() {
-      context.emit("engine-power", power.value);
-    }
-
-    watch(power, () => {
-      enginePower();
-    });
     
     return {
-      travelTo,
-      enginePower,
-      power
+      travelTo
     };
   }
 });
 </script>
 
-<style scoped lang="scss" vars="{}"></style>
+<style scoped lang="scss" vars="{}">
+ul {
+  list-style: none;
+}
+</style>

@@ -8,7 +8,7 @@
         :class="{active: component.active}"
         v-if="component.name === 'Navigation'"
       >
-        <NavigationComponent :component="component" @engine-power="ship.setEnginePower(+$event)" @travel="travel" :shipEnginePower="ship.getEnginePower()" />
+        <NavigationComponent :component="component" :ship="ship" @travel="travel" />
       </li>
       <li
         class="component"
