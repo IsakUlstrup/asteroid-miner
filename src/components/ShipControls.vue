@@ -1,10 +1,19 @@
 <template>
   <ul>
-    <ComponentWrapper v-for="component in ship.components"
-        :key="component.name">
+    <ComponentWrapper
+      v-for="component in ship.components"
+      :key="component.name"
+    >
+      <li
+        :class="{active: component.active}"
+        v-if="component.name === 'Navigation'"
+      >
+        <NavigationComponent :component="component" @engine-power="ship.setEnginePower(+$event)" @travel="travel" :shipEnginePower="ship.getEnginePower()" />
+      </li>
       <li
         class="component"
         :class="{active: component.active}"
+        v-else-if="component.name !== 'Navigation'"
       >
         <strong>{{ component.name }}</strong>
         <p>{{ component.description }}</p>
@@ -27,15 +36,24 @@
         />
       </li>
     </ComponentWrapper>
-    <ComponentWrapper>
+    <!-- <ComponentWrapper>
       <li class="component">
         <strong>navigation</strong>
         <br />
         <input type="button" value="travel home" @click="travelHome" />
-        <!-- <br />
-        <input type="button" value="next field" @click="travelToNextField" /> -->
+        <br />
+        <strong>Engine power</strong>
+        <br />
+        <input
+          type="range"
+          name="component-efficiency"
+          min="0"
+          max="1"
+          step="0.1"
+        />
+        <input type="button" value="next field" @click="travelToNextField" />
       </li>
-    </ComponentWrapper>
+    </ComponentWrapper> -->
   </ul>
 </template>
 
@@ -44,11 +62,13 @@ import { defineComponent } from "vue";
 import Ship from "@/classes/Ship";
 // import MiningLaser from "@/classes/MiningLaser";
 import ComponentWrapper from "@/components/ComponentWrapper.vue";
+import NavigationComponent from "@/components/NavigationComponent.vue";
 
 export default defineComponent({
   name: "ShipControls",
   components: {
-    ComponentWrapper
+    ComponentWrapper,
+    NavigationComponent
   },
   props: {
     ship: {
@@ -66,9 +86,19 @@ export default defineComponent({
       context.emit("travel", "Space");
     }
 
+    function travel(event: any) {
+      console.log(event);
+      if (event === "station") {
+        travelHome();
+      } else if (event === "asteroidField") {
+        travelToNextField();
+      }
+    }
+
     return {
       travelHome,
-      travelToNextField
+      travelToNextField,
+      travel
     }
   }
 });

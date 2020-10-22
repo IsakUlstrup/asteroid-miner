@@ -6,6 +6,7 @@ import Cooler from "./Cooler";
 import MiningLaser from "./MiningLaser";
 import Engine from "./Engine";
 import FuelTank from "./FuelTank";
+import Navigation from "./Navigation";
 
 export default class Ship {
   energy = 0;
@@ -24,6 +25,8 @@ export default class Ship {
   lasers:MiningLaser[] = [];
   engines:Engine[] = [];
   fuelTanks:FuelTank[] = [];
+  navDevices:Navigation[] = [];
+
   pause = false;
 
   dtModifier = .1;
@@ -112,6 +115,9 @@ export default class Ship {
   addFuelTank(tank:FuelTank) {
     this.fuelTanks.push(tank);
   }
+  addNavDevice(device: Navigation) {
+    this.navDevices.push(device);
+  }
   refuel(amount: number) {
     const amountPerTank = amount / this.fuelTanks.length;
     this.fuelTanks.forEach(tank => {
@@ -139,7 +145,7 @@ export default class Ship {
     this.inventory.splice(this.inventory.indexOf(ore), 1);
   }
   get components() {
-    return [...this.reactors, ...this.coolers, ...this.lasers, ...this.engines, ...this.fuelTanks];
+    return [...this.reactors, ...this.coolers, ...this.lasers, ...this.navDevices];
   }
   get poweredLasers() {
     return this.lasers.filter(l => l.power > 0);
@@ -148,6 +154,13 @@ export default class Ship {
   get poweredEngines() {
     return this.engines.filter(e => e.power > 0);
     // return this.engines;
+  }
+  setEnginePower(power: number) {
+    console.log(power)
+    this.engines.forEach(engine => { engine.power = power});
+  }
+  getEnginePower() {
+    return this.engines[0].power;
   }
   get remainingFuel() {
     let fuel = 0;
