@@ -1,7 +1,7 @@
 <template>
   <div class="space scene" id="space-wrapper">
     <section class="space" ref="space">
-      <div class="ship">
+      <!-- <div class="ship">
         <player-ship :ship="ship" />
         <div class="lasers">
           <laser-beam
@@ -12,7 +12,7 @@
             :color="'cyan'"
           />
         </div>
-      </div>
+      </div> -->
 
       <div class="encounter">
         <AsteroidDisplay
@@ -38,6 +38,13 @@
       </div>
     </section>
     <section class="ship-controls">
+      <laser-beam
+            v-if="mining && ship.poweredLasers.length > 0"
+            :x2="mousePosition.x"
+            :y2="mousePosition.y"
+            :thickness="6"
+            :color="'cyan'"
+          />
       <ShipControls :ship="ship" @travel="travelHome" />
       <!-- <input type="button" value="travel home" @click="travelHome" /> -->
     </section>
@@ -46,7 +53,7 @@
 
 <script lang="ts">
 import { defineComponent, onMounted, ref, toRefs, watch } from "vue";
-import PlayerShip from "@/components/PlayerShip.vue";
+// import PlayerShip from "@/components/PlayerShip.vue";
 import LaserBeam from "@/components/LaserBeam.vue";
 import ShipControls from "@/components/ShipControls.vue";
 import AsteroidDisplay from "@/components/AsteroidDisplay.vue";
@@ -59,7 +66,7 @@ import Ore from "@/classes/Ore";
 export default defineComponent({
   name: "Space",
   components: {
-    PlayerShip,
+    // PlayerShip,
     LaserBeam,
     ShipControls,
     AsteroidDisplay

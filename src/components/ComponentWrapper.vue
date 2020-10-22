@@ -33,7 +33,7 @@ export default defineComponent({
     border-radius: 1rem;
     border: 0.1rem solid #000;
     padding: 0.6rem;
-    background: #0a0a0a;
+    background: transparent;
   }
   .face {
     background: linear-gradient(to bottom, #fff, #ddd);
