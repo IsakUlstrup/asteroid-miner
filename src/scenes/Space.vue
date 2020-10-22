@@ -240,11 +240,11 @@ export default defineComponent({
   user-select: none;
 
   section {
-    flex: auto;
+    flex: 3;
     padding: 5rem;
   }
   .ship-controls {
-    flex: 0.5;
+    flex: 2;
     background: #262626;
     padding: 3rem;
     overflow-y: scroll;
@@ -255,8 +255,8 @@ export default defineComponent({
     }
 
     .ship-controls {
-      flex: auto;
-      padding: 0;
+      flex: 4;
+      padding: 3rem;
     }
   }
 

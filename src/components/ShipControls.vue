@@ -111,16 +111,10 @@ export default defineComponent({
 ul {
   list-style: none;
   display: flex;
-  align-items: center;
+  align-items: flex-start;
+  flex-direction: row;
+  justify-content: center;
   flex-wrap: wrap;
-
-  // li {
-  //   margin: 1rem;
-  // }
-}
-label {
-  padding: 1rem;
-  font-weight: bold;
 }
 .component {
   border: 1px solid #aaa;
@@ -132,13 +126,9 @@ label {
 }
 
 @media only screen and (max-width: 600px) {
-  .component {
-    font-size: 1rem;
-
-    input[type="range"] {
-      display: inline-block;
-      width: 50%;
-    }
+  ul {
+    flex-direction: column;
+    align-items: center;
   }
 }
 </style>
