@@ -260,7 +260,7 @@ export default defineComponent({
     flex: 3;
   }
   .ship {
-    flex: 1;
+    flex: auto;
     padding: 5rem;
   }
 }

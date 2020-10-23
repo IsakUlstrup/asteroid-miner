@@ -110,9 +110,6 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-.ship-controls {
-  overflow-y: scroll;
-}
 ul {
   list-style: none;
   display: flex;
@@ -130,10 +127,10 @@ ul {
   border: 1px solid rgb(173, 0, 253);
 }
 
-@media only screen and (max-width: 600px) {
-  ul {
-    flex-direction: column;
-    align-items: center;
-  }
-}
+// @media only screen and (max-width: 600px) {
+//   ul {
+//     flex-direction: column;
+//     align-items: center;
+//   }
+// }
 </style>
