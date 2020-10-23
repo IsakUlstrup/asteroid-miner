@@ -264,7 +264,7 @@ export default defineComponent({
     flex-direction: column;
   }
   .space {
-    flex: 3;
+    flex: 20;
   }
   .ship {
     flex: auto;

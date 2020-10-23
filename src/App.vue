@@ -1,5 +1,6 @@
 <template>
   <section class="current-scene">
+    <input type="button" value="Reset" v-if="gameOver" @click="reset">
     <component :is="currentScene" :dt="timing.dt" :ship="ship" :player="player" @travel="travelTo" @arrive="arrive" :destination="destination" />
   </section>
 </template>
@@ -34,6 +35,12 @@ export default defineComponent({
       last:0
     });
 
+    const gameOver = ref(false);
+
+    function reset() {
+      window.location.reload(false); 
+    }
+
     // main game loop
     function loop() {
       window.requestAnimationFrame(loop);
@@ -41,6 +48,11 @@ export default defineComponent({
       timing.value.dt = now - timing.value.last;
 
       ship.update(timing.value.dt);
+      // basic game over state
+      if (ship.energy <= 0 && ship.remainingFuel <= 0) {
+        console.log("Game over");
+        gameOver.value = true;
+      }
 
       timing.value.last = now;
     }
@@ -78,7 +90,9 @@ export default defineComponent({
       destination,
       travelTo,
       timing,
-      player
+      player,
+      gameOver,
+      reset
     };
   }
 });
