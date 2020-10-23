@@ -12,18 +12,19 @@
     <br />
     <input type="button" value="return to space" @click="travelToSpace" />
     <br />
-    <PlayerShip :ship="ship" />
-    <br />
     <input type="button" :disabled="player.credits < 10 || ship.remainingFuel >= ship.fuelCapacity" value="refuel 10 units (10 credits)" @click="refuel(10)" />
     <h3>Player</h3>
     <p>name: {{ player.name }}</p>
     <p>credits: {{ player.credits }}</p>
+    <br />
+    <ShipControls :ship="ship" />
   </div>
 </template>
 
 <script lang="ts">
 import { defineComponent, watch, toRefs, onMounted } from "vue";
-import PlayerShip from "@/components/PlayerShip.vue";
+// import PlayerShip from "@/components/PlayerShip.vue";
+import ShipControls from "@/components/ShipControls.vue";
 
 import Ship from "@/classes/Ship";
 import Item from "@/classes/Item";
@@ -33,7 +34,8 @@ import Ore from "@/classes/Ore";
 export default defineComponent({
   name: "Station",
   components: {
-    PlayerShip
+    // PlayerShip,
+    ShipControls
   },
   props: {
     ship: {
@@ -89,6 +91,7 @@ export default defineComponent({
 <style lang="scss" scoped>
 .station {
   padding: 5rem;
+  height: 100%;
   color: white;
   background: url("../assets/bg3.jpg");
 }

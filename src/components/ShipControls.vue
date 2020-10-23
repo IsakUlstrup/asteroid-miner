@@ -110,6 +110,9 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
+.ship-controls {
+  color: #262626;
+}
 ul {
   list-style: none;
   display: flex;

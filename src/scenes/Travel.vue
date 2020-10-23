@@ -4,7 +4,7 @@
       <h1>Traveling to: {{ destination }}</h1>
       <progress min="0" :max="progress.distance" :value="progress.current" />
       <br />
-      <player-ship :ship="ship" />
+      <!-- <player-ship :ship="ship" /> -->
       <ship-controls :ship="ship" />
     </div>
   </div>
@@ -12,7 +12,7 @@
 
 <script lang="ts">
 import { defineComponent, onMounted, watch, ref, toRefs } from "vue";
-import PlayerShip from "@/components/PlayerShip.vue";
+// import PlayerShip from "@/components/PlayerShip.vue";
 import ShipControls from "@/components/ShipControls.vue";
 
 import Ship from "@/classes/Ship";
@@ -22,7 +22,7 @@ import Ship from "@/classes/Ship";
 export default defineComponent({
   name: "Travel",
   components: {
-    PlayerShip,
+    // PlayerShip,
     ShipControls
   },
   props: {
@@ -85,6 +85,7 @@ export default defineComponent({
 .travel {
   background: url("../assets/bg1.jpg");
   text-align: center;
+  height: 100%;
 }
 .status {
   background: rgba($color: #fff, $alpha: 0.3);
