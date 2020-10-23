@@ -1,21 +1,7 @@
 <template>
-  <div class="space scene" id="space-wrapper">
+  <div class="scene">
     <section class="space" ref="space">
-      <!-- <div class="ship">
-        <player-ship :ship="ship" />
-        <div class="lasers">
-          <laser-beam
-            v-if="mining && ship.poweredLasers.length > 0"
-            :x2="mousePosition.x"
-            :y2="mousePosition.y"
-            :thickness="6"
-            :color="'cyan'"
-          />
-        </div>
-      </div> -->
-
-      <div class="encounter">
-        <AsteroidDisplay
+      <AsteroidDisplay
           v-for="asteroid in asteroids"
           :key="asteroid.name"
           @touchstart="touchMine($event, asteroid)"
@@ -35,9 +21,8 @@
             />
           </li>
         </ul>
-      </div>
     </section>
-    <section class="ship-controls">
+    <section class="ship">
       <laser-beam
             v-if="mining && ship.poweredLasers.length > 0"
             :x2="mousePosition.x"
@@ -228,56 +213,54 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-#space-wrapper {
+.scene {
   background: url("../assets/bg2.jpg");
   background-size: cover;
   background-position: center;
-  display: flex;
-  justify-content: end;
-  flex-direction: column;
-  // flex-wrap: wrap;
-  // width: 100%;
   height: 100vh;
   user-select: none;
+  display: flex;
+  flex-direction: column;
+}
+.space {
+  flex: 1;
+  padding: 5rem;
+  overflow-y: scroll;
+}
+.ship {
+  flex: 3;
+  background: #262626;
+  padding: 2rem;
+  overflow-y: scroll;
+  // border-radius: 1rem 1rem 0 0;
+  box-shadow: 0 0 1rem rgba($color: #000000, $alpha: 0.7) inset;
+}
 
-  section {
-    flex: 3;
-    padding: 5rem;
+/* low res phone portrait */
+@media only screen and (max-width: 600px) {
+  .scene {
+    flex-direction: column;
   }
-  .ship-controls {
+}
+/* any device landscape */
+@media only screen and (orientation: landscape) {
+  .scene {
+    flex-direction: row-reverse;
+  }
+  .ship {
     flex: 1;
-    background: #262626;
-    padding: 3rem;
-    overflow-y: scroll;
   }
-  .encounter {
-    text-align: center;
+}
+/* high res device */
+@media only screen and (min-width: 800px) {
+  .scene {
+    flex-direction: column;
   }
-  @media only screen and (max-width: 600px) {
-    section {
-      padding: 3rem;
-    }
-
-    .ship-controls {
-      flex: 5;
-      padding: 3rem;
-    }
-  }
-
   .space {
-    display: flex;
-
-    div {
-      flex: 1;
-    }
+    flex: 3;
   }
-
-  .loot {
-    list-style: none;
-
-    input[type="button"] {
-      padding: 2rem;
-    }
+  .ship {
+    flex: 1.5;
   }
 }
 </style>
