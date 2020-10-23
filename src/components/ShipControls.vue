@@ -92,7 +92,7 @@ export default defineComponent({
     }
 
     function travel(event: any) {
-      console.log(event);
+      // console.log(event);
       if (event === "station") {
         travelHome();
       } else if (event === "asteroidField") {

@@ -9,15 +9,15 @@
         <input type="button" :value="'Sell(' + item.quantity * 100 + ' credits)'" @click="sellOre(item)" />
       </li>
     </ul>
-    <br />
-    <input type="button" value="return to space" @click="travelToSpace" />
+    <!-- <br />
+    <input type="button" value="return to space" @click="travelToSpace" /> -->
     <br />
     <input type="button" :disabled="player.credits < 10 || ship.remainingFuel >= ship.fuelCapacity" value="refuel 10 units (10 credits)" @click="refuel(10)" />
     <h3>Player</h3>
     <p>name: {{ player.name }}</p>
     <p>credits: {{ player.credits }}</p>
     <br />
-    <ShipControls :ship="ship" />
+    <ShipControls :ship="ship" @travel="travelTo" />
   </div>
 </template>
 
@@ -66,6 +66,11 @@ export default defineComponent({
       props.ship.recharge();
     });
 
+    function travelTo(location:string) {
+      // console.log("travel:", location);
+      context.emit("travel", location);
+    }
+
     function refuel(amount: number) {
       props.ship.refuel(amount);
     }
@@ -81,7 +86,7 @@ export default defineComponent({
 
     return {
       sellOre,
-      travelToSpace,
+      travelTo,
       refuel
     };
   }

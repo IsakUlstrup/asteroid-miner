@@ -30,7 +30,7 @@
             :thickness="6"
             :color="'cyan'"
           />
-      <ShipControls :ship="ship" @travel="travelHome" />
+      <ShipControls :ship="ship" @travel="travelTo" />
       <!-- <input type="button" value="travel home" @click="travelHome" /> -->
     </section>
   </div>
@@ -124,6 +124,11 @@ export default defineComponent({
       context.emit("travel", "Station");
     }
 
+    function travelTo(location:string) {
+      // console.log("travel:", location);
+      context.emit("travel", location);
+    }
+
     function setTarget(event: MouseEvent) {
       // only disable target if mouse moves to anything but laser beam
       const leaveTo = event.relatedTarget as HTMLDivElement;
@@ -190,8 +195,10 @@ export default defineComponent({
       }
       // if (mining.value) mine(timing.value.dt);
       updateAsteriods();
-      addAsteroids();
+      // addAsteroids();
     }
+
+    addAsteroids();
     watch(dt, update);
 
     // loop();
@@ -204,7 +211,7 @@ export default defineComponent({
       space,
       miningTarget,
       setTarget,
-      travelHome,
+      travelTo,
       mouseTarget,
       touchMine
     };
