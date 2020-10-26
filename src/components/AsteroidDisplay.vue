@@ -85,14 +85,14 @@ export default defineComponent({
       const pattern = trianglify({
         height,
         width,
-        xColors: ['rgba(255, 255, 255, 1)', 'rgba(50, 50, 50, 1)'],
+        xColors: ['rgba(255, 255, 255, 1)', 'rgba(100, 100, 100, 1)'],
         // xColors: [cssColor.value, darkCssColor.value],
         yColors: 'match',
         variance: 1,
         cellSize: 100,
         points,
         // colorFunction: trianglify.colorFunctions.sparkle(0.3)
-        colorFunction: trianglify.colorFunctions.shadows(0.3)
+        colorFunction: trianglify.colorFunctions.shadows(0.15)
       });
 
       return pattern.toSVG().childNodes;
