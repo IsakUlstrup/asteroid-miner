@@ -8,9 +8,10 @@
           @mouseenter="miningTarget = asteroid"
           @mouseleave="setTarget"
           :asteroid="asteroid"
+          class="asteroid"
         />
 
-        <ul v-if="loot.length > 0" class="loot">
+        <!-- <ul v-if="loot.length > 0" class="loot">
           <li v-for="item in loot" :key="item.name">
             <input
               :disabled="!ship.canLoot(item.volume * item.quantity)"
@@ -20,16 +21,16 @@
               @touchstart="lootOre(item)"
             />
           </li>
-        </ul>
+        </ul> -->
     </section>
     <section class="ship">
       <laser-beam
-            v-if="mining && ship.poweredLasers.length > 0"
-            :x2="mousePosition.x"
-            :y2="mousePosition.y"
-            :thickness="6"
-            :color="'cyan'"
-          />
+        v-if="mining && ship.poweredLasers.length > 0"
+        :x2="mousePosition.x"
+        :y2="mousePosition.y"
+        :thickness="6"
+        :color="'cyan'"
+      />
       <ShipControls :ship="ship" @travel="travelTo" />
       <!-- <input type="button" value="travel home" @click="travelHome" /> -->
     </section>
@@ -37,7 +38,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, onMounted, ref, toRefs, watch } from "vue";
+import { defineComponent, onMounted, ref, toRefs, watch, reactive } from "vue";
 // import PlayerShip from "@/components/PlayerShip.vue";
 import LaserBeam from "@/components/LaserBeam.vue";
 import ShipControls from "@/components/ShipControls.vue";
@@ -72,7 +73,7 @@ export default defineComponent({
   setup(props, context) {
     const { dt } = toRefs(props);
     const loot: Ore[] = [];
-    const asteroids: Asteroid[] = [];
+    const asteroids: Asteroid[] = reactive([]);
     const space = ref<HTMLDivElement>();
     const miningTarget = ref<Asteroid>();
     const mouseTarget = ref<Element>();
@@ -141,7 +142,7 @@ export default defineComponent({
     function addAsteroids() {
       if (loot.length > 0) return;
       if (asteroids.length <= 0) {
-        const amount = parseInt((Math.random() * 5).toFixed(0));
+        const amount = parseInt((Math.random() + 1 * 3).toFixed(0));
         for (let index = 0; index < amount; index++) {
           asteroids.push(new Asteroid());
         }
@@ -222,8 +223,8 @@ export default defineComponent({
 <style lang="scss" scoped>
 .scene {
   background: url("../assets/bg2.jpg");
+  // background: black;
   background-size: cover;
-  background-position: center;
   height: 100vh;
   user-select: none;
   display: flex;
@@ -231,8 +232,17 @@ export default defineComponent({
 }
 .space {
   flex: 1;
-  padding: 5rem;
-  overflow-y: scroll;
+  display: flex;
+  // padding: 5rem;
+  overflow: hidden;
+  justify-content: space-evenly;
+  align-items: center;
+}
+.asteroid {
+  flex: auto;
+  flex-grow: 0;
+  padding: 3rem;
+  // flex-basis: 100px;
 }
 .ship {
   flex: 3;
@@ -248,11 +258,21 @@ export default defineComponent({
   .scene {
     flex-direction: column;
   }
+  .space {
+    flex: 2;
+  }
+  .asteroid {
+    max-width: 200px;
+  }
 }
 /* any device landscape */
 @media only screen and (orientation: landscape) {
   .scene {
     flex-direction: row-reverse;
+  }
+  .space {
+    flex-direction: column;
+    flex: 2;
   }
   .ship {
     flex: 1;
@@ -265,6 +285,7 @@ export default defineComponent({
   }
   .space {
     flex: 20;
+    flex-direction: row;
   }
   .ship {
     flex: auto;

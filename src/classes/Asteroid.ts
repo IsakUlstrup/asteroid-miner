@@ -17,7 +17,7 @@ const lorem = new LoremIpsum({
 });
 
 export default class Asteroid {
-  hp = 100;
+  hp = (Math.random() + 1) * 40;
   name = lorem.generateWords(2);
   c: number;
   m: number;
