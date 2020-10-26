@@ -1,5 +1,5 @@
 <template>
-  <svg class="asteroid-svg" viewBox="0 0 200 200">
+  <svg class="asteroid-svg" viewBox="0 0 200 200" @click="toggleTarget" @touch="toggleTarget" :class="{targeted: targeted}">
     <defs>
       <filter :id="asteroid.id">
         <feColorMatrix
@@ -15,7 +15,7 @@
 </template>
 
 <script>
-import { computed, defineComponent } from "vue";
+import { computed, defineComponent, ref } from "vue";
 import trianglify from "trianglify";
 
 import Asteroid from "@/classes/Asteroid";
@@ -26,9 +26,13 @@ export default defineComponent({
     asteroid: {
       type: Asteroid,
       required: true
+    },
+    targeted: {
+      type: Boolean,
+      default: false
     }
   },
-  setup(props) {
+  setup(props, context) {
 
     function CMYKtoRGB (c, m, y, k){
       const result = {r:0, g:0, b:0};
@@ -48,18 +52,6 @@ export default defineComponent({
   
       return result;
     }
-
-    const color = computed(() => {
-      const rgb = CMYKtoRGB(props.asteroid.c, props.asteroid.m, props.asteroid.y, props.asteroid.k);
-      return {r: rgb.r, g: rgb.g, b: rgb.b};
-    });
-
-    const colorMatrix = computed(() => {
-      return `${color.value.r / 255} 0 0 0 0
-              0 ${color.value.g / 255} 0 0 0
-              0 0 ${color.value.b / 255} 0 0
-              0 0 0 1 0`
-    });
 
     function generate(numPoints) {
       const width = 200
@@ -98,6 +90,32 @@ export default defineComponent({
       return pattern.toSVG().childNodes;
     }
 
+    // const targeted = ref(false);
+    function toggleTarget(event) {
+      // console.log(event)
+      // console.log(event);
+      // targeted.value = !targeted.value;
+      // if (!props.asteroid.targeted) {
+        context.emit("toggle-target", {
+          target: props.asteroid,
+          x: event.x,
+          y: event.y
+        });
+      // }
+    }
+
+    const color = computed(() => {
+      const rgb = CMYKtoRGB(props.asteroid.c, props.asteroid.m, props.asteroid.y, props.asteroid.k);
+      return {r: rgb.r, g: rgb.g, b: rgb.b};
+    });
+
+    const colorMatrix = computed(() => {
+      return `${color.value.r / 255} 0 0 0 0
+              0 ${color.value.g / 255} 0 0 0
+              0 0 ${color.value.b / 255} 0 0
+              0 0 0 1 0`
+    });
+
     const paths = generate(props.asteroid.hp);
 
     const size = computed(() => {
@@ -107,7 +125,8 @@ export default defineComponent({
     return {
       paths,
       size,
-      colorMatrix
+      colorMatrix,
+      toggleTarget
     }
   }
 });
@@ -119,8 +138,16 @@ export default defineComponent({
   // filter: url(#color-filter);
   width: 100%;
   max-width: 30rem;
+  border: 0.2rem solid rgba($color: #74eaff, $alpha: 0);
+  border-radius: 100%;
   // padding: var(--size);
   // filter: brightness(0.8) sepia(0.3) hue-rotate(var(--hue)) saturate(var(--saturation));
   // overflow: visible;
+}
+.targeted {
+  border: 0.2rem solid rgba($color: #74eaff, $alpha: 1);
+  box-shadow: 0 0 0.5rem rgba($color: #74eaff, $alpha: 1) inset, 0 0 0.5rem rgba($color: #74eaff, $alpha: 1);
+  // transform: scale(1.1);
+  transition: all 0.1s cubic-bezier(0.68, -0.6, 0.32, 1.6);
 }
 </style>

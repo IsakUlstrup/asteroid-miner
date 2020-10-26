@@ -1,15 +1,14 @@
 <template>
   <div class="scene">
-    <section class="space" ref="space">
+    <section class="space">
       <AsteroidDisplay
-          v-for="asteroid in asteroids"
-          :key="asteroid.name"
-          @touchstart="touchMine($event, asteroid)"
-          @mouseenter="miningTarget = asteroid"
-          @mouseleave="setTarget"
-          :asteroid="asteroid"
-          class="asteroid"
-        />
+        v-for="asteroid in asteroids"
+        :key="asteroid.name"
+        :asteroid="asteroid"
+        class="asteroid"
+        @toggle-target="setTarget"
+        :targeted="miningTarget === asteroid"
+      />
 
         <!-- <ul v-if="loot.length > 0" class="loot">
           <li v-for="item in loot" :key="item.name">
@@ -23,16 +22,16 @@
           </li>
         </ul> -->
     </section>
+    <div class="ship-status">Battery: {{ship.energy.toFixed(0)}} Fuel: {{ship.remainingFuel.toFixed(0)}} Heat: {{ship.heat.toFixed(0)}}</div>
     <section class="ship">
       <laser-beam
-        v-if="mining && ship.poweredLasers.length > 0"
+        v-if="miningTarget && ship.poweredLasers.length > 0"
         :x2="mousePosition.x"
         :y2="mousePosition.y"
         :thickness="6"
-        :color="'cyan'"
+        :color="'red'"
       />
-      <ShipControls :ship="ship" @travel="travelTo" />
-      <!-- <input type="button" value="travel home" @click="travelHome" /> -->
+      <ShipControls class="ship-controls" :ship="ship" @travel="travelTo" />
     </section>
   </div>
 </template>
@@ -74,7 +73,6 @@ export default defineComponent({
     const { dt } = toRefs(props);
     const loot: Ore[] = [];
     const asteroids: Asteroid[] = reactive([]);
-    const space = ref<HTMLDivElement>();
     const miningTarget = ref<Asteroid>();
     const mouseTarget = ref<Element>();
     const mousePosition = ref({
@@ -84,32 +82,18 @@ export default defineComponent({
 
     const mining = ref<boolean>(false);
 
-    onMounted(() => {
-      if (!space.value) return;
-
-      space.value.addEventListener("mousemove", event => {
-        mousePosition.value.x = event.clientX;
-        mousePosition.value.y = event.clientY;
-      });
-
-      space.value.addEventListener('touchend', () => {
-        mining.value = false;
+    function setTarget(targetInfo: Record<string, any>) {
+      // console.log(targetInfo);
+      if (targetInfo.target === miningTarget.value) {
         miningTarget.value = undefined;
-      }, false);
-
-      space.value.addEventListener("mouseleave", () => {
-        mining.value = false;
-      });
-
-      space.value.addEventListener("mousedown", () => {
-        if (props.ship.poweredLasers.length > 0)
-          mining.value = true;
-      });
-
-      space.value.addEventListener("mouseup", () => {
-        mining.value = false;
-      });
-    });
+        mousePosition.value.x = 0;
+        mousePosition.value.y = 0;
+      } else {
+        miningTarget.value = targetInfo.target;
+        mousePosition.value.x = targetInfo.x;
+        mousePosition.value.y = targetInfo.y;
+      }
+    }
 
     function touchMine(event:TouchEvent, astreoid:Asteroid) {
       event.preventDefault();
@@ -130,14 +114,14 @@ export default defineComponent({
       context.emit("travel", location);
     }
 
-    function setTarget(event: MouseEvent) {
-      // only disable target if mouse moves to anything but laser beam
-      const leaveTo = event.relatedTarget as HTMLDivElement;
-      if (leaveTo.classList.contains("laser-beam")) {
-        return;
-      }
-      miningTarget.value = undefined;
-    }
+    // function setTarget(event: MouseEvent) {
+    //   // only disable target if mouse moves to anything but laser beam
+    //   const leaveTo = event.relatedTarget as HTMLDivElement;
+    //   if (leaveTo.classList.contains("laser-beam")) {
+    //     return;
+    //   }
+    //   miningTarget.value = undefined;
+    // }
 
     function addAsteroids() {
       if (loot.length > 0) return;
@@ -153,6 +137,7 @@ export default defineComponent({
       asteroids.forEach(a => {
         if (a.hp <= 0) {
           mining.value = false;
+          miningTarget.value = undefined;
           // console.log(a.dropOre());
           const ores = a.dropOre();
           ores.forEach(o => loot.push(o));
@@ -189,14 +174,14 @@ export default defineComponent({
       // if (mouseTarget.value) console.log(mouseTarget.value.attributes);
 
       if (
-        props.ship.poweredLasers.length > 0 &&
-        mining.value === true
+        props.ship.poweredLasers.length > 0
+        && miningTarget.value
       ) {
         // activate lasers
         props.ship.activateLasers();
         mine(dt);
       } else {
-        if (props.ship) props.ship.deactivateLasers();
+        props.ship.deactivateLasers();
       }
       // if (mining.value) mine(timing.value.dt);
       updateAsteriods();
@@ -213,7 +198,6 @@ export default defineComponent({
       lootOre,
       mining,
       mousePosition,
-      space,
       miningTarget,
       setTarget,
       travelTo,
@@ -255,6 +239,12 @@ export default defineComponent({
   overflow-y: scroll;
   // border-radius: 1rem 1rem 0 0;
   box-shadow: 0 0 1rem rgba($color: #000000, $alpha: 0.7) inset;
+}
+.ship-status {
+  color: lightcyan;
+  opacity: 0.8;
+  text-shadow: 0 0 0.3rem lightcyan;
+  font-weight: lighter;
 }
 
 /* low res phone portrait */

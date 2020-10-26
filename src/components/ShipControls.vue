@@ -1,7 +1,7 @@
 <template>
   <div class="ship-controls">
   <ul>
-    <ComponentShipStatus :ship="ship" />
+    <!-- <ComponentShipStatus :ship="ship" /> -->
     <ComponentWrapper
       v-for="component in ship.components"
       :key="component.name"
@@ -66,14 +66,14 @@ import Ship from "@/classes/Ship";
 // import MiningLaser from "@/classes/MiningLaser";
 import ComponentWrapper from "@/components/ComponentWrapper.vue";
 import NavigationComponent from "@/components/NavigationComponent.vue";
-import ComponentShipStatus from "@/components/ComponentShipStatus.vue";
+// import ComponentShipStatus from "@/components/ComponentShipStatus.vue";
 
 export default defineComponent({
   name: "ShipControls",
   components: {
     ComponentWrapper,
     NavigationComponent,
-    ComponentShipStatus
+    // ComponentShipStatus
   },
   props: {
     ship: {
