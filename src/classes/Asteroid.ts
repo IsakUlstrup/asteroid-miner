@@ -1,4 +1,5 @@
 import { LoremIpsum } from "lorem-ipsum";
+import { v4 as uuidv4 } from "uuid";
 import Ore from "./Ore";
 import CyanOre from "./CyanOre";
 import MagentaOre from "./MagentaOre";
@@ -18,6 +19,7 @@ const lorem = new LoremIpsum({
 
 export default class Asteroid {
   hp = (Math.random() + 1) * 40;
+  id = uuidv4();
   name = lorem.generateWords(2);
   c: number;
   m: number;

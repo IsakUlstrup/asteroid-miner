@@ -1,11 +1,21 @@
 <template>
   <svg class="asteroid-svg" viewBox="0 0 200 200">
-    <path v-for="path in paths" :key="path" :d="path.attributes.d.value" :fill="path.attributes.fill.value" shape-rendering="crispEdges"></path>
+    <defs>
+      <filter :id="asteroid.id">
+        <feColorMatrix
+          color-interpolation-filters="sRGB"
+          type="matrix"
+          :values="colorMatrix"/>
+      </filter>
+    </defs>
+    <g :filter="`url(#${asteroid.id})`">
+      <path v-for="path in paths" :key="path" :d="path.attributes.d.value" :fill="path.attributes.fill.value" shape-rendering="crispEdges"></path>
+    </g>
   </svg>
 </template>
 
 <script>
-import { computed, defineComponent, watch, ref, toRefs } from "vue";
+import { computed, defineComponent } from "vue";
 import trianglify from "trianglify";
 
 import Asteroid from "@/classes/Asteroid";
@@ -19,7 +29,6 @@ export default defineComponent({
     }
   },
   setup(props) {
-    // const { asteroid } = toRefs(props);
 
     function CMYKtoRGB (c, m, y, k){
       const result = {r:0, g:0, b:0};
@@ -45,8 +54,11 @@ export default defineComponent({
       return {r: rgb.r, g: rgb.g, b: rgb.b};
     });
 
-    const cssColor = computed(() => {
-      return `rgb(${color.value.r}, ${color.value.g}, ${color.value.b})`;
+    const colorMatrix = computed(() => {
+      return `${color.value.r / 255} 0 0 0 0
+              0 ${color.value.g / 255} 0 0 0
+              0 0 ${color.value.b / 255} 0 0
+              0 0 0 1 0`
     });
 
     function generate(numPoints) {
@@ -73,14 +85,14 @@ export default defineComponent({
       const pattern = trianglify({
         height,
         width,
-        // xColors: ['rgba(255, 255, 255, 0.1)', 'rgba(255, 255, 255, 1)'],
-        xColors: [cssColor.value],
+        xColors: ['rgba(255, 255, 255, 1)', 'rgba(50, 50, 50, 1)'],
+        // xColors: [cssColor.value, darkCssColor.value],
         yColors: 'match',
-        // variance: 0,
-        // cellSize: 200,
+        variance: 1,
+        cellSize: 100,
         points,
-        // colorFunction: trianglify.colorFunctions.sparkle(0.2)
-        colorFunction: trianglify.colorFunctions.shadows()
+        // colorFunction: trianglify.colorFunctions.sparkle(0.3)
+        colorFunction: trianglify.colorFunctions.shadows(0.3)
       });
 
       return pattern.toSVG().childNodes;
@@ -89,12 +101,13 @@ export default defineComponent({
     const paths = generate(props.asteroid.hp);
 
     const size = computed(() => {
-      return Math.floor(props.asteroid.hp + 30)+"rem";
+      return Math.floor(props.asteroid.hp * -1)+"rem";
     });
 
     return {
       paths,
-      size
+      size,
+      colorMatrix
     }
   }
 });
@@ -102,8 +115,12 @@ export default defineComponent({
 
 <style scoped lang="scss" vars="{ size }">
 .asteroid-svg {
-  width: var(--size);
-  // filter: brightness(0.5) sepia(1) hue-rotate(var(--hue)) saturate(50);
+  // background: var(--cssColor);
+  // filter: url(#color-filter);
+  width: 100%;
+  max-width: 30rem;
+  // padding: var(--size);
+  // filter: brightness(0.8) sepia(0.3) hue-rotate(var(--hue)) saturate(var(--saturation));
   // overflow: visible;
 }
 </style>

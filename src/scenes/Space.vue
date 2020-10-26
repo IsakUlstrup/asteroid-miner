@@ -168,6 +168,10 @@ export default defineComponent({
         typeof miningTarget.value !== "undefined"
       ) {
         miningTarget.value.hp -= props.ship.poweredLasers[0].power * dt * 0.01;
+        miningTarget.value.c -= props.ship.poweredLasers[0].power * dt * 0.01;
+        miningTarget.value.m -= props.ship.poweredLasers[0].power * dt * 0.01;
+        miningTarget.value.y -= props.ship.poweredLasers[0].power * dt * 0.01;
+        miningTarget.value.k -= props.ship.poweredLasers[0].power * dt * 0.01;
       }
     }
     // function lootItem(item: Item) {
@@ -235,7 +239,7 @@ export default defineComponent({
   display: flex;
   // padding: 5rem;
   overflow: hidden;
-  justify-content: space-evenly;
+  justify-content: center;
   align-items: center;
 }
 .asteroid {
