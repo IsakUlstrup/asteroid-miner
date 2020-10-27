@@ -22,7 +22,7 @@
           </li>
         </ul> -->
     </section>
-    <div class="ship-status">Battery: {{ship.energy.toFixed(0)}} Fuel: {{ship.remainingFuel.toFixed(0)}} Heat: {{ship.heat.toFixed(0)}}</div>
+    <div class="ship-status"><Battery :current="+ship.energy.toFixed(0)"/> Fuel: {{ship.remainingFuel.toFixed(0)}} Heat: {{ship.heat.toFixed(0)}}</div>
     <section class="ship">
       <laser-beam
         v-if="miningTarget && ship.poweredLasers.length > 0"
@@ -42,6 +42,7 @@ import { defineComponent, onMounted, ref, toRefs, watch, reactive } from "vue";
 import LaserBeam from "@/components/LaserBeam.vue";
 import ShipControls from "@/components/ShipControls.vue";
 import AsteroidDisplay from "@/components/AsteroidDisplay.vue";
+import Battery from "@/components/Battery.vue";
 
 import Ship from "@/classes/Ship";
 import Asteroid from "@/classes/Asteroid";
@@ -54,7 +55,8 @@ export default defineComponent({
     // PlayerShip,
     LaserBeam,
     ShipControls,
-    AsteroidDisplay
+    AsteroidDisplay,
+    Battery
   },
   props: {
     ship: {
