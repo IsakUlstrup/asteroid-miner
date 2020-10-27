@@ -1,4 +1,5 @@
 import Item from "@/classes/Item";
+import { stringify } from 'uuid';
 
 export default class ShipComponent extends Item {
   active: boolean;
@@ -7,6 +8,10 @@ export default class ShipComponent extends Item {
   baseHeating: number;
   protected _effect: number;
   inactiveModifier: number;
+  modelInfo = {
+    type: "none",
+    model: "none",
+  }
 
   constructor(name: string, description: string, energyUse = 1, heating = 1) {
     super(name, description);
@@ -41,6 +46,10 @@ export default class ShipComponent extends Item {
       heating: this.heating,
       energyUse: this.energyUse
     };
+  }
+
+  setPower(power: number) {
+    this.power = power;
   }
 
   // enable(state: boolean) {

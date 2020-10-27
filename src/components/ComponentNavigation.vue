@@ -29,7 +29,7 @@ import ShipComponent from "@/classes/ShipComponent";
 import Ship from "@/classes/Ship";
 
 export default defineComponent({
-  name: "NavigationComponent",
+  name: "ComponentNavigation",
   props: {
     component: {
       type: ShipComponent,

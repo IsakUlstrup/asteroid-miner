@@ -6,56 +6,19 @@
       v-for="component in ship.components"
       :key="component.name"
     >
-      <li
-        :class="{active: component.active}"
-        v-if="component.name === 'Navigation'"
-      >
-        <NavigationComponent :component="component" :ship="ship" @travel="travel" />
+      <li v-if="component.modelInfo.type === 'navigation'" >
+        <ComponentNavigation :component="component" :ship="ship" @travel="travel" />
       </li>
-      <li
-        class="component"
-        :class="{active: component.active}"
-        v-else-if="component.name !== 'Navigation'"
-      >
-        <strong>{{ component.name }}</strong>
-        <p>{{ component.description }}</p>
-        <!-- <p>active: {{ component.active }}</p> -->
-        heating: {{ component.heating.toFixed(1) }}
-        <br />
-        energy use: {{ component.energyUse.toFixed(1) }}
-        <br />
-        effect: {{ component.effect.toFixed(1) }}
-        <br />
-        power: {{ component.power }}
-        <br />
-        <input
-          type="range"
-          name="component-efficiency"
-          min="0"
-          max="1"
-          step="0.1"
-          v-model="component.power"
-        />
+      <li v-if="component.modelInfo.type === 'reactor'" >
+        <ComponentReactor :component="component" :ship="ship" @travel="travel" />
+      </li>
+      <li v-if="component.modelInfo.type === 'cooler'" >
+        <ComponentCooler :component="component" :ship="ship" @travel="travel" />
+      </li>
+      <li v-if="component.modelInfo.type === 'laser'" >
+        <ComponentLaser :component="component" :ship="ship" @travel="travel" />
       </li>
     </ComponentWrapper>
-    <!-- <ComponentWrapper>
-      <li class="component">
-        <strong>navigation</strong>
-        <br />
-        <input type="button" value="travel home" @click="travelHome" />
-        <br />
-        <strong>Engine power</strong>
-        <br />
-        <input
-          type="range"
-          name="component-efficiency"
-          min="0"
-          max="1"
-          step="0.1"
-        />
-        <input type="button" value="next field" @click="travelToNextField" />
-      </li>
-    </ComponentWrapper> -->
   </ul>
   </div>
 </template>
@@ -65,14 +28,20 @@ import { defineComponent } from "vue";
 import Ship from "@/classes/Ship";
 // import MiningLaser from "@/classes/MiningLaser";
 import ComponentWrapper from "@/components/ComponentWrapper.vue";
-import NavigationComponent from "@/components/NavigationComponent.vue";
+import ComponentNavigation from "@/components/ComponentNavigation.vue";
+import ComponentReactor from "@/components/ComponentReactor.vue";
+import ComponentCooler from "@/components/ComponentCooler.vue";
+import ComponentLaser from "@/components/ComponentLaser.vue";
 // import ComponentShipStatus from "@/components/ComponentShipStatus.vue";
 
 export default defineComponent({
   name: "ShipControls",
   components: {
     ComponentWrapper,
-    NavigationComponent,
+    ComponentNavigation,
+    ComponentReactor,
+    ComponentCooler,
+    ComponentLaser
     // ComponentShipStatus
   },
   props: {
@@ -122,12 +91,9 @@ ul {
   flex-wrap: wrap;
 }
 .component {
-  border: 1px solid #aaa;
+  // border: 1px solid #aaa;
   padding: 1rem;
   border-radius: 0.3rem;
-}
-.active {
-  border: 1px solid rgb(173, 0, 253);
 }
 
 // @media only screen and (max-width: 600px) {
