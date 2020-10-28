@@ -71,7 +71,7 @@ export default defineComponent({
 .component {
   // border: 1px solid rgba($color: #000000, $alpha: 0);
   // margin: 0.3rem;
-  // padding: 0.2rem;
+  padding: 0.2rem;
   display: flex;
   // height: 15rem;
   // flex-wrap: wrap;
@@ -103,5 +103,6 @@ input {
   padding: 1rem;
   background: #262626;
   border: 0.1rem solid #111;
+  font-size: 1rem;
 }
 </style>

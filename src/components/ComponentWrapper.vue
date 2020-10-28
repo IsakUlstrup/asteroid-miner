@@ -28,7 +28,7 @@ export default defineComponent({
 
 .component-wrapper {
   margin: 1rem;
-  width: 25rem;
+  width: 20rem;
   height: 100%;
   .indent {
     box-shadow: 0 0 0.4rem rgba($color: #000000, $alpha: 1) inset;
@@ -43,7 +43,7 @@ export default defineComponent({
     background: linear-gradient(to bottom, #fff, #ddd);
     border-bottom: 0.1rem solid #eee;
     border-radius: 0.7rem;
-    padding: 0.4rem;
+    // padding: 0.4rem;
     width: 100%;
     overflow: hidden;
   }

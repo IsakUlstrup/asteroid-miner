@@ -37,10 +37,10 @@ export default defineComponent({
   position: relative;
   display: inline-block;
   text-align: right;
-  background: #262626;
+  // background: #262626;
   // padding: 1rem;
-  color: #333;
-  font-size: 1rem;
+  color: #363636;
+  // font-size: 1rem;
 }
 .value {
   position: absolute;
