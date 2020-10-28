@@ -1,6 +1,5 @@
 <template>
-  <div class="ship-controls">
-  <ul>
+  <ul class="ship-controls">
     <!-- <ComponentShipStatus :ship="ship" /> -->
     <ComponentWrapper
       v-for="component in ship.components"
@@ -20,7 +19,6 @@
       </li>
     </ComponentWrapper>
   </ul>
-  </div>
 </template>
 
 <script lang="ts">
@@ -87,20 +85,18 @@ export default defineComponent({
 <style lang="scss" scoped>
 .ship-controls {
   color: #262626;
-}
-ul {
   list-style: none;
   display: flex;
-  align-items: flex-start;
+  align-items: stretch;
   flex-direction: row;
   justify-content: center;
   flex-wrap: wrap;
 }
-.component {
-  // border: 1px solid #aaa;
-  padding: 1rem;
-  border-radius: 0.3rem;
-}
+// .component {
+//   // border: 1px solid #aaa;
+//   padding: 1rem;
+//   border-radius: 0.3rem;
+// }
 
 // @media only screen and (max-width: 600px) {
 //   ul {

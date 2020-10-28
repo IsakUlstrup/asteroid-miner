@@ -32,18 +32,19 @@ export default defineComponent({
 //   display: block;
 // }
 .seven-segment {
+  // margin: 1rem;
   font-family: DSEG7;
   position: relative;
-  // display: inline-block;
+  display: inline-block;
   text-align: right;
   background: #262626;
-  padding: 1rem;
+  // padding: 1rem;
   color: #333;
   font-size: 1rem;
 }
 .value {
   position: absolute;
-  right: 1rem;
+  right: 0;
   color: var(--color);
   text-shadow: 0 0 0.2rem var(--color);
 }

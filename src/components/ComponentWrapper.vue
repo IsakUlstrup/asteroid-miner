@@ -28,25 +28,34 @@ export default defineComponent({
 
 .component-wrapper {
   margin: 1rem;
+  width: 25rem;
+  height: 100%;
   .indent {
     box-shadow: 0 0 0.4rem rgba($color: #000000, $alpha: 1) inset;
     border-radius: 1rem;
     border: 0.1rem solid #333;
     padding: 0.6rem;
     background: transparent;
+    width: 100%;
+    height: 100%;
   }
   .face {
     background: linear-gradient(to bottom, #fff, #ddd);
     border-bottom: 0.1rem solid #eee;
     border-radius: 0.7rem;
-    padding: 1rem;
+    padding: 0.4rem;
+    width: 100%;
+    overflow: hidden;
   }
   .perspective-effect {
     background: #aaa;
     border-radius: 0.7rem;
     padding-bottom: 1rem;
+    display: inline-block;
+    vertical-align: middle;
     margin-top: -1.5rem;
     box-shadow: 0.1rem 0.1rem 0.6rem rgba($color: #000000, $alpha: 0.6);
+    width: 100%;
   }
 }
 </style>
