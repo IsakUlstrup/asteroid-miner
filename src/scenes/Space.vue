@@ -22,7 +22,11 @@
           </li>
         </ul> -->
     </section>
-    <div class="ship-status"><Battery :current="+ship.energy.toFixed(0)"/> Fuel: {{ship.remainingFuel.toFixed(0)}} Heat: {{ship.heat.toFixed(0)}}</div>
+    <div class="ship-status">
+      <Meter :max="100" :value="+ship.energy.toFixed(0)">Battery</Meter>
+      <Meter :max="100" :value="+ship.remainingFuel.toFixed(0)">Fuel</Meter>
+      <Meter :max="100" :value="+ship.heat.toFixed(0)">Temp</Meter>
+    </div>
     <section class="ship">
       <laser-beam
         v-if="miningTarget && ship.poweredLasers.length > 0"
@@ -42,7 +46,7 @@ import { defineComponent, onMounted, ref, toRefs, watch, reactive } from "vue";
 import LaserBeam from "@/components/LaserBeam.vue";
 import ShipControls from "@/components/ShipControls.vue";
 import AsteroidDisplay from "@/components/AsteroidDisplay.vue";
-import Battery from "@/components/Battery.vue";
+import Meter from "@/components/Meter.vue";
 
 import Ship from "@/classes/Ship";
 import Asteroid from "@/classes/Asteroid";
@@ -56,7 +60,7 @@ export default defineComponent({
     LaserBeam,
     ShipControls,
     AsteroidDisplay,
-    Battery
+    Meter
   },
   props: {
     ship: {
@@ -243,10 +247,17 @@ export default defineComponent({
   box-shadow: 0 0 1rem rgba($color: #000000, $alpha: 0.7) inset;
 }
 .ship-status {
-  color: lightcyan;
-  opacity: 0.8;
-  text-shadow: 0 0 0.3rem lightcyan;
+  // color: lightcyan;
+  opacity: 0.6;
+  // text-shadow: 0 0 0.3rem lightcyan;
   font-weight: lighter;
+  text-align: center;
+  height: 5rem;
+  display: flex;
+
+  .meter {
+    margin: 2rem;
+  }
 }
 
 /* low res phone portrait */
@@ -259,6 +270,9 @@ export default defineComponent({
   }
   .asteroid {
     max-width: 200px;
+  }
+  .meter {
+    height: 1rem;
   }
 }
 /* any device landscape */
@@ -273,6 +287,10 @@ export default defineComponent({
   .ship {
     flex: 1;
   }
+  .ship-status {
+    flex-direction: column;
+    height: 1rem;
+  }
 }
 /* high res device */
 @media only screen and (min-width: 800px) {
@@ -286,6 +304,13 @@ export default defineComponent({
   .ship {
     flex: auto;
     padding: 5rem;
+  }
+  .meter {
+    transform: rotate(0deg);
+  }
+  .ship-status {
+    flex-direction: row;
+    height: 8rem;
   }
 }
 </style>
