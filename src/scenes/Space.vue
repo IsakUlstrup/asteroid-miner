@@ -35,7 +35,7 @@
         :thickness="6"
         :color="'red'"
       />
-      <ShipControls class="ship-controls" :ship="ship" @travel="travelTo" />
+      <ShipControls class="ship-controls" :ship="ship" @travel="travelTo" :target="miningTarget" />
     </section>
   </div>
 </template>

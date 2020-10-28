@@ -16,7 +16,7 @@
         <ComponentCooler :component="component" :ship="ship" @travel="travel" />
       </li>
       <li v-if="component.modelInfo.type === 'laser'" >
-        <ComponentLaser :component="component" :ship="ship" @travel="travel" />
+        <ComponentLaser :component="component" :ship="ship" @travel="travel" :target="target" />
       </li>
     </ComponentWrapper>
   </ul>
@@ -32,6 +32,7 @@ import ComponentNavigation from "@/components/ComponentNavigation.vue";
 import ComponentReactor from "@/components/ComponentReactor.vue";
 import ComponentCooler from "@/components/ComponentCooler.vue";
 import ComponentLaser from "@/components/ComponentLaser.vue";
+import Asteroid from "@/classes/Asteroid";
 // import ComponentShipStatus from "@/components/ComponentShipStatus.vue";
 
 export default defineComponent({
@@ -48,6 +49,11 @@ export default defineComponent({
     ship: {
       type: Ship,
       required: true
+    },
+    target: {
+      type: Asteroid,
+      required: false,
+      default: undefined
     }
   },
   emits: ["travel"],

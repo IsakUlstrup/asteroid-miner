@@ -2,6 +2,8 @@
   <div class="component" :class="{active: component.active}">
     <strong>{{ component.name }}</strong>
     <p>{{ component.description }}</p>
+    <span v-if="target">target: {{target.c.toFixed(0)}}, {{target.m.toFixed(0)}}, {{target.y.toFixed(0)}}, {{target.k.toFixed(0)}}</span>
+    <br />
 
     laser power:
     <br />
@@ -22,6 +24,7 @@ import { defineComponent } from "vue";
 
 import ShipComponent from "@/classes/ShipComponent";
 import Ship from "@/classes/Ship";
+import Asteroid from "@/classes/Asteroid";
 
 export default defineComponent({
   name: "ComponentLaser",
@@ -33,6 +36,10 @@ export default defineComponent({
     ship: {
       type: Ship,
       required: true
+    },
+    target: {
+      type: Asteroid,
+      required: false
     }
   }
 });
