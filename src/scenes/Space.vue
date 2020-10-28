@@ -235,7 +235,7 @@ export default defineComponent({
 .asteroid {
   flex: auto;
   flex-grow: 0;
-  padding: 3rem;
+  margin: 3rem;
   // flex-basis: 100px;
 }
 .ship {

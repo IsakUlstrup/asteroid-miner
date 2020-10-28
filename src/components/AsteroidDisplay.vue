@@ -145,9 +145,11 @@ export default defineComponent({
   // overflow: visible;
 }
 .targeted {
-  border: 0.2rem solid rgba($color: #74eaff, $alpha: 1);
-  box-shadow: 0 0 0.5rem rgba($color: #74eaff, $alpha: 1) inset, 0 0 0.5rem rgba($color: #74eaff, $alpha: 1);
+  border: 0.2rem solid rgba($color: #fff, $alpha: 0.5);
+  background: radial-gradient(rgba(255, 255, 255, 1), rgba(255, 255, 255, 0));
+  // box-shadow: 0 0 0.5rem rgba($color: #fff, $alpha: 1) inset, 0 0 0.5rem rgba($color: #fff, $alpha: 1);
   // transform: scale(1.1);
-  transition: all 0.1s cubic-bezier(0.68, -0.6, 0.32, 1.6);
+  // transform: scale(1.06);
+  transition: all 0.2s cubic-bezier(0.68, -0.6, 0.32, 1.6);
 }
 </style>
