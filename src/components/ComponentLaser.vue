@@ -1,12 +1,7 @@
 <template>
   <div class="component" :class="{active: component.active}">
-    <strong>{{ component.name }}</strong>
-    <p>{{ component.description }}</p>
-    <span v-if="target">target: {{target.c.toFixed(0)}}, {{target.m.toFixed(0)}}, {{target.y.toFixed(0)}}, {{target.k.toFixed(0)}}</span>
-    <br />
-
-    laser power:
-    <br />
+    <h3>{{ component.name }}</h3>
+    power:
     <input
       type="range"
       name="reactor-power"
@@ -16,11 +11,32 @@
       :value="component.power"
       @input="component.setPower($event.target.value)"
     />
+    <!-- <p>{{ component.description }}</p> -->
+    <div class="target-container">
+      <div>
+        Target:
+        <span v-if="target">{{ target.name }}</span>
+      </div>
+      <div class="target-colors" v-if="target">
+        <SevenSegmentDisplay :value="+target.c.toFixed(0) || 0" color="cyan" />
+        <SevenSegmentDisplay :value="+target.m.toFixed(0) || 0" color="magenta" />
+        <SevenSegmentDisplay :value="+target.y.toFixed(0) || 0" color="yellow" />
+        <SevenSegmentDisplay :value="+target.k.toFixed(0) || 0" color="black" />
+      </div>
+      <div class="target-colors" v-else>
+        <SevenSegmentDisplay :value="0" color="cyan" />
+        <SevenSegmentDisplay :value="0" color="magenta" />
+        <SevenSegmentDisplay :value="0" color="yellow" />
+        <SevenSegmentDisplay :value="0" color="black" />
+      </div>
+    </div>
   </div>
 </template>
 
 <script lang="ts">
 import { defineComponent } from "vue";
+
+import SevenSegmentDisplay from "@/components/SevenSegmentDisplay.vue";
 
 import ShipComponent from "@/classes/ShipComponent";
 import Ship from "@/classes/Ship";
@@ -28,6 +44,9 @@ import Asteroid from "@/classes/Asteroid";
 
 export default defineComponent({
   name: "ComponentLaser",
+  components: {
+    SevenSegmentDisplay
+  },
   props: {
     component: {
       type: ShipComponent,
@@ -51,5 +70,17 @@ export default defineComponent({
 }
 .active {
   border: 1px solid rgb(173, 0, 253);
+}
+.target-container {
+  display: flex;
+
+  div {
+    flex: 3;
+  }
+}
+.target-colors {
+  border-radius: 0.2rem;
+  overflow: hidden;
+  flex: 5rem;
 }
 </style>

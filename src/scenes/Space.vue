@@ -141,7 +141,7 @@ export default defineComponent({
     function updateAsteriods() {
       if (asteroids.length <= 0) return;
       asteroids.forEach(a => {
-        if (a.hp <= 0) {
+        if (a.c <= 0 && a.m <= 0 && a.y <= 0 && a.k <= 0) {
           mining.value = false;
           miningTarget.value = undefined;
           // console.log(a.dropOre());
@@ -158,11 +158,15 @@ export default defineComponent({
         props.ship.poweredLasers.length > 0 &&
         typeof miningTarget.value !== "undefined"
       ) {
-        miningTarget.value.hp -= props.ship.poweredLasers[0].power * dt * 0.01;
+        // miningTarget.value.hp -= props.ship.poweredLasers[0].power * dt * 0.01;
         miningTarget.value.c -= props.ship.poweredLasers[0].power * dt * 0.01;
+        if (miningTarget.value.c < 0) miningTarget.value.c = 0;
         miningTarget.value.m -= props.ship.poweredLasers[0].power * dt * 0.01;
+        if (miningTarget.value.m < 0) miningTarget.value.m = 0;
         miningTarget.value.y -= props.ship.poweredLasers[0].power * dt * 0.01;
+        if (miningTarget.value.y < 0) miningTarget.value.y = 0;
         miningTarget.value.k -= props.ship.poweredLasers[0].power * dt * 0.01;
+        if (miningTarget.value.k < 0) miningTarget.value.k = 0;
       }
     }
     // function lootItem(item: Item) {
