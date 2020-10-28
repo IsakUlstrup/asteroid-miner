@@ -101,15 +101,15 @@ export default defineComponent({
       }
     }
 
-    function touchMine(event:TouchEvent, astreoid:Asteroid) {
-      event.preventDefault();
-      const touches = event.changedTouches;
-      miningTarget.value = astreoid;
+    // function touchMine(event:TouchEvent, astreoid:Asteroid) {
+    //   event.preventDefault();
+    //   const touches = event.changedTouches;
+    //   miningTarget.value = astreoid;
 
-      mousePosition.value.x = touches[0].pageX;
-      mousePosition.value.y = touches[0].pageY;
-      if (props.ship && props.ship.poweredLasers.length > 0) mining.value = true;
-    }
+    //   mousePosition.value.x = touches[0].pageX;
+    //   mousePosition.value.y = touches[0].pageY;
+    //   if (props.ship && props.ship.poweredLasers.length > 0) mining.value = true;
+    // }
 
     function travelHome() {
       context.emit("travel", "Station");
@@ -132,7 +132,7 @@ export default defineComponent({
     function addAsteroids() {
       if (loot.length > 0) return;
       if (asteroids.length <= 0) {
-        const amount = parseInt((Math.random() + 1 * 3).toFixed(0));
+        const amount = parseInt((Math.random() * 9).toFixed(0));
         for (let index = 0; index < amount; index++) {
           asteroids.push(new Asteroid());
         }
@@ -207,8 +207,7 @@ export default defineComponent({
       miningTarget,
       setTarget,
       travelTo,
-      mouseTarget,
-      touchMine
+      mouseTarget
     };
   }
 });
@@ -225,18 +224,19 @@ export default defineComponent({
   flex-direction: column;
 }
 .space {
-  flex: 1;
-  display: flex;
+  // flex: 1;
+  // display: flex;
+  display: grid;
+  grid-template-columns: 33% 33% 33%;
+  grid-template-rows: 33% 33% 33%;
   // padding: 5rem;
   overflow: hidden;
+  padding: 3rem;
   justify-content: center;
   align-items: center;
 }
 .asteroid {
-  flex: auto;
-  flex-grow: 0;
-  margin: 3rem;
-  // flex-basis: 100px;
+  justify-self: center;
 }
 .ship {
   flex: 3;
@@ -267,9 +267,6 @@ export default defineComponent({
   }
   .space {
     flex: 2;
-  }
-  .asteroid {
-    max-width: 200px;
   }
   .meter {
     height: 1rem;

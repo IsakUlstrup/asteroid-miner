@@ -117,10 +117,11 @@ export default defineComponent({
     });
 
     const paths = generate(props.asteroid.hp);
+    const size = Math.floor(props.asteroid.hp)+"%"
 
-    const size = computed(() => {
-      return Math.floor(props.asteroid.hp * -1)+"rem";
-    });
+    // const size = computed(() => {
+    //   return Math.floor(props.asteroid.hp)+"%";
+    // });
 
     return {
       paths,
@@ -136,7 +137,7 @@ export default defineComponent({
 .asteroid-svg {
   // background: var(--cssColor);
   // filter: url(#color-filter);
-  width: 100%;
+  width: var(--size);
   max-width: 30rem;
   border: 0.2rem solid rgba($color: #74eaff, $alpha: 0);
   border-radius: 100%;
