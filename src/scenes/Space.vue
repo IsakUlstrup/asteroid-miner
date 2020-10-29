@@ -22,11 +22,11 @@
           </li>
         </ul> -->
     </section>
-    <div class="ship-status">
+    <!-- <div class="ship-status">
       <Meter :max="100" :value="+ship.energy.toFixed(0)">Battery</Meter>
       <Meter :max="100" :value="+ship.remainingFuel.toFixed(0)">Fuel</Meter>
       <Meter :max="100" :value="+ship.heat.toFixed(0)">Temp</Meter>
-    </div>
+    </div> -->
     <section class="ship">
       <laser-beam
         v-if="miningTarget && ship.poweredLasers.length > 0"
@@ -46,7 +46,7 @@ import { defineComponent, onMounted, ref, toRefs, watch, reactive } from "vue";
 import LaserBeam from "@/components/LaserBeam.vue";
 import ShipControls from "@/components/ShipControls.vue";
 import AsteroidDisplay from "@/components/AsteroidDisplay.vue";
-import Meter from "@/components/Meter.vue";
+// import Meter from "@/components/Meter.vue";
 
 import Ship from "@/classes/Ship";
 import Asteroid from "@/classes/Asteroid";
@@ -60,7 +60,7 @@ export default defineComponent({
     LaserBeam,
     ShipControls,
     AsteroidDisplay,
-    Meter
+    // Meter
   },
   props: {
     ship: {

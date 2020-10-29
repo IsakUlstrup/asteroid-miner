@@ -38,6 +38,9 @@ export default class ShipComponent extends Item {
       };
     }
   }
+  activate(state: boolean) {
+    this.active = state;
+  }
 
   upkeep() {
     // if (!this.enabled) return;

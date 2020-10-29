@@ -21,6 +21,7 @@ export default class Asteroid {
   hp = (Math.random() + 1) * 40;
   id = uuidv4();
   name = lorem.generateWords(2);
+  scanProgress = 0;
   c: number;
   m: number;
   y: number;
@@ -30,6 +31,9 @@ export default class Asteroid {
     this.m = Math.random() * 100;
     this.y = Math.random() * 100;
     this.k = Math.random() * 10;
+  }
+  scan(amount: number) {
+    this.scanProgress += amount;
   }
   dropOre() {
     const ores:Ore[] = [];

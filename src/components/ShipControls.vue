@@ -1,6 +1,6 @@
 <template>
   <ul class="ship-controls">
-    <!-- <ComponentShipStatus :ship="ship" /> -->
+    <ComponentShipStatus :ship="ship" />
     <ComponentWrapper
       v-for="component in ship.components"
       :key="component.name"
@@ -17,6 +17,9 @@
       <li v-if="component.modelInfo.type === 'laser'" >
         <ComponentLaser :component="component" :ship="ship" @travel="travel" :target="target" />
       </li>
+      <li v-if="component.modelInfo.type === 'scanner'" >
+        <ComponentScanner :component="component" :ship="ship" @travel="travel" :target="target" />
+      </li>
     </ComponentWrapper>
   </ul>
 </template>
@@ -30,8 +33,9 @@ import ComponentNavigation from "@/components/ComponentNavigation.vue";
 import ComponentReactor from "@/components/ComponentReactor.vue";
 import ComponentCooler from "@/components/ComponentCooler.vue";
 import ComponentLaser from "@/components/ComponentLaser.vue";
+import ComponentScanner from "@/components/ComponentScanner.vue";
 import Asteroid from "@/classes/Asteroid";
-// import ComponentShipStatus from "@/components/ComponentShipStatus.vue";
+import ComponentShipStatus from "@/components/ComponentShipStatus.vue";
 
 export default defineComponent({
   name: "ShipControls",
@@ -40,8 +44,9 @@ export default defineComponent({
     ComponentNavigation,
     ComponentReactor,
     ComponentCooler,
-    ComponentLaser
-    // ComponentShipStatus
+    ComponentLaser,
+    ComponentScanner,
+    ComponentShipStatus
   },
   props: {
     ship: {
