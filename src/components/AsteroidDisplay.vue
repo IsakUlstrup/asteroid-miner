@@ -69,7 +69,7 @@ export default defineComponent({
         const y = height / 2 + r * Math.sin(theta) * (Math.random() * roundness);
         const point = [x, y];
         points.push(point);
-        r += rStep * (Math.random() * roundness);
+        r += rStep - (Math.random() * 1.3);
         theta = (theta + thetaStep) % (2 * Math.PI);
       }
 
@@ -121,6 +121,14 @@ export default defineComponent({
       return 70 * (Math.random() + 1) + "s";
     });
 
+    const rotationDirection = computed(() => {
+      if (Math.random() > 0.5) {
+        return "-360deg";
+      } else {
+        return "360deg";
+      }
+    });
+
     const paths = generate(props.asteroid.hp / 3);
     const size = Math.floor(props.asteroid.hp)+"%"
 
@@ -133,16 +141,17 @@ export default defineComponent({
       size,
       colorMatrix,
       toggleTarget,
-      rotationDuration
+      rotationDuration,
+      rotationDirection
     }
   }
 });
 </script>
 
-<style scoped lang="scss" vars="{ size, rotationDuration }">
+<style scoped lang="scss" vars="{ size, rotationDuration, rotationDirection }">
 @keyframes rotate {  
   0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+  100% { transform: rotate(var(--rotationDirection)); }
 }
 .asteroid-svg {
   // background: var(--cssColor);
