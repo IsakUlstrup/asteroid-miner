@@ -45,6 +45,7 @@ export default defineComponent({
     border-radius: 0.7rem;
     // padding: 0.4rem;
     width: 100%;
+    min-height: 20rem;
     overflow: hidden;
   }
   .perspective-effect {
