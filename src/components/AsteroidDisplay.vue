@@ -33,6 +33,7 @@ export default defineComponent({
     }
   },
   setup(props, context) {
+    const roundness = 1.6;
 
     function CMYKtoRGB (c, m, y, k){
       const result = {r:0, g:0, b:0};
@@ -54,22 +55,22 @@ export default defineComponent({
     }
 
     function generate(numPoints) {
-      const width = 200
-      const height = 200
+      const width = 200;
+      const height = 200;
       // generate a spiral using polar coordinates
-      const points = []
-      const NUM_POINTS = numPoints
-      let r = 0
-      const rStep = width / 2 / NUM_POINTS
-      let theta = 0
-      const thetaStep = Math.PI / NUM_POINTS * 18
+      const points = [];
+      const NUM_POINTS = numPoints;
+      let r = 0;
+      const rStep = width / 2 / NUM_POINTS;
+      let theta = 0;
+      const thetaStep = Math.PI / NUM_POINTS * 18;
       for (let i = 0; i < NUM_POINTS; i++) {
-        const x = width / 2 + r * Math.cos(theta)
-        const y = height / 2 + r * Math.sin(theta)
-        const point = [x, y]
-        points.push(point)
-        r += rStep
-        theta = (theta + thetaStep) % (2 * Math.PI)
+        const x = width / 2 + r * Math.cos(theta) * (Math.random() * roundness);
+        const y = height / 2 + r * Math.sin(theta) * (Math.random() * roundness);
+        const point = [x, y];
+        points.push(point);
+        r += rStep * (Math.random() * roundness);
+        theta = (theta + thetaStep) % (2 * Math.PI);
       }
 
       // apply trianglify to convert the points to polygons and apply the color
@@ -83,8 +84,8 @@ export default defineComponent({
         variance: 1,
         cellSize: 100,
         points,
-        // colorFunction: trianglify.colorFunctions.sparkle(0.3)
-        colorFunction: trianglify.colorFunctions.shadows(0.15)
+        // colorFunction: trianglify.colorFunctions.sparkle(0.1)
+        colorFunction: trianglify.colorFunctions.shadows(0.25)
       });
 
       return pattern.toSVG().childNodes;
@@ -116,6 +117,10 @@ export default defineComponent({
               0 0 0 1 0`
     });
 
+    const rotationDuration = computed(() => {
+      return 70 * (Math.random() + 1) + "s";
+    });
+
     const paths = generate(props.asteroid.hp / 3);
     const size = Math.floor(props.asteroid.hp)+"%"
 
@@ -127,16 +132,22 @@ export default defineComponent({
       paths,
       size,
       colorMatrix,
-      toggleTarget
+      toggleTarget,
+      rotationDuration
     }
   }
 });
 </script>
 
-<style scoped lang="scss" vars="{ size }">
+<style scoped lang="scss" vars="{ size, rotationDuration }">
+@keyframes rotate {  
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
 .asteroid-svg {
   // background: var(--cssColor);
   // filter: url(#color-filter);
+  animation: rotate var(--rotationDuration) linear infinite;
   width: var(--size);
   max-width: 30rem;
   border: 0.2rem solid rgba($color: #74eaff, $alpha: 0);
