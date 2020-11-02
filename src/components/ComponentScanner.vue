@@ -11,7 +11,7 @@
           @input="component.setPower($event.target.value)"
         />
       scanning: {{scanning}}
-      <p v-if="target">target: {{ target.name}} scan progress: {{ target.scanProgress }}</p>
+      <p v-if="target">target: {{ target.name}} scan progress: {{ target.scanProgress.toFixed(1) }}</p>
       <br/>
       <input type="button" :class="{scanning: scanning}" @click="toggleScan" :disabled="!target" value="Scan">
     </div>
@@ -51,6 +51,7 @@ export default defineComponent({
     
     function update(dt: number) {
       if (props.target && scanning.value) props.target.scan(props.component.effect);
+      if (props.target && props.target.scanProgress >= 100) scanning.value = false; 
     }
 
     function toggleScan() {

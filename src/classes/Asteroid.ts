@@ -34,6 +34,7 @@ export default class Asteroid {
   }
   scan(amount: number) {
     this.scanProgress += amount;
+    if (this.scanProgress > 100) this.scanProgress = 100;
   }
   dropOre() {
     const ores:Ore[] = [];
