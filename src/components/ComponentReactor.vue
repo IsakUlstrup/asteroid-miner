@@ -41,6 +41,7 @@ export default defineComponent({
 <style scoped lang="scss" vars="{}">
 .component {
   border: 1px solid rgba($color: #000000, $alpha: 0);
+  padding: 1rem;
 }
 .active {
   border: 1px solid rgb(173, 0, 253);

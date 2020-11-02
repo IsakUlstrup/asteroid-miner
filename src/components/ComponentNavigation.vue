@@ -56,4 +56,7 @@ export default defineComponent({
 ul {
   list-style: none;
 }
+.component {
+  padding: 1rem;
+}
 </style>
