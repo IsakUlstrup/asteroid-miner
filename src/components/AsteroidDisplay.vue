@@ -116,7 +116,7 @@ export default defineComponent({
               0 0 0 1 0`
     });
 
-    const paths = generate(props.asteroid.hp);
+    const paths = generate(props.asteroid.hp / 3);
     const size = Math.floor(props.asteroid.hp)+"%"
 
     // const size = computed(() => {
