@@ -1,6 +1,7 @@
 <template>
   <ul class="ship-controls">
     <ComponentShipStatus :ship="ship" />
+    <ComponentDebugSpeedControl />
     <ComponentWrapper
       v-for="component in ship.components"
       :key="component.name"
@@ -36,6 +37,7 @@ import ComponentLaser from "@/components/ComponentLaser.vue";
 import ComponentScanner from "@/components/ComponentScanner.vue";
 import Asteroid from "@/classes/Asteroid";
 import ComponentShipStatus from "@/components/ComponentShipStatus.vue";
+import ComponentDebugSpeedControl from "@/components/ComponentDebugSpeedControl.vue";
 
 export default defineComponent({
   name: "ShipControls",
@@ -46,7 +48,8 @@ export default defineComponent({
     ComponentCooler,
     ComponentLaser,
     ComponentScanner,
-    ComponentShipStatus
+    ComponentShipStatus,
+    ComponentDebugSpeedControl
   },
   props: {
     ship: {

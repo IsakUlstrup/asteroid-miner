@@ -1,7 +1,7 @@
 <template>
   <section class="current-scene">
     <input type="button" value="Reset" v-if="gameOver" @click="reset">
-    <component :is="currentScene" :dt="timing.dt" :ship="ship" :player="player" @travel="travelTo" @arrive="arrive" :destination="destination" />
+    <component :is="currentScene" :ship="ship" :player="player" @travel="travelTo" @arrive="arrive" :destination="destination" />
   </section>
 </template>
 
@@ -15,6 +15,7 @@ import Travel from "@/scenes/Travel.vue";
 
 import TestShip from "@/classes/TestShip";
 import Player from "@/classes/Player";
+import GameLoop from "@/classes/GameLoop";
 
 export default defineComponent({
   name: "App",
@@ -30,10 +31,10 @@ export default defineComponent({
     const ship = reactive(new TestShip());
     const player = reactive(new Player("Player One"));
 
-    const timing = ref({
-      dt:0,
-      last:0
-    });
+    // const timing = ref({
+    //   dt:0,
+    //   last:0
+    // });
 
     const gameOver = ref(false);
 
@@ -42,21 +43,23 @@ export default defineComponent({
     }
 
     // main game loop
-    function loop() {
-      window.requestAnimationFrame(loop);
-      const now = performance.now();
-      timing.value.dt = now - timing.value.last;
+    function update(dt: number) {
+      // window.requestAnimationFrame(loop);
+      // const now = performance.now();
+      // timing.value.dt = now - timing.value.last;
 
-      ship.update(timing.value.dt);
+      ship.update(dt);
       // basic game over state
       if (ship.energy <= 0 && ship.remainingFuel <= 0) {
         console.log("Game over");
         gameOver.value = true;
       }
 
-      timing.value.last = now;
+      // timing.value.last = now;
     }
-    loop();
+    // loop();
+    // GameLoop.status();
+    GameLoop.addListener(update);
 
     function arrive(scene:string) {
       console.log("arriving:", scene);
@@ -89,7 +92,6 @@ export default defineComponent({
       arrive,
       destination,
       travelTo,
-      timing,
       player,
       gameOver,
       reset

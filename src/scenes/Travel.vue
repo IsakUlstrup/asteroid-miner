@@ -16,6 +16,7 @@ import { defineComponent, onMounted, watch, ref, toRefs } from "vue";
 import ShipControls from "@/components/ShipControls.vue";
 
 import Ship from "@/classes/Ship";
+import GameLoop from "@/classes/GameLoop";
 // import component from '*.vue';
 // import Item from "@/classes/Item";
 
@@ -31,22 +32,22 @@ export default defineComponent({
       required: true
     },
     destination: String,
-    dt: {
-      type: Number,
-      required: true,
-      default: 0
-    }
+    // dt: {
+    //   type: Number,
+    //   required: true,
+    //   default: 0
+    // }
   },
   emits: ["arrive", "travel"],
   setup(props, context) {
-    const { ship, dt } = toRefs(props);
+    const { ship } = toRefs(props);
     const progress = ref({
       distance: 100,
       current: 0
     });
     const speedMultiplier = 0.01;
 
-    function updateProgress(dt: number) {
+    function update(dt: number) {
       let speed = 0;
       if (ship && ship.value) {
         ship.value.poweredEngines.forEach(e => {
@@ -66,10 +67,11 @@ export default defineComponent({
       }
       // console.log(`current: ${progress.value.current}, distance: ${progress.value.distance}, dt: ${timing.value.dt}`);
     }
-    function update(dt: number) {
-      updateProgress(dt);
-    }
-    watch(dt, update);
+    // function update(dt: number) {
+    //   updateProgress(dt);
+    // }
+    // watch(dt, update);
+    GameLoop.addListener(update);
 
     onMounted(() => {
       progress.value.current = 0;

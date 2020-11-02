@@ -47,19 +47,19 @@ export default defineComponent({
       required: true
     },
     destination: String,
-    dt: {
-      type: Number,
-      required: true,
-      default: 0
-    }
+    // dt: {
+    //   type: Number,
+    //   required: true,
+    //   default: 0
+    // }
   },
   emits: ["arrive", "travel"],
   setup(props, context) {
-    const { dt } = toRefs(props);
-    function update(dt: number) {
-      return dt;
-    }
-    watch(dt, update);
+    // const { dt } = toRefs(props);
+    // function update(dt: number) {
+    //   return dt;
+    // }
+    // watch(dt, update);
 
     onMounted(() => {
       props.ship.setPause(true);

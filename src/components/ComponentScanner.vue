@@ -25,6 +25,7 @@ import { defineComponent, ref } from "vue";
 import ShipComponent from "@/classes/ShipComponent";
 import Ship from "@/classes/Ship";
 import Asteroid from "@/classes/Asteroid";
+import GameLoop from "@/classes/GameLoop";
 
 export default defineComponent({
   name: "ComponentLaser",
@@ -47,16 +48,21 @@ export default defineComponent({
   },
   setup(props) {
     const scanning = ref(false);
+    
+    function update(dt: number) {
+      if (props.target && scanning.value) props.target.scan(props.component.effect);
+    }
 
     function toggleScan() {
       scanning.value = !scanning.value;
       if (scanning.value) {
         props.component.activate(true);
-        if (props.target) props.target.scan(props.component.effect);
       } else {
         props.component.activate(false);
       }
     }
+
+    GameLoop.addListener(update);
 
     return {
       scanning,

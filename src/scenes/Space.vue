@@ -52,6 +52,7 @@ import Ship from "@/classes/Ship";
 import Asteroid from "@/classes/Asteroid";
 import Item from "@/classes/Item";
 import Ore from "@/classes/Ore";
+import GameLoop from "@/classes/GameLoop";
 
 export default defineComponent({
   name: "Space",
@@ -68,15 +69,15 @@ export default defineComponent({
       required: true
     },
     destination: String,
-    dt: {
-      type: Number,
-      required: true,
-      default: 0
-    }
+    // dt: {
+    //   type: Number,
+    //   required: true,
+    //   default: 0
+    // }
   },
   emits: ["arrive", "travel"],
   setup(props, context) {
-    const { dt } = toRefs(props);
+    // const { dt } = toRefs(props);
     const loot: Ore[] = [];
     const asteroids: Asteroid[] = reactive([]);
     const miningTarget = ref<Asteroid>();
@@ -199,7 +200,8 @@ export default defineComponent({
     }
 
     addAsteroids();
-    watch(dt, update);
+    // watch(dt, update);
+    GameLoop.addListener(update);
 
     // loop();
     return {
