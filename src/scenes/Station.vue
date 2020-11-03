@@ -98,6 +98,7 @@ export default defineComponent({
   padding: 5rem;
   height: 100%;
   color: white;
-  background: url("../assets/bg3.jpg");
+  background: url("../assets/bg.svg") repeat;
+  background-size: 5rem;
 }
 </style>

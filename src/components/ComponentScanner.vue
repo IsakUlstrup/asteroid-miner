@@ -1,5 +1,6 @@
 <template>
     <div class="component" :class="{active: component.active}">
+      <LaserBeam v-if="target && targetCoordinates && component.power > 0 && scanning" :x2="targetCoordinates.x" :y2="targetCoordinates.y" color="white" />
       Power:<br />
         <input
           type="range"
@@ -10,25 +11,26 @@
           :value="component.power"
           @input="component.setPower($event.target.value)"
         />
-      <p class="target-color" v-if="target && target.scanned">
-        <span class="cyan">{{ target.c.toFixed(0) }}</span>
-        <span class="magenta">{{ target.m.toFixed(0) }}</span>
-        <span class="yellow">{{ target.y.toFixed(0) }}</span>
-        <span class="black">{{ target.k.toFixed(0) }}</span>
+      <p class="target-color">
+        <span class="cyan">{{ targetColor.c.toFixed(0) }}</span>
+        <span class="magenta">{{ targetColor.m.toFixed(0) }}</span>
+        <span class="yellow">{{ targetColor.y.toFixed(0) }}</span>
+        <span class="black">{{ targetColor.k.toFixed(0) }}</span>
       </p>
-      scanning: {{scanning}}
+      <!-- scanning: {{scanning}} -->
       <p v-if="target">target: {{ target.name}} scan progress: {{ target.scanProgress.toFixed(1) }}</p>
       <br/>
-      <input type="button" :class="{scanning: scanning}" @click="toggleScan" :disabled="!target" value="Scan">
+      <input class="scan-button" type="button" :class="{scanning: scanning}" @click="toggleScan" :disabled="!target" value="Scan">
     </div>
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from "vue";
+import { computed, defineComponent, ref } from "vue";
 
 // import SevenSegmentDisplay from "@/components/SevenSegmentDisplay.vue";
 
 import ShipComponent from "@/classes/ShipComponent";
+import LaserBeam from "@/components/LaserBeam.vue";
 import Ship from "@/classes/Ship";
 import Asteroid from "@/classes/Asteroid";
 import GameLoop from "@/classes/GameLoop";
@@ -37,6 +39,7 @@ export default defineComponent({
   name: "ComponentLaser",
   components: {
     // SevenSegmentDisplay
+    LaserBeam
   },
   props: {
     component: {
@@ -50,6 +53,10 @@ export default defineComponent({
     target: {
       type: Asteroid,
       required: false
+    },
+    targetCoordinates: {
+      type: Object,
+      required: false
     }
   },
   setup(props) {
@@ -59,6 +66,24 @@ export default defineComponent({
       if (props.target && scanning.value) props.target.scan(props.component.effect);
       if (props.target && props.target.scanProgress >= 100) scanning.value = false; 
     }
+
+    const targetColor = computed(() => {
+      if (props.target && props.target.scanned) {
+        return {
+          c: props.target.c,
+          m: props.target.m,
+          y: props.target.y,
+          k: props.target.k
+        }
+      } else {
+        return {
+          c: 0,
+          m: 0,
+          y: 0,
+          k: 0
+        }
+      }
+    });
 
     function toggleScan() {
       scanning.value = !scanning.value;
@@ -73,7 +98,8 @@ export default defineComponent({
 
     return {
       scanning,
-      toggleScan
+      toggleScan,
+      targetColor
     }
   }
 });
@@ -83,7 +109,7 @@ export default defineComponent({
 .component {
   padding: 1rem;
 }
-input {
+.scan-button {
   padding: 1rem;
   border: 1px solid black;
 }

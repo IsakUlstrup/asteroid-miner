@@ -243,9 +243,8 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .scene {
-  background: url("../assets/bg2.jpg");
-  // background: black;
-  background-size: cover;
+  background: url("../assets/bg.svg") repeat;
+  background-size: 5rem;
   height: 100vh;
   user-select: none;
   display: flex;

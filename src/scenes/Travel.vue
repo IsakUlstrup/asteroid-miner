@@ -85,7 +85,8 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .travel {
-  background: url("../assets/bg1.jpg");
+  background: url("../assets/bg.svg") repeat;
+  background-size: 5rem;
   text-align: center;
   height: 100%;
 }

@@ -69,6 +69,13 @@ export default class Ship {
       this.heat += laser.heating * (dt * this.dtModifier);
     });
 
+    // scanners
+    this.scanners.forEach(scanner => {
+      if (this.energy <= 0) scanner.power = 0;
+      this.energy -= scanner.energyUse * (dt * this.dtModifier);
+      this.heat += scanner.heating * (dt * this.dtModifier);
+    });
+
     // coolers
     this.coolers.forEach(cooler => {
       if (this.energy <= 0) cooler.power = 0;

@@ -24,10 +24,10 @@
         <span v-if="target">Target: {{ target.name }}</span> -->
       </div>
       <div class="colors">
-        <SevenSegmentDisplay :value="component.color.c.toFixed(0)" color="cyan" />
-        <SevenSegmentDisplay :value="component.color.m.toFixed(0)" color="magenta" />
-        <SevenSegmentDisplay :value="component.color.y.toFixed(0)" color="yellow" />
-        <SevenSegmentDisplay :value="component.color.k.toFixed(0)" color="black" />
+        <SevenSegmentDisplay :value="+component.color.c.toFixed(0)" color="cyan" />
+        <SevenSegmentDisplay :value="+component.color.m.toFixed(0)" color="magenta" />
+        <SevenSegmentDisplay :value="+component.color.y.toFixed(0)" color="yellow" />
+        <SevenSegmentDisplay :value="+component.color.k.toFixed(0)" color="black" />
       </div>
       <!-- <div class="target-colors" v-else>
         <SevenSegmentDisplay :value="0" color="cyan" />

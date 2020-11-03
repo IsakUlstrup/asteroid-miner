@@ -19,7 +19,7 @@
         <ComponentLaser :component="component" :ship="ship" @travel="travel" :target="target" :targetCoordinates="targetCoordinates" />
       </li>
       <li v-if="component.modelInfo.type === 'scanner'" >
-        <ComponentScanner :component="component" :ship="ship" @travel="travel" :target="target" />
+        <ComponentScanner :component="component" :ship="ship" @travel="travel" :target="target" :targetCoordinates="targetCoordinates" />
       </li>
     </ComponentWrapper>
   </ul>
