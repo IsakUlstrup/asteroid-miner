@@ -28,14 +28,14 @@
       <Meter :max="100" :value="+ship.heat.toFixed(0)">Temp</Meter>
     </div> -->
     <section class="ship">
-      <laser-beam
+      <!-- <laser-beam
         v-if="miningTarget && ship.poweredLasers.length > 0"
         :x2="mousePosition.x"
         :y2="mousePosition.y"
         :thickness="6"
         :color="'red'"
-      />
-      <ShipControls class="ship-controls" :ship="ship" @travel="travelTo" :target="miningTarget" />
+      /> -->
+      <ShipControls class="ship-controls" :ship="ship" @travel="travelTo" :target="miningTarget" :targetCoordinates="targetCoordinates" />
     </section>
   </div>
 </template>
@@ -43,7 +43,7 @@
 <script lang="ts">
 import { defineComponent, onMounted, ref, toRefs, watch, reactive } from "vue";
 // import PlayerShip from "@/components/PlayerShip.vue";
-import LaserBeam from "@/components/LaserBeam.vue";
+// import LaserBeam from "@/components/LaserBeam.vue";
 import ShipControls from "@/components/ShipControls.vue";
 import AsteroidDisplay from "@/components/AsteroidDisplay.vue";
 // import Meter from "@/components/Meter.vue";
@@ -58,7 +58,7 @@ export default defineComponent({
   name: "Space",
   components: {
     // PlayerShip,
-    LaserBeam,
+    // LaserBeam,
     ShipControls,
     AsteroidDisplay,
     // Meter
@@ -81,11 +81,22 @@ export default defineComponent({
     const loot: Ore[] = [];
     const asteroids: Asteroid[] = reactive([]);
     const miningTarget = ref<Asteroid>();
-    const mouseTarget = ref<Element>();
-    const mousePosition = ref({
+    const targetCoordinates = ref({
       x: 0,
       y: 0
     });
+    // const target = ref({
+    //   object: ref<Asteroid>(),
+    //   coordinates: {
+    //     x: 0,
+    //     y: 0
+    //   }
+    // });
+    // // const mouseTarget = ref<Element>();
+    // const mousePosition = ref({
+    //   x: 0,
+    //   y: 0
+    // });
 
     const mining = ref<boolean>(false);
 
@@ -93,12 +104,16 @@ export default defineComponent({
       // console.log(targetInfo);
       if (targetInfo.target === miningTarget.value) {
         miningTarget.value = undefined;
-        mousePosition.value.x = 0;
-        mousePosition.value.y = 0;
+        // target.value.object = undefined;
+        // mousePosition.value.x = 0;
+        targetCoordinates.value.x = 0;
+        // mousePosition.value.y = 0;
+        targetCoordinates.value.y = 0;
       } else {
+        // miningTarget.value = targetInfo.target;
         miningTarget.value = targetInfo.target;
-        mousePosition.value.x = targetInfo.x;
-        mousePosition.value.y = targetInfo.y;
+        targetCoordinates.value.x = targetInfo.x;
+        targetCoordinates.value.y = targetInfo.y;
       }
     }
 
@@ -145,6 +160,7 @@ export default defineComponent({
         if (a.c <= 0 && a.m <= 0 && a.y <= 0 && a.k <= 0) {
           mining.value = false;
           miningTarget.value = undefined;
+          // target.value.object = undefined;
           // console.log(a.dropOre());
           const ores = a.dropOre();
           ores.forEach(o => loot.push(o));
@@ -160,14 +176,19 @@ export default defineComponent({
         typeof miningTarget.value !== "undefined"
       ) {
         // miningTarget.value.hp -= props.ship.poweredLasers[0].power * dt * 0.01;
-        miningTarget.value.c -= props.ship.poweredLasers[0].power * dt * 0.01;
-        if (miningTarget.value.c < 0) miningTarget.value.c = 0;
-        miningTarget.value.m -= props.ship.poweredLasers[0].power * dt * 0.01;
-        if (miningTarget.value.m < 0) miningTarget.value.m = 0;
-        miningTarget.value.y -= props.ship.poweredLasers[0].power * dt * 0.01;
-        if (miningTarget.value.y < 0) miningTarget.value.y = 0;
-        miningTarget.value.k -= props.ship.poweredLasers[0].power * dt * 0.01;
-        if (miningTarget.value.k < 0) miningTarget.value.k = 0;
+        if (miningTarget.value) {
+          miningTarget.value.c -= props.ship.poweredLasers[0].power * props.ship.poweredLasers[0].color.c * dt * 0.0001;
+          if (miningTarget.value.c < 0) miningTarget.value.c = 0;
+
+          miningTarget.value.m -= props.ship.poweredLasers[0].power * props.ship.poweredLasers[0].color.m * dt * 0.0001;
+          if (miningTarget.value.m < 0) miningTarget.value.m = 0;
+
+          miningTarget.value.y -= props.ship.poweredLasers[0].power * props.ship.poweredLasers[0].color.y * dt * 0.0001;
+          if (miningTarget.value.y < 0) miningTarget.value.y = 0;
+
+          miningTarget.value.k -= props.ship.poweredLasers[0].power * props.ship.poweredLasers[0].color.k * dt * 0.0001;
+          if (miningTarget.value.k < 0) miningTarget.value.k = 0;
+        }
       }
     }
     // function lootItem(item: Item) {
@@ -209,11 +230,12 @@ export default defineComponent({
       loot,
       lootOre,
       mining,
-      mousePosition,
+      // mousePosition,
       miningTarget,
+      targetCoordinates,
       setTarget,
       travelTo,
-      mouseTarget
+      // target
     };
   }
 });

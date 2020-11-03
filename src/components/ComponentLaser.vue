@@ -1,7 +1,15 @@
 <template>
     <div class="component" :class="{active: component.active}">
+      <LaserBeam v-if="target && targetCoordinates && component.power > 0" :x2="targetCoordinates.x" :y2="targetCoordinates.y" :color="cssColor" />
       <div class="controls">
         <h3>{{ component.name }}</h3>
+        <select name="laser-color" v-model="color">
+          <option selected="selected" :value="{c: 100, m: 0, y: 0, k: 0}">Cyan</option>
+          <option :value="{c: 0, m: 100, y: 0, k: 0}">Magenta</option>
+          <option :value="{c: 0, m: 0, y: 100, k: 0}">Yellow</option>
+          <option :value="{c: 0, m: 0, y: 0, k: 100}">Black</option>
+        </select>
+        <br />
         Power:<br />
         <input
           type="range"
@@ -15,38 +23,41 @@
         <!-- <br />
         <span v-if="target">Target: {{ target.name }}</span> -->
       </div>
-      <div class="target-colors" v-if="target">
-        <SevenSegmentDisplay :value="+target.c.toFixed(0) || 0" color="cyan" />
-        <SevenSegmentDisplay :value="+target.m.toFixed(0) || 0" color="magenta" />
-        <SevenSegmentDisplay :value="+target.y.toFixed(0) || 0" color="yellow" />
-        <SevenSegmentDisplay :value="+target.k.toFixed(0) || 0" color="black" />
+      <div class="colors">
+        <SevenSegmentDisplay :value="component.color.c.toFixed(0)" color="cyan" />
+        <SevenSegmentDisplay :value="component.color.m.toFixed(0)" color="magenta" />
+        <SevenSegmentDisplay :value="component.color.y.toFixed(0)" color="yellow" />
+        <SevenSegmentDisplay :value="component.color.k.toFixed(0)" color="black" />
       </div>
-      <div class="target-colors" v-else>
+      <!-- <div class="target-colors" v-else>
         <SevenSegmentDisplay :value="0" color="cyan" />
         <SevenSegmentDisplay :value="0" color="magenta" />
         <SevenSegmentDisplay :value="0" color="yellow" />
         <SevenSegmentDisplay :value="0" color="black" />
-      </div>
+      </div> -->
     </div>
 </template>
 
 <script lang="ts">
-import { defineComponent } from "vue";
+import { computed, defineComponent, ref, watch } from "vue";
 
 import SevenSegmentDisplay from "@/components/SevenSegmentDisplay.vue";
-
 import ShipComponent from "@/classes/ShipComponent";
+import LaserBeam from "@/components/LaserBeam.vue";
+
 import Ship from "@/classes/Ship";
 import Asteroid from "@/classes/Asteroid";
+import MiningLaser from "@/classes/MiningLaser";
 
 export default defineComponent({
   name: "ComponentLaser",
   components: {
-    SevenSegmentDisplay
+    SevenSegmentDisplay,
+    LaserBeam
   },
   props: {
     component: {
-      type: ShipComponent,
+      type: MiningLaser,
       required: true
     },
     ship: {
@@ -56,6 +67,52 @@ export default defineComponent({
     target: {
       type: Asteroid,
       required: false
+    },
+    targetCoordinates: {
+      type: Object,
+      required: false
+    }
+  },
+  setup(props) {
+    const color = ref({
+      c: 0,
+      m: 0,
+      y: 0,
+      k: 0
+    });
+
+    function CMYKtoRGB (c: number, m: number, y: number, k: number){
+      const result = {r:0, g:0, b:0};
+  
+      c = c / 100;
+      m = m / 100;
+      y = y / 100;
+      k = k / 100;
+  
+      result.r = 1 - Math.min( 1, c * ( 1 - k ) + k );
+      result.g = 1 - Math.min( 1, m * ( 1 - k ) + k );
+      result.b = 1 - Math.min( 1, y * ( 1 - k ) + k );
+  
+      result.r = Math.round( result.r * 255 );
+      result.g = Math.round( result.g * 255 );
+      result.b = Math.round( result.b * 255 );
+  
+      return result;
+    }
+
+    const cssColor = computed(() => {
+      const rgb = CMYKtoRGB(props.component.color.c, props.component.color.m, props.component.color.y, props.component.color.k);
+      return `rgb(${rgb.r}, ${rgb.g}, ${rgb.b})`;
+    });
+
+    watch(color, () => {
+      console.log(color.value);
+      props.component.setColor(color.value);
+    });
+
+    return {
+      color,
+      cssColor
     }
   }
 });
@@ -96,7 +153,7 @@ h3 {
 input {
   width: 100%;
 }
-.target-colors {
+.colors {
   border-radius: 0.6rem;
   overflow: hidden;
   flex: 5rem;

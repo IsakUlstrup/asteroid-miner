@@ -49,4 +49,7 @@ export default class Asteroid {
   get hp() {
     return this.c + this.m + this.y + this.k;
   }
+  get scanned() {
+    return this.scanProgress >= 100? true: false;
+  }
 }

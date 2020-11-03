@@ -10,6 +10,12 @@
           :value="component.power"
           @input="component.setPower($event.target.value)"
         />
+      <p class="target-color" v-if="target && target.scanned">
+        <span class="cyan">{{ target.c.toFixed(0) }}</span>
+        <span class="magenta">{{ target.m.toFixed(0) }}</span>
+        <span class="yellow">{{ target.y.toFixed(0) }}</span>
+        <span class="black">{{ target.k.toFixed(0) }}</span>
+      </p>
       scanning: {{scanning}}
       <p v-if="target">target: {{ target.name}} scan progress: {{ target.scanProgress.toFixed(1) }}</p>
       <br/>
@@ -84,6 +90,26 @@ input {
 input:focus {
   // border: 1px solid black;
   outline: none;
+}
+.target-color {
+  background: #999;
+  padding: 1rem;
+
+  span {
+    padding: 0.5rem;
+  }
+  .cyan {
+    color: cyan;
+  }
+  .magenta {
+    color: magenta;
+  }
+  .yellow {
+    color: yellow;
+  }
+  .black {
+    color: black;
+  }
 }
 .scanning {
   border: 1px solid red;

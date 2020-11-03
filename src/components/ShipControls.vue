@@ -16,7 +16,7 @@
         <ComponentCooler :component="component" :ship="ship" @travel="travel" />
       </li>
       <li v-if="component.modelInfo.type === 'laser'" >
-        <ComponentLaser :component="component" :ship="ship" @travel="travel" :target="target" />
+        <ComponentLaser :component="component" :ship="ship" @travel="travel" :target="target" :targetCoordinates="targetCoordinates" />
       </li>
       <li v-if="component.modelInfo.type === 'scanner'" >
         <ComponentScanner :component="component" :ship="ship" @travel="travel" :target="target" />
@@ -60,6 +60,10 @@ export default defineComponent({
       type: Asteroid,
       required: false,
       default: undefined
+    },
+    targetCoordinates: {
+      type: Object,
+      required: false
     }
   },
   emits: ["travel"],
