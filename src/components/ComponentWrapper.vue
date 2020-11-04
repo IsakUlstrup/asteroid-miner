@@ -29,7 +29,7 @@ export default defineComponent({
 .component-wrapper {
   margin: 1rem;
   width: 20rem;
-  height: 100%;
+  // height: 100%;
   .indent {
     box-shadow: 0 0 0.4rem rgba($color: #000000, $alpha: 1) inset;
     border-radius: 1rem;
@@ -37,7 +37,7 @@ export default defineComponent({
     padding: 0.6rem;
     background: transparent;
     width: 100%;
-    height: 100%;
+    // height: 100%;
   }
   .face {
     background: linear-gradient(to bottom, #fff, #ddd);
@@ -45,7 +45,8 @@ export default defineComponent({
     border-radius: 0.7rem;
     // padding: 0.4rem;
     width: 100%;
-    min-height: 20rem;
+    height: 100%;
+    min-height: 15rem;
     overflow: hidden;
   }
   .perspective-effect {

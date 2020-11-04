@@ -3,7 +3,7 @@
     <div class="status screen">
       <DotMatrixMeter class="meter" :max="ship.maxEnergy" :value="ship.energy">BATT</DotMatrixMeter>
       <DotMatrixMeter class="meter" :max="ship.maxHeat" :value="ship.heat">TEMP</DotMatrixMeter>
-      <DotMatrixMeter class="meter" max="100" :value="ship.remainingFuel">FUEL</DotMatrixMeter>
+      <DotMatrixMeter class="meter" :max="100" :value="ship.remainingFuel">FUEL</DotMatrixMeter>
     </div>
     <!-- <h1 class="name">{{ ship.name }}</h1> -->
     <!-- <div class="status screen">
@@ -83,5 +83,22 @@ export default defineComponent({
   display: flex;
   flex-wrap: wrap;
   margin: 1rem;
+}
+
+@media only screen and (max-width: 600px) {
+  .status {
+    font-size: 1.3rem;
+    .meter {
+      margin: 0.2rem 0.4rem;
+    }
+  }
+}
+@media only screen and (orientation: landscape) and (max-width: 900px) {
+  .status {
+    font-size: 1.3rem;
+    .meter {
+      margin: 0.2rem 0.4rem;
+    }
+  }
 }
 </style>

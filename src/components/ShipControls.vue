@@ -104,5 +104,6 @@ export default defineComponent({
   justify-content: center;
   flex-wrap: wrap;
   padding: 2rem;
+  // overflow-y: scroll;
 }
 </style>

@@ -28,8 +28,8 @@
       <Meter :max="100" :value="+ship.heat.toFixed(0)">Temp</Meter>
     </div> -->
     <section class="ship">
-      <ShipDashboard :ship="ship" :target="miningTarget" />
-      <ShipControls class="ship-controls" :ship="ship" @travel="travelTo" :target="miningTarget" :targetCoordinates="targetCoordinates" />
+      <ShipDashboard class="dashboard" :ship="ship" :target="miningTarget" />
+      <ShipControls class="controls" :ship="ship" @travel="travelTo" :target="miningTarget" :targetCoordinates="targetCoordinates" />
     </section>
   </div>
 </template>
@@ -247,7 +247,7 @@ export default defineComponent({
   flex-direction: column;
 }
 .space {
-  // flex: 1;
+  // flex: 2;
   // display: flex;
   display: grid;
   grid-template-columns: 33% 33% 33%;
@@ -262,16 +262,28 @@ export default defineComponent({
   justify-self: center;
 }
 .ship {
-  flex: 3;
+  flex: 1;
   background: #262626;
   // padding: 2rem;
-  overflow-y: scroll;
+  // overflow-y: scroll;
   // border-radius: 1rem 1rem 0 0;
   box-shadow: 0 0 1rem rgba($color: #000000, $alpha: 0.7) inset;
-}
-.ship-controls {
   overflow-y: scroll;
+  display: flex;
+  // flex-wrap: wrap;
+  flex-direction: column;
+
+  .dashboard {
+    flex: 1;
+  }
+  .controls {
+    flex: auto;
+    overflow-y: scroll;
+  }
 }
+// .ship-controls {
+//   overflow-y: scroll;
+// }
 // .ship-status {
 //   // color: lightcyan;
 //   opacity: 0.6;
@@ -292,7 +304,10 @@ export default defineComponent({
     flex-direction: column;
   }
   .space {
-    flex: 2;
+    flex: 1;
+  }
+  .ship {
+    flex: 3;
   }
   .meter {
     height: 1rem;
@@ -310,10 +325,10 @@ export default defineComponent({
   .ship {
     flex: 1;
   }
-  .ship-status {
-    flex-direction: column;
-    height: 1rem;
-  }
+  // .ship-status {
+  //   flex-direction: column;
+  //   height: 1rem;
+  // }
 }
 /* high res device */
 @media only screen and (min-width: 800px) {
@@ -321,19 +336,19 @@ export default defineComponent({
     flex-direction: column;
   }
   .space {
-    flex: 20;
+    flex: 8;
     flex-direction: row;
   }
   .ship {
-    flex: auto;
+    flex: 5;
     // padding: 5rem;
   }
   .meter {
     transform: rotate(0deg);
   }
-  .ship-status {
-    flex-direction: row;
-    height: 8rem;
-  }
+  // .ship-status {
+  //   flex-direction: row;
+  //   height: 8rem;
+  // }
 }
 </style>
