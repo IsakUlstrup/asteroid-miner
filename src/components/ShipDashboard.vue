@@ -1,9 +1,9 @@
 <template>
   <div class="ship-dashboard">
     <div class="status screen">
-      <DotMatrixMeter class="meter" :max="ship.maxEnergy" :value="ship.energy">BATT</DotMatrixMeter>
-      <DotMatrixMeter class="meter" :max="ship.maxHeat" :value="ship.heat">TEMP</DotMatrixMeter>
-      <DotMatrixMeter class="meter" :max="100" :value="ship.remainingFuel">FUEL</DotMatrixMeter>
+      <DotMatrixMeter class="meter" color="cyan" :max="ship.maxEnergy" :value="ship.energy">BATT</DotMatrixMeter>
+      <DotMatrixMeter class="meter" color="magenta" :max="ship.maxHeat" :value="ship.heat">TEMP</DotMatrixMeter>
+      <DotMatrixMeter class="meter" color="yellow" :max="100" :value="ship.remainingFuel">FUEL</DotMatrixMeter>
     </div>
     <!-- <h1 class="name">{{ ship.name }}</h1> -->
     <!-- <div class="status screen">
