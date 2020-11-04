@@ -274,7 +274,8 @@ export default defineComponent({
   flex-direction: column;
 
   .dashboard {
-    flex: 1;
+    flex: 0 0 initial;
+    // flex-shrink: 0;
   }
   .controls {
     flex: auto;
