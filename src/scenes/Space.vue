@@ -28,13 +28,7 @@
       <Meter :max="100" :value="+ship.heat.toFixed(0)">Temp</Meter>
     </div> -->
     <section class="ship">
-      <!-- <laser-beam
-        v-if="miningTarget && ship.poweredLasers.length > 0"
-        :x2="mousePosition.x"
-        :y2="mousePosition.y"
-        :thickness="6"
-        :color="'red'"
-      /> -->
+      <ShipDashboard :ship="ship" :target="miningTarget" />
       <ShipControls class="ship-controls" :ship="ship" @travel="travelTo" :target="miningTarget" :targetCoordinates="targetCoordinates" />
     </section>
   </div>
@@ -45,6 +39,7 @@ import { defineComponent, onMounted, ref, toRefs, watch, reactive } from "vue";
 // import PlayerShip from "@/components/PlayerShip.vue";
 // import LaserBeam from "@/components/LaserBeam.vue";
 import ShipControls from "@/components/ShipControls.vue";
+import ShipDashboard from "@/components/ShipDashboard.vue";
 import AsteroidDisplay from "@/components/AsteroidDisplay.vue";
 // import Meter from "@/components/Meter.vue";
 
@@ -61,6 +56,7 @@ export default defineComponent({
     // LaserBeam,
     ShipControls,
     AsteroidDisplay,
+    ShipDashboard
     // Meter
   },
   props: {
@@ -268,24 +264,27 @@ export default defineComponent({
 .ship {
   flex: 3;
   background: #262626;
-  padding: 2rem;
+  // padding: 2rem;
   overflow-y: scroll;
   // border-radius: 1rem 1rem 0 0;
   box-shadow: 0 0 1rem rgba($color: #000000, $alpha: 0.7) inset;
 }
-.ship-status {
-  // color: lightcyan;
-  opacity: 0.6;
-  // text-shadow: 0 0 0.3rem lightcyan;
-  font-weight: lighter;
-  text-align: center;
-  height: 5rem;
-  display: flex;
-
-  .meter {
-    margin: 2rem;
-  }
+.ship-controls {
+  overflow-y: scroll;
 }
+// .ship-status {
+//   // color: lightcyan;
+//   opacity: 0.6;
+//   // text-shadow: 0 0 0.3rem lightcyan;
+//   font-weight: lighter;
+//   text-align: center;
+//   height: 5rem;
+//   display: flex;
+
+//   .meter {
+//     margin: 2rem;
+//   }
+// }
 
 /* low res phone portrait */
 @media only screen and (max-width: 600px) {
@@ -327,7 +326,7 @@ export default defineComponent({
   }
   .ship {
     flex: auto;
-    padding: 5rem;
+    // padding: 5rem;
   }
   .meter {
     transform: rotate(0deg);

@@ -103,17 +103,6 @@ export default defineComponent({
   flex-direction: row;
   justify-content: center;
   flex-wrap: wrap;
+  padding: 2rem;
 }
-// .component {
-//   // border: 1px solid #aaa;
-//   padding: 1rem;
-//   border-radius: 0.3rem;
-// }
-
-// @media only screen and (max-width: 600px) {
-//   ul {
-//     flex-direction: column;
-//     align-items: center;
-//   }
-// }
 </style>
