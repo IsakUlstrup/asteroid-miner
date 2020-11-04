@@ -250,12 +250,12 @@ export default defineComponent({
   // flex: 2;
   // display: flex;
   display: grid;
-  grid-template-columns: 33% 33% 33%;
-  grid-template-rows: 33% 33% 33%;
+  grid-template-columns: 20% 20% 20%;
+  // grid-template-rows: 33% 33% 33%;
   // padding: 5rem;
-  overflow: hidden;
-  padding: 3rem;
-  justify-content: center;
+  overflow-y: scroll;
+  // padding: 3rem;
+  justify-content: space-evenly;
   align-items: center;
 }
 .asteroid {
