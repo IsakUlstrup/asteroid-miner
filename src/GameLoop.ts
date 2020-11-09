@@ -1,12 +1,5 @@
-// interface Listener {
-//   update: (dt: number) => void;
-// }
+import { reactive } from "vue";
 
-import { reactive } from 'vue';
-
-// const state = Math.random();
-// const animals = ['Panda', 'Bear', 'Eagle'];
-// const state = reactive({})
 const listeners: Function[] = [];
 let speedModifier = 1;
 
@@ -33,10 +26,12 @@ loop();
 export default {
   timing,
   status() {
-    console.log(`Speed: ${speedModifier}, dt: ${timing.dt}, listeners: ${listeners}`);
+    console.log(`
+      Speed:${speedModifier}, dt: ${timing.dt}, listeners: ${listeners}
+    `);
   },
   addListener(listener: Function) {
-    console.log("adding listener", listener);
+    // console.log("adding listener", listener);
     listeners.push(listener);
     // this.status();
   },
@@ -52,4 +47,4 @@ export default {
     console.log("pause:", flag);
     paused = flag;
   }
-}
+};

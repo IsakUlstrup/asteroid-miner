@@ -1,55 +1,14 @@
-import { LoremIpsum } from "lorem-ipsum";
-import { v4 as uuidv4 } from "uuid";
-import Ore from "./Ore";
-import CyanOre from "./CyanOre";
-import MagentaOre from "./MagentaOre";
-import YellowOre from "./YellowOre";
-import BlackOre from "./BlackOre";
-
-const lorem = new LoremIpsum({
-  sentencesPerParagraph: {
-    max: 8,
-    min: 4
-  },
-  wordsPerSentence: {
-    max: 16,
-    min: 4
-  }
-});
-
 export default class Asteroid {
-  // hp = (Math.random() + 1) * 40;
-  id = uuidv4();
-  name = lorem.generateWords(2);
-  scanProgress = 0;
-  c: number;
-  m: number;
-  y: number;
-  k: number;
+  name: string;
+  hp: number;
+  id: number;
   constructor() {
-    this.c = Math.random() * 100;
-    this.m = Math.random() * 100;
-    this.y = Math.random() * 100;
-    this.k = Math.random() * 10;
+    this.name = "skdlfhnsdf";
+    this.hp = 100;
+    this.id = Math.random();
   }
-  scan(amount: number) {
-    this.scanProgress += amount;
-    if (this.scanProgress > 100) this.scanProgress = 100;
-  }
-  dropOre() {
-    const ores:Ore[] = [];
-
-    if (Math.floor(this.c) > 0) ores.push(new CyanOre(Math.floor(this.c)));
-    if (Math.floor(this.m) > 0) ores.push(new MagentaOre(Math.floor(this.m)));
-    if (Math.floor(this.y) > 0) ores.push(new YellowOre(Math.floor(this.y)));
-    if (Math.floor(this.k) > 0) ores.push(new BlackOre(Math.floor(this.k)));
-
-    return ores;
-  }
-  get hp() {
-    return this.c + this.m + this.y + this.k;
-  }
-  get scanned() {
-    return this.scanProgress >= 100? true: false;
+  mine(power: number) {
+    this.hp -= power;
+    if (this.hp <= 0) this.hp = 0;
   }
 }

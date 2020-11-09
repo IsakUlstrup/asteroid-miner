@@ -5,30 +5,30 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, onMounted, toRefs, computed } from "vue";
+import { defineComponent, ref, toRefs, computed } from "vue";
 
 export default defineComponent({
   name: "LaserBeam",
   props: {
     color: {
-      type:String,
+      type: String,
       default: "red"
     },
-    x2: {
-      type:Number,
+    x: {
+      type: Number,
       default: 0
     },
-    y2: {
-      type:Number,
+    y: {
+      type: Number,
       default: 0
     },
     thickness: {
-      type:Number,
+      type: Number,
       default: 5
     }
   },
-  setup(props, context) {
-    const { x2, y2, thickness } = toRefs(props);
+  setup(props) {
+    const { x, y, thickness } = toRefs(props);
     const beam = ref<HTMLDivElement>();
 
     const beamOrigin = computed(() => {
@@ -41,12 +41,43 @@ export default defineComponent({
       }
     });
 
+    // const beamOrigin = ref({
+    //   x: 0,
+    //   y: 0
+    // });
+
+    // window.addEventListener("resize", () => {
+    //   if (beam.value) {
+    //     beamOrigin.value.x = beam.value.getBoundingClientRect().x;
+    //     beamOrigin.value.y = beam.value.getBoundingClientRect().y;
+    //   }
+    //   // console.log(
+    //   //   beam.value?.getBoundingClientRect().x,
+    //   //   beam.value?.getBoundingClientRect().y
+    //   // );
+    // });
+
     const beamLength = computed(() => {
-      if (beamOrigin.value) return Math.sqrt((beamOrigin.value.x-x2.value)*(beamOrigin.value.x-x2.value) + (beamOrigin.value.y-y2.value)*(beamOrigin.value.y-y2.value)) + "px";
+      if (beamOrigin.value)
+        return (
+          Math.sqrt(
+            (beamOrigin.value.x - x.value) * (beamOrigin.value.x - x.value) +
+              (beamOrigin.value.y - y.value) * (beamOrigin.value.y - y.value)
+          ) + "px"
+        );
     });
 
     const beamAngle = computed(() => {
-      if (beamOrigin.value) return Math.atan2(y2.value - beamOrigin.value.y, x2.value - beamOrigin.value.x) * 180 / Math.PI + "deg";
+      if (beamOrigin.value)
+        return (
+          (Math.atan2(
+            y.value - beamOrigin.value.y,
+            x.value - beamOrigin.value.x
+          ) *
+            180) /
+            Math.PI +
+          "deg"
+        );
     });
 
     const beamThickness = computed(() => {
@@ -54,10 +85,10 @@ export default defineComponent({
     });
 
     const left = computed(() => {
-      return x2.value + "px";
+      return x.value + "px";
     });
     const top = computed(() => {
-      return y2.value + "px";
+      return y.value + "px";
     });
 
     // onMounted(() => {
@@ -88,7 +119,7 @@ export default defineComponent({
 <style scoped lang="scss" vars="{ beamLength, beamAngle, beamThickness, color, left, top }">
 .laser-beam {
   user-select: none;
-  opacity: .8;
+  opacity: 0.8;
   position: absolute;
   transform-origin: 0 100%;
   background: var(--color);
