@@ -1,12 +1,5 @@
 <template>
   <div class="ship">
-    <h1>{{ ship.name }}</h1>
-    <h3>reactors</h3>
-    {{ ship.reactors }}
-    <h3>equipment</h3>
-    {{ ship.equipment }}
-    <h1>Equipment</h1>
-
     <div class="equipment-slots">
       <div
         class="equipment-wrapper"
@@ -16,6 +9,14 @@
         <component :is="equipment.type" :equipment="equipment" />
       </div>
     </div>
+
+    <h1>{{ ship.name }}</h1>
+    <h3>reactors</h3>
+    {{ ship.reactors }}
+    <h3>equipment</h3>
+    {{ ship.equipment }}
+    <h1>Equipment</h1>
+
     <h3>Chargeable ({{ ship.chargeableEquipment.length }})</h3>
     <ul>
       <li v-for="e in ship.chargeableEquipment" :key="e">
@@ -90,8 +91,13 @@ export default defineComponent({
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped lang="scss">
+.ship {
+  overflow-y: scroll;
+  height: 100%;
+}
 .equipment-slots {
   display: flex;
+  flex-wrap: wrap;
 }
 .equipment-wrapper {
   width: 20rem;

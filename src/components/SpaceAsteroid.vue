@@ -39,8 +39,8 @@ export default defineComponent({
   setup() {
     const asteroid = new Asteroid();
     const position = reactive({
-      x: Math.random() * 2 + 500,
-      y: Math.random() * 2 + 200,
+      x: Math.random() * 2,
+      y: Math.random() * 2,
       z: (Math.random() - 0.5) * 0.2
     });
     const vector = reactive({
@@ -148,7 +148,7 @@ export default defineComponent({
 .asteroid {
   border-radius: 999999rem;
   padding: 1rem;
-  width: 10rem;
+  width: 5rem;
   display: inline-block;
   user-select: none;
   position: relative;

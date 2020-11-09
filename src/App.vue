@@ -1,16 +1,20 @@
 <template>
-  <div class="space">
-    <SpaceAsteroid />
-    <SpaceAsteroid />
-    <SpaceAsteroid />
-    <SpaceAsteroid />
-    <SpaceAsteroid />
-    <SpaceAsteroid />
-    <SpaceAsteroid />
-    <SpaceAsteroid />
-    <SpaceAsteroid />
+  <div id="app">
+    <section class="space">
+      <SpaceAsteroid />
+      <SpaceAsteroid />
+      <SpaceAsteroid />
+      <SpaceAsteroid />
+      <SpaceAsteroid />
+      <SpaceAsteroid />
+      <SpaceAsteroid />
+      <SpaceAsteroid />
+      <SpaceAsteroid />
+    </section>
+    <section>
+      <Ship />
+    </section>
   </div>
-  <Ship />
 </template>
 
 <script lang="ts">
@@ -31,19 +35,28 @@ export default defineComponent({
 <style lang="scss">
 @import url("../node_modules/normalize.css/normalize.css");
 
+body {
+  background: #262626;
+}
+
 #app {
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  // text-align: center;
-  color: #2c3e50;
-  // margin-top: 60px;
+  color: #333;
   width: 100%;
   height: 100vh;
-}
-.space {
-  height: 50rem;
-  overflow: hidden;
-  background: #262626;
+  display: flex;
+  flex-direction: column;
+
+  section {
+    overflow: hidden;
+    flex: 1;
+    background: white;
+  }
+
+  .space {
+    background: #262626;
+  }
 }
 </style>
