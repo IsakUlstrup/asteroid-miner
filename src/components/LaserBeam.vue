@@ -106,6 +106,7 @@ export default defineComponent({
   vars="{ beamLength, beamAngle, beamThickness, color }"
 >
 .laser-beam {
+  pointer-events: none;
   user-select: none;
   opacity: 0.8;
   position: absolute;
