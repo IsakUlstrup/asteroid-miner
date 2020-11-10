@@ -1,5 +1,3 @@
-import { reactive } from "vue";
-
 export default class Asteroid {
   name: string;
   hp: number;
@@ -28,8 +26,8 @@ export default class Asteroid {
     this.id = Math.random();
 
     this.position = {
-      x: Math.random() * 200,
-      y: Math.random() * 200,
+      x: Math.random() * 800,
+      y: Math.random() * 400,
       z: Math.random() * 200,
       r: Math.random() * 50
     };

@@ -105,12 +105,6 @@ export default defineComponent({
       return pattern.toSVG().childNodes;
     }
 
-    // const color = reactive({
-    //   r: Math.random() * 255,
-    //   g: Math.random() * 255,
-    //   b: Math.random() * 255
-    // });
-
     const colorMatrix = computed(() => {
       return `${props.asteroid.color.r / 255} 0 0 0 0
               0 ${props.asteroid.color.g / 255} 0 0 0
@@ -127,16 +121,12 @@ export default defineComponent({
       );
     });
 
-    const paths = generate(Math.random() * 100);
+    const paths = generate(
+      (Math.random() + 1) * config.asteroidPolygonModifier
+    );
 
     function setTarget() {
       context.emit("target", props.asteroid);
-      // console.log(
-      //   "x:",
-      //   props.asteroid.position.x.toFixed(1),
-      //   "y:",
-      //   props.asteroid.position.y.toFixed(1)
-      // );
     }
 
     return {
@@ -158,7 +148,9 @@ export default defineComponent({
   width: 15rem;
   user-select: none;
   position: absolute;
-  left: var(--x);
-  top: var(--y);
+  // left: var(--x);
+  // top: var(--y);
+  perspective: 100px;
+  transform: translate3d(var(--x), var(--y), var(--z));
 }
 </style>

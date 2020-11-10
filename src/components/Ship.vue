@@ -1,7 +1,6 @@
 <template>
   <div class="beam-slots">
     <div class="beam" v-for="(s, index) in ship.equipmentSlots" :key="s">
-      {{ ship.equipment[index].type }}
       <LaserBeam
         v-if="ship.equipment[index].type === EquipmentType.laser && target"
         :x="target.position.x + 75"
@@ -116,9 +115,8 @@ export default defineComponent({
 <style scoped lang="scss">
 .beam-slots {
   display: flex;
-  color: white;
+  background: white;
   justify-content: space-between;
-  margin-bottom: 1rem;
   text-align: center;
 }
 .ship {

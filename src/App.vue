@@ -28,7 +28,7 @@ export default defineComponent({
     SpaceAsteroid
   },
   setup() {
-    const asteroids = new Array(5);
+    const asteroids = new Array(50);
     for (let index = 0; index < asteroids.length; index++) {
       // const element = asteroids[index];
       asteroids[index] = reactive(new Asteroid());
@@ -92,6 +92,7 @@ body {
   .space {
     background: #262626;
     position: relative;
+    flex: 2;
   }
 }
 </style>

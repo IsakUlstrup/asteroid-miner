@@ -6,5 +6,7 @@ enum ShapeRendering {
 }
 
 export default {
-  svgShapeRendering: ShapeRendering.speed
+  svgShapeRendering: ShapeRendering.speed,
+  // asteroid level of detail. Higher number is more demaing
+  asteroidPolygonModifier: 20
 };
