@@ -28,7 +28,7 @@
         :key="path"
         :d="path.attributes.d.value"
         :fill="path.attributes.fill.value"
-        shape-rendering="crispEdges"
+        :shape-rendering="config.svgShapeRendering"
       ></path>
     </g>
   </svg>
@@ -39,6 +39,8 @@ import { computed, defineComponent } from "vue";
 import GameLoop from "@/GameLoop";
 import trianglify from "trianglify";
 import Asteroid from "@/classes/Asteroid";
+
+import config from "@/config";
 
 export default defineComponent({
   name: "Asteroid",
@@ -144,7 +146,8 @@ export default defineComponent({
       r,
       colorMatrix,
       paths,
-      setTarget
+      setTarget,
+      config
     };
   }
 });
