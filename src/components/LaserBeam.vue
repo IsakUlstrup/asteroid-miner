@@ -1,7 +1,5 @@
 <template>
-  <div class="laser-beam" ref="beam">
-  </div>
-  <!-- <div class="hit"></div> -->
+  <div class="laser-beam" ref="beam"></div>
 </template>
 
 <script lang="ts">
@@ -84,39 +82,29 @@ export default defineComponent({
       return thickness.value + "px";
     });
 
-    const left = computed(() => {
-      return x.value + "px";
-    });
-    const top = computed(() => {
-      return y.value + "px";
-    });
-
-    // onMounted(() => {
-    //   // the DOM element will be assigned to the ref after initial render
-    //   console.log(beam.value) // <div>This is a root element</div>
-    //   // if (beam && beam.value) beam.value.
+    // const left = computed(() => {
+    //   return x.value + "px";
     // });
-
-    // function test(event:Event) {
-    //   const target = event.target as HTMLDivElement;
-    //   console.log(event);
-    //   if(target) console.log(target.getBoundingClientRect())
-    // }
+    // const top = computed(() => {
+    //   return y.value + "px";
+    // });
 
     return {
       beamLength,
       beamAngle,
       beam,
       beamOrigin,
-      beamThickness,
-      left,
-      top
+      beamThickness
     }
   }
 });
 </script>
 
-<style scoped lang="scss" vars="{ beamLength, beamAngle, beamThickness, color, left, top }">
+<style
+  scoped
+  lang="scss"
+  vars="{ beamLength, beamAngle, beamThickness, color }"
+>
 .laser-beam {
   user-select: none;
   opacity: 0.8;
@@ -128,17 +116,6 @@ export default defineComponent({
   width: var(--beamLength);
   transform: rotate(var(--beamAngle));
   border-radius: var(--beamThickness);
-}
-
-.hit {
-  // opacity: .8;
-  width: 10px;
-  height: 10px;
-  background: var(--color);
-  border-radius: 100%;
-  position: fixed;
-  left: var(--left);
-  top: var(--top);
-  box-shadow: 0px 0px 30px var(--color);
+  z-index: 10;
 }
 </style>

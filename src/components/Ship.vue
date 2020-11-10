@@ -1,4 +1,14 @@
 <template>
+  <div class="beam-slots">
+    <div class="beam" v-for="(s, index) in ship.equipmentSlots" :key="s">
+      {{ ship.equipment[index].type }}
+      <LaserBeam
+        v-if="ship.equipment[index].type === EquipmentType.laser && target"
+        :x="target.position.x + 75"
+        :y="target.position.y + 75"
+      />
+    </div>
+  </div>
   <div class="ship">
     <div class="equipment-slots">
       <div
@@ -6,7 +16,11 @@
         v-for="equipment in ship.equipment"
         :key="equipment"
       >
-        <component :is="equipment.type" :equipment="equipment" />
+        <component
+          :is="equipment.type"
+          :equipment="equipment"
+          :target="target"
+        />
       </div>
     </div>
 
@@ -30,10 +44,11 @@
 import { defineComponent, reactive } from "vue";
 import Equipment from "@/classes/Equipment";
 import Ship from "@/classes/Ship";
-
 import { EquipmentType } from "../types";
 import GameLoop from "../GameLoop";
+import Asteroid from "@/classes/Asteroid";
 
+import LaserBeam from "@/components/LaserBeam.vue";
 import Reactor from "@/components/EquipmentReactor.vue";
 import Laser from "@/components/EquipmentLaser.vue";
 import None from "@/components/EquipmentNone.vue";
@@ -41,9 +56,17 @@ import None from "@/components/EquipmentNone.vue";
 export default defineComponent({
   name: "Ship",
   components: {
+    LaserBeam,
     Reactor,
     Laser,
     None
+  },
+  props: {
+    target: {
+      type: Asteroid,
+      required: false,
+      default: undefined
+    }
   },
   setup() {
     const ship = reactive(new Ship("a ship", 5));
@@ -83,17 +106,25 @@ export default defineComponent({
     });
 
     return {
-      ship
+      ship,
+      EquipmentType
     };
   }
 });
 </script>
 
-<!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped lang="scss">
+.beam-slots {
+  display: flex;
+  color: white;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+  text-align: center;
+}
 .ship {
   overflow-y: scroll;
   height: 100%;
+  background: white;
 }
 .equipment-slots {
   display: flex;
@@ -101,7 +132,6 @@ export default defineComponent({
 }
 .equipment-wrapper {
   width: 20rem;
-  height: 20rem;
   border: 1px solid #444;
   margin: 0.5rem;
   padding: 0.5rem;

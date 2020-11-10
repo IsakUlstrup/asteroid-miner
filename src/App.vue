@@ -1,33 +1,57 @@
 <template>
   <div id="app">
     <section class="space">
-      <SpaceAsteroid />
-      <SpaceAsteroid />
-      <SpaceAsteroid />
-      <SpaceAsteroid />
-      <SpaceAsteroid />
-      <SpaceAsteroid />
-      <SpaceAsteroid />
-      <SpaceAsteroid />
-      <SpaceAsteroid />
+      <SpaceAsteroid
+        v-for="a in asteroids"
+        :key="a"
+        :asteroid="a"
+        @target="setTarget"
+      />
     </section>
     <section>
-      <Ship />
+      <Ship :target="target" />
     </section>
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent } from "vue";
+import { defineComponent, reactive, ref } from "vue";
 import Ship from "@/components/Ship.vue";
 
 import SpaceAsteroid from "@/components/SpaceAsteroid.vue";
+import Asteroid from "@/classes/Asteroid";
 
 export default defineComponent({
   name: "App",
   components: {
     Ship,
     SpaceAsteroid
+  },
+  setup() {
+    const asteroids = new Array(5);
+    for (let index = 0; index < asteroids.length; index++) {
+      // const element = asteroids[index];
+      asteroids[index] = reactive(new Asteroid());
+    }
+
+    const target = ref<Asteroid>();
+
+    function setTarget(t: Asteroid) {
+      // console.log(t);
+      // toogle target if we click on a targeted asteroid
+      if (t === target.value) {
+        target.value = undefined;
+        return;
+      }
+      // set target to clicked asteroid
+      target.value = t;
+    }
+
+    return {
+      asteroids,
+      setTarget,
+      target
+    };
   }
 });
 </script>
@@ -35,7 +59,18 @@ export default defineComponent({
 <style lang="scss">
 @import url("../node_modules/normalize.css/normalize.css");
 
+* {
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+}
+
+html {
+  font-size: 62.5%;
+}
+
 body {
+  font-size: 1.4rem;
   background: #262626;
 }
 
@@ -50,13 +85,13 @@ body {
   flex-direction: column;
 
   section {
-    overflow: hidden;
     flex: 1;
-    background: white;
+    overflow: hidden;
   }
 
   .space {
     background: #262626;
+    position: relative;
   }
 }
 </style>

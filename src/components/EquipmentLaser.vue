@@ -1,6 +1,9 @@
 <template>
   <div class="laser">
-    <LaserBeam v-if="isMining" :x="targetCoords.x" :y="targetCoords.y" />
+    <p v-if="target">
+      target: {{ target.name }} x: {{ target.position.x.toFixed(1) }} y:
+      {{ target.position.y.toFixed(1) }}
+    </p>
     <h1>{{ equipment.name }}</h1>
     Power:
     <input
@@ -35,13 +38,11 @@ import GameLoop from "@/GameLoop";
 import Equipment from "../classes/Equipment";
 import Asteroid from "../classes/Asteroid";
 
-import LaserBeam from "@/components/LaserBeam.vue";
+// import LaserBeam from "@/components/LaserBeam.vue";
 
 export default defineComponent({
   name: "Laser",
-  components: {
-    LaserBeam
-  },
+  components: {},
   props: {
     equipment: {
       type: Equipment,

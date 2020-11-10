@@ -5,6 +5,7 @@
     x="100"
     y="100"
     viewBox="0 0 200 200"
+    pointer-events="none"
   >
     <defs>
       <filter :id="asteroid.id">
@@ -15,7 +16,13 @@
         />
       </filter>
     </defs>
-    <g :filter="`url(#${asteroid.id})`" :transform="`rotate(${r} 100 100)`">
+    <g
+      :filter="`url(#${asteroid.id})`"
+      :transform="`rotate(${r} 100 100)`"
+      @click="setTarget"
+      @trouchend="setTarget"
+      pointer-events="visiblePainted"
+    >
       <path
         v-for="path in paths"
         :key="path"
@@ -28,7 +35,7 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, reactive } from "vue";
+import { computed, defineComponent } from "vue";
 import GameLoop from "@/GameLoop";
 import trianglify from "trianglify";
 import Asteroid from "@/classes/Asteroid";
@@ -36,34 +43,25 @@ import Asteroid from "@/classes/Asteroid";
 export default defineComponent({
   name: "Asteroid",
   components: {},
-  setup() {
-    const asteroid = new Asteroid();
-    const position = reactive({
-      x: Math.random() * 2,
-      y: Math.random() * 2,
-      z: (Math.random() - 0.5) * 0.2
-    });
-    const vector = reactive({
-      x: (Math.random() - 0.5) * 0.005,
-      y: (Math.random() - 0.5) * 0.005,
-      z: (Math.random() - 0.5) * 0.005
-    });
-    const rotation = reactive({
-      r: 0,
-      vector: (Math.random() - 0.5) * 0.01
-    });
-
+  props: {
+    asteroid: {
+      type: Asteroid,
+      required: true
+    }
+  },
+  emits: ["target"],
+  setup(props, context) {
     const x = computed(() => {
-      return position.x + "px";
+      return props.asteroid.position.x + "px";
     });
     const y = computed(() => {
-      return position.y + "px";
+      return props.asteroid.position.y + "px";
     });
     const z = computed(() => {
-      return position.z + "px";
+      return props.asteroid.position.z + "px";
     });
     const r = computed(() => {
-      return rotation.r;
+      return props.asteroid.position.r;
     });
 
     const roundness = 1.2;
@@ -79,7 +77,8 @@ export default defineComponent({
       const thetaStep = (Math.PI / NUM_POINTS) * 18;
       for (let i = 0; i < NUM_POINTS; i++) {
         const x = width / 2 + r * Math.cos(theta) * (Math.random() * roundness);
-        const y = height / 2 + r * Math.sin(theta) * (Math.random() * roundness);
+        const y =
+          height / 2 + r * Math.sin(theta) * (Math.random() * roundness);
         const point = [x, y];
         points.push(point);
         r += rStep;
@@ -104,55 +103,59 @@ export default defineComponent({
       return pattern.toSVG().childNodes;
     }
 
-    const color = reactive({
-      r: Math.random() * 255,
-      g: Math.random() * 255,
-      b: Math.random() * 255
-    });
+    // const color = reactive({
+    //   r: Math.random() * 255,
+    //   g: Math.random() * 255,
+    //   b: Math.random() * 255
+    // });
 
     const colorMatrix = computed(() => {
-      return `${color.r / 255} 0 0 0 0
-              0 ${color.g / 255} 0 0 0
-              0 0 ${color.b / 255} 0 0
+      return `${props.asteroid.color.r / 255} 0 0 0 0
+              0 ${props.asteroid.color.g / 255} 0 0 0
+              0 0 ${props.asteroid.color.b / 255} 0 0
               0 0 0 1 0`;
     });
 
     GameLoop.addListener((dt: number) => {
-      position.x += vector.x * dt;
-      position.y += vector.y * dt;
-      position.z += vector.z * dt;
-      rotation.r += rotation.vector * dt;
+      props.asteroid.move(
+        props.asteroid.vector.x * dt,
+        props.asteroid.vector.y * dt,
+        props.asteroid.vector.z * dt,
+        props.asteroid.vector.r * dt
+      );
     });
 
     const paths = generate(Math.random() * 100);
 
+    function setTarget() {
+      context.emit("target", props.asteroid);
+      // console.log(
+      //   "x:",
+      //   props.asteroid.position.x.toFixed(1),
+      //   "y:",
+      //   props.asteroid.position.y.toFixed(1)
+      // );
+    }
+
     return {
-      asteroid,
-      position,
-      vector,
       x,
       y,
       z,
       r,
-      color,
       colorMatrix,
-      paths
+      paths,
+      setTarget
     };
   }
 });
 </script>
 
-<!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped lang="scss" vars="{ x, y, z, r }">
-
 .asteroid {
-  border-radius: 999999rem;
-  padding: 1rem;
-  width: 5rem;
-  display: inline-block;
+  width: 15rem;
   user-select: none;
-  position: relative;
-  transform-origin: center;
-  transform: perspective(50px) translate3d(var(--x), var(--y), var(--z));
+  position: absolute;
+  left: var(--x);
+  top: var(--y);
 }
 </style>
