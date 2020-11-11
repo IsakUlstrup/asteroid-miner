@@ -1,14 +1,7 @@
 <template>
   <div id="app">
     <section class="space">
-      <!-- <SpaceAsteroid
-        v-for="a in asteroids"
-        :key="a"
-        :asteroid="a"
-        @target="setTarget"
-        :ship-position="ship.position"
-      /> -->
-      <Space />
+      <AsteroidField :ship="ship" @target="setTarget" />
     </section>
     <section class="ship">
       <Ship :target="target" :ship="ship" />
@@ -19,7 +12,7 @@
 <script lang="ts">
 import { defineComponent, reactive, ref } from "vue";
 import Ship from "@/components/Ship.vue";
-import Space from "@/components/Space.vue";
+import AsteroidField from "@/components/AsteroidField.vue";
 
 import ShipClass from "@/classes/Ship";
 
@@ -32,7 +25,7 @@ export default defineComponent({
   name: "App",
   components: {
     Ship,
-    Space
+    AsteroidField
   },
   setup() {
     const ship = reactive(new ShipClass("a ship", 5));

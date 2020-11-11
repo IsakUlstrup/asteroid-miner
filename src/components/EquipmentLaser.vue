@@ -1,8 +1,10 @@
 <template>
   <div class="laser">
     <p v-if="target">
-      target: {{ target.name }} x: {{ target.position.x.toFixed(1) }} y:
-      {{ target.position.y.toFixed(1) }}
+      target: {{ target.name }}
+      <br />
+      rgb: {{ target.color.r.toFixed(0) }}, {{ target.color.g.toFixed(0) }},
+      {{ target.color.b.toFixed(0) }}
     </p>
     <h1>{{ equipment.name }}</h1>
     Power:

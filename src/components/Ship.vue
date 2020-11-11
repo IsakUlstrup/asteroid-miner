@@ -1,5 +1,5 @@
 <template>
-  <div class="beam-slots">
+  <!-- <div class="beam-slots">
     <div class="beam" v-for="(s, index) in ship.equipmentSlots" :key="s">
       <LaserBeam
         v-if="ship.equipment[index].type === EquipmentType.laser && target"
@@ -7,7 +7,7 @@
         :y="target.position.y + 75"
       />
     </div>
-  </div>
+  </div> -->
   <div class="ship">
     <div class="equipment-slots">
       <div
@@ -48,7 +48,7 @@ import { EquipmentType } from "../types";
 import GameLoop from "../GameLoop";
 import Asteroid from "@/classes/Asteroid";
 
-import LaserBeam from "@/components/LaserBeam.vue";
+// import LaserBeam from "@/components/LaserBeam.vue";
 import Reactor from "@/components/EquipmentReactor.vue";
 import Laser from "@/components/EquipmentLaser.vue";
 import None from "@/components/EquipmentNone.vue";
@@ -57,7 +57,7 @@ import Engine from "@/components/EquipmentEngine.vue";
 export default defineComponent({
   name: "Ship",
   components: {
-    LaserBeam,
+    // LaserBeam,
     Reactor,
     Laser,
     None,
