@@ -37,9 +37,27 @@ export default defineComponent({
       if (canvas.value) fitToContainer(canvas.value);
     }
 
+    // https://www.html5rocks.com/en/tutorials/canvas/hidpi/
+    function setupCanvas(canvas: HTMLCanvasElement) {
+      // Get the device pixel ratio, falling back to 1.
+      const dpr = window.devicePixelRatio || 1;
+      // Get the size of the canvas in CSS pixels.
+      const rect = canvas.getBoundingClientRect();
+      // Give the canvas pixel dimensions of their CSS
+      // size * the device pixel ratio.
+      canvas.width = rect.width * dpr;
+      canvas.height = rect.height * dpr;
+      const ctx = canvas.getContext("2d");
+      // Scale all drawing operations by the dpr, so you
+      // don't have to worry about the difference.
+      if (ctx) ctx.scale(dpr, dpr);
+      return ctx;
+    }
+
     const ctx = computed(() => {
       if (canvas.value) {
-        return canvas.value.getContext("2d");
+        return setupCanvas(canvas.value);
+        // return canvas.value.getContext("2d");
       } else {
         return false;
       }
