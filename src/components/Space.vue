@@ -1,9 +1,7 @@
 <template>
-  <div class="wrapper" ref="wrapper">
-    <canvas ref="canvas" id="canvas" width="150" height="150">
-      canvas not supported
-    </canvas>
-  </div>
+  <canvas ref="canvas" id="canvas" width="150" height="150">
+    canvas not supported
+  </canvas>
 </template>
 
 <script lang="ts">
@@ -59,75 +57,75 @@ export default defineComponent({
     const wrapper = ref<HTMLDivElement>();
     const canvas = ref<HTMLCanvasElement>();
     const gameObjects: GameObject[] = [];
-    const numberOfObjects = 2000;
+    const numberOfObjects = 200;
 
-    const roundness = 1.2;
-    function generate(numPoints: number) {
-      const width = 200;
-      const height = 200;
-      // generate a spiral using polar coordinates
-      const points = [];
-      const NUM_POINTS = numPoints;
-      let r = 0;
-      const rStep = width / 2 / NUM_POINTS;
-      let theta = 0;
-      const thetaStep = (Math.PI / NUM_POINTS) * 18;
-      for (let i = 0; i < NUM_POINTS; i++) {
-        const x = width / 2 + r * Math.cos(theta) * (Math.random() * roundness);
-        const y =
-          height / 2 + r * Math.sin(theta) * (Math.random() * roundness);
-        const point = [x, y];
-        points.push(point);
-        r += rStep;
-        theta = (theta + thetaStep) % (2 * Math.PI);
-      }
+    // const roundness = 1.2;
+    // function generate(numPoints: number) {
+    //   const width = 200;
+    //   const height = 200;
+    //   // generate a spiral using polar coordinates
+    //   const points = [];
+    //   const NUM_POINTS = numPoints;
+    //   let r = 0;
+    //   const rStep = width / 2 / NUM_POINTS;
+    //   let theta = 0;
+    //   const thetaStep = (Math.PI / NUM_POINTS) * 18;
+    //   for (let i = 0; i < NUM_POINTS; i++) {
+    //     const x = width / 2 + r * Math.cos(theta) * (Math.random() * roundness);
+    //     const y =
+    //       height / 2 + r * Math.sin(theta) * (Math.random() * roundness);
+    //     const point = [x, y];
+    //     points.push(point);
+    //     r += rStep;
+    //     theta = (theta + thetaStep) % (2 * Math.PI);
+    //   }
 
-      // apply trianglify to convert the points to polygons and apply the color
-      // gradient
-      const pattern = trianglify({
-        height,
-        width,
-        xColors: ["rgba(255, 255, 255, 1)", "rgba(100, 100, 100, 1)"],
-        // xColors: [cssColor.value, darkCssColor.value],
-        yColors: "match",
-        variance: 1,
-        cellSize: 100,
-        points,
-        // colorFunction: trianglify.colorFunctions.sparkle(0.1)
-        colorFunction: trianglify.colorFunctions.shadows(0.25)
-      });
+    //   // apply trianglify to convert the points to polygons and apply the color
+    //   // gradient
+    //   const pattern = trianglify({
+    //     height,
+    //     width,
+    //     xColors: ["rgba(255, 255, 255, 1)", "rgba(100, 100, 100, 1)"],
+    //     // xColors: [cssColor.value, darkCssColor.value],
+    //     yColors: "match",
+    //     variance: 1,
+    //     cellSize: 100,
+    //     points,
+    //     // colorFunction: trianglify.colorFunctions.sparkle(0.1)
+    //     colorFunction: trianglify.colorFunctions.shadows(0.25)
+    //   });
 
-      return pattern.toSVG().childNodes;
-    }
+    //   return pattern.toSVG().childNodes;
+    // }
 
-    function generateAsteroid(sides: number) {
-      // console.log(generate(10));
+    // function generateAsteroid(sides: number) {
+    //   // console.log(generate(10));
 
-      interface Path {
-        p: Path2D;
-        c: string;
-      }
+    //   interface Path {
+    //     p: Path2D;
+    //     c: string;
+    //   }
 
-      interface Test {
-        paths: Path[];
-      }
-      const asteroid: Test = {
-        paths: []
-      };
-      const paths = generate(sides);
-      // console.log(paths);
-      // const canvasPaths: Path2D[] = [];
-      paths.forEach((path: SVGPathElement) => {
-        // console.log(path.attributes[1].value);
-        // canvasPaths.push(new Path2D(path.attributes[0].value));
-        asteroid.paths.push({
-          p: new Path2D(path.attributes[0].value),
-          c: path.attributes[1].value
-        });
-      });
-      console.log(asteroid);
-      return asteroid;
-    }
+    //   interface Test {
+    //     paths: Path[];
+    //   }
+    //   const asteroid: Test = {
+    //     paths: []
+    //   };
+    //   const paths = generate(sides);
+    //   // console.log(paths);
+    //   // const canvasPaths: Path2D[] = [];
+    //   paths.forEach((path: SVGPathElement) => {
+    //     // console.log(path.attributes[1].value);
+    //     // canvasPaths.push(new Path2D(path.attributes[0].value));
+    //     asteroid.paths.push({
+    //       p: new Path2D(path.attributes[0].value),
+    //       c: path.attributes[1].value
+    //     });
+    //   });
+    //   console.log(asteroid);
+    //   return asteroid;
+    // }
 
     function fitToContainer(canvas: HTMLCanvasElement) {
       canvas.style.width = "100%";
@@ -154,32 +152,34 @@ export default defineComponent({
     onMounted(() => {
       setCanvasSize();
       window.addEventListener("resize", setCanvasSize);
-      canvas.value?.addEventListener("click", (event: MouseEvent) => {
-        const x = event.pageX,
-          y = event.pageY;
-        targetObject = undefined;
+      if (canvas.value)
+        canvas.value.addEventListener("click", (event: MouseEvent) => {
+          const x = event.pageX,
+            y = event.pageY;
+          targetObject = undefined;
 
-        // Collision detection between clicked offset and element.
-        gameObjects.forEach(function(gameObject: GameObject) {
-          if (
-            y > gameObject.position.y &&
-            y < gameObject.position.y + gameObject.dimensions.h &&
-            x > gameObject.position.x &&
-            x < gameObject.position.x + gameObject.dimensions.w
-          ) {
-            gameObject.clicked = !gameObject.clicked;
-            if (gameObject.clicked) {
-              targetObject = gameObject;
+          // Collision detection between clicked offset and element.
+          gameObjects.forEach((gameObject: GameObject) => {
+            if (
+              canvas.value &&
+              y > gameObject.position.y * canvas.value.height &&
+              y < gameObject.position.y * canvas.value.height + gameObject.dimensions.h &&
+              x > gameObject.position.x * canvas.value.width &&
+              x < gameObject.position.x * canvas.value.width + gameObject.dimensions.w
+            ) {
+              gameObject.clicked = !gameObject.clicked;
+              if (gameObject.clicked) {
+                targetObject = gameObject;
+              } else {
+                targetObject = undefined;
+              }
+              console.log(gameObject.clicked);
+              // console.log("clicked an element", gameObject);
             } else {
-              targetObject = undefined;
+              gameObject.clicked = false;
             }
-            console.log(gameObject.clicked);
-            // console.log("clicked an element", gameObject);
-          } else {
-            gameObject.clicked = false;
-          }
+          });
         });
-      });
 
       if (canvas.value) {
         for (let index = 0; index < numberOfObjects; index++) {
@@ -261,8 +261,8 @@ export default defineComponent({
           ctx.beginPath();
           ctx.moveTo(canvas.width / 2, canvas.height);
           ctx.lineTo(
-            targetObject.position.x + targetObject.dimensions.w / 2,
-            targetObject.position.y + targetObject.dimensions.h / 2
+            targetObject.position.x * canvas.width + targetObject.dimensions.w / 2,
+            targetObject.position.y * canvas.height + targetObject.dimensions.h / 2
           );
           ctx.closePath();
           ctx.stroke();
@@ -293,8 +293,8 @@ export default defineComponent({
 </script>
 
 <style scoped lang="scss" vars="{}">
-.wrapper {
-  width: 100%;
-  height: 100%;
-}
+// .wrapper {
+//   width: 100%;
+//   height: 100%;
+// }
 </style>
