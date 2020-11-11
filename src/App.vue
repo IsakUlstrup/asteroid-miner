@@ -20,6 +20,7 @@ import Ship from "@/components/Ship.vue";
 
 import SpaceAsteroid from "@/components/SpaceAsteroid.vue";
 import Asteroid from "@/classes/Asteroid";
+import config from "@/config";
 
 export default defineComponent({
   name: "App",
@@ -28,7 +29,7 @@ export default defineComponent({
     SpaceAsteroid
   },
   setup() {
-    const asteroids = new Array(50);
+    const asteroids = new Array(config.asteroidMaxCount);
     for (let index = 0; index < asteroids.length; index++) {
       // const element = asteroids[index];
       asteroids[index] = reactive(new Asteroid());

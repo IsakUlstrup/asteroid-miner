@@ -52,25 +52,20 @@ export default defineComponent({
       type: Asteroid,
       required: false,
       default: undefined
-    },
-    element: {
-      type: HTMLDivElement,
-      required: false,
-      default: undefined
     }
   },
   setup(props) {
     const isMining = ref(false);
-    const targetCoords = ref({
-      x: 0,
-      y: 0
-    });
+    // const targetCoords = ref({
+    //   x: 0,
+    //   y: 0
+    // });
 
     function update(dt: number) {
-      if (props.element) {
-        targetCoords.value.x = props.element.offsetLeft;
-        targetCoords.value.y = props.element.offsetTop;
-      }
+      // if (props.element) {
+      //   targetCoords.value.x = props.element.offsetLeft;
+      //   targetCoords.value.y = props.element.offsetTop;
+      // }
 
       if (!props.target || !isMining.value || props.target.hp <= 0) {
         isMining.value = false;
@@ -87,8 +82,7 @@ export default defineComponent({
 
     return {
       toggleMine,
-      isMining,
-      targetCoords
+      isMining
     };
   }
 });

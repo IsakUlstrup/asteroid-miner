@@ -16,7 +16,8 @@ export interface Item {
 export enum EquipmentType {
   reactor = "reactor",
   laser = "laser",
-  none = "none"
+  none = "none",
+  engine = "engine"
 }
 
 export interface EquipmentStats {

@@ -19,6 +19,7 @@
           :is="equipment.type"
           :equipment="equipment"
           :target="target"
+          :ship="ship"
         />
       </div>
     </div>
@@ -51,6 +52,7 @@ import LaserBeam from "@/components/LaserBeam.vue";
 import Reactor from "@/components/EquipmentReactor.vue";
 import Laser from "@/components/EquipmentLaser.vue";
 import None from "@/components/EquipmentNone.vue";
+import Engine from "@/components/EquipmentEngine.vue";
 
 export default defineComponent({
   name: "Ship",
@@ -58,7 +60,8 @@ export default defineComponent({
     LaserBeam,
     Reactor,
     Laser,
-    None
+    None,
+    Engine
   },
   props: {
     target: {
@@ -91,9 +94,18 @@ export default defineComponent({
       name: "Laser two"
     });
 
+    const engine = new Equipment({
+      equipmentType: EquipmentType.engine,
+      name: "an engine",
+      energyBufferSize: 50,
+      energyUse: 0.01,
+      effect: 0.0001
+    });
+
     ship.setEquipment(reactor, 0);
     ship.setEquipment(laser, 1);
     ship.setEquipment(laser2, 2);
+    ship.setEquipment(engine, 4);
 
     GameLoop.addListener((dt: number) => {
       // energy generation, if any equipment needs it

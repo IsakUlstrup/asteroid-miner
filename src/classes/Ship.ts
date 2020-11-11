@@ -6,6 +6,7 @@ export default class Ship {
   name: string;
   type: ShipType;
   equipmentSlots: number;
+  position: number;
 
   constructor(name: string, slots: number) {
     this.name = name;
@@ -13,6 +14,7 @@ export default class Ship {
     this.equipment = new Array(slots);
     this.equipment.fill(new Equipment({ equipmentType: EquipmentType.none }));
     this.type = ShipType.eve;
+    this.position = 0;
   }
   get reactors() {
     return this.equipment.filter(e => e && e.type === "reactor");
@@ -20,6 +22,9 @@ export default class Ship {
   setEquipment(equipment: Equipment, slot: number) {
     if (slot > this.equipmentSlots) return;
     this.equipment[slot] = equipment;
+  }
+  move(speed: number) {
+    this.position += speed;
   }
   generateEnergy() {
     let energy = 0;
