@@ -41,7 +41,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, reactive } from "vue";
+import { defineComponent } from "vue";
 import Equipment from "@/classes/Equipment";
 import Ship from "@/classes/Ship";
 import { EquipmentType } from "../types";
@@ -64,14 +64,17 @@ export default defineComponent({
     Engine
   },
   props: {
+    ship: {
+      type: Ship,
+      required: true
+    },
     target: {
       type: Asteroid,
       required: false,
       default: undefined
     }
   },
-  setup() {
-    const ship = reactive(new Ship("a ship", 5));
+  setup(props) {
     const reactor = new Equipment({
       equipmentType: EquipmentType.reactor,
       name: "A reactor",
@@ -99,25 +102,24 @@ export default defineComponent({
       name: "an engine",
       energyBufferSize: 50,
       energyUse: 0.01,
-      effect: 0.0001
+      effect: 0.01
     });
 
-    ship.setEquipment(reactor, 0);
-    ship.setEquipment(laser, 1);
-    ship.setEquipment(laser2, 2);
-    ship.setEquipment(engine, 4);
+    props.ship.setEquipment(reactor, 0);
+    props.ship.setEquipment(laser, 1);
+    props.ship.setEquipment(laser2, 2);
+    props.ship.setEquipment(engine, 4);
 
     GameLoop.addListener((dt: number) => {
       // energy generation, if any equipment needs it
-      if (ship.chargeableEquipment.length > 0) {
-        const energy = ship.generateEnergy() * dt;
+      if (props.ship.chargeableEquipment.length > 0) {
+        const energy = props.ship.generateEnergy() * dt;
         // energy distribution
-        ship.chargeEquipment(energy);
+        props.ship.chargeEquipment(energy);
       }
     });
 
     return {
-      ship,
       EquipmentType
     };
   }

@@ -52,7 +52,7 @@ export default defineComponent({
   },
   setup(props) {
     function moveShip(dt: number) {
-      console.log(props.equipment.use() * dt);
+      // console.log(props.equipment.use() * dt);
       props.ship.move(props.equipment.use() * dt);
     }
 

@@ -1,15 +1,17 @@
 <template>
   <div id="app">
     <section class="space">
-      <SpaceAsteroid
+      <!-- <SpaceAsteroid
         v-for="a in asteroids"
         :key="a"
         :asteroid="a"
         @target="setTarget"
-      />
+        :ship-position="ship.position"
+      /> -->
+      <Space />
     </section>
-    <section>
-      <Ship :target="target" />
+    <section class="ship">
+      <Ship :target="target" :ship="ship" />
     </section>
   </div>
 </template>
@@ -17,23 +19,36 @@
 <script lang="ts">
 import { defineComponent, reactive, ref } from "vue";
 import Ship from "@/components/Ship.vue";
+import Space from "@/components/Space.vue";
 
-import SpaceAsteroid from "@/components/SpaceAsteroid.vue";
+import ShipClass from "@/classes/Ship";
+
+// import SpaceAsteroid from "@/components/SpaceAsteroid.vue";
 import Asteroid from "@/classes/Asteroid";
 import config from "@/config";
+// import GameLoop from "@/GameLoop";
 
 export default defineComponent({
   name: "App",
   components: {
     Ship,
-    SpaceAsteroid
+    Space
   },
   setup() {
-    const asteroids = new Array(config.asteroidMaxCount);
+    const ship = reactive(new ShipClass("a ship", 5));
+    const asteroids = reactive(new Array(config.asteroidMaxCount));
     for (let index = 0; index < asteroids.length; index++) {
       // const element = asteroids[index];
-      asteroids[index] = reactive(new Asteroid());
+      asteroids[index] = new Asteroid();
     }
+
+    // GameLoop.addListener((dt: number) => {
+    //   asteroids.forEach(a => {
+    //     if (a) {
+    //       console.log(a, dt);
+    //     }
+    //   });
+    // });
 
     const target = ref<Asteroid>();
 
@@ -51,7 +66,8 @@ export default defineComponent({
     return {
       asteroids,
       setTarget,
-      target
+      target,
+      ship
     };
   }
 });
@@ -92,7 +108,6 @@ body {
 
   .space {
     background: #262626;
-    position: relative;
     flex: 2;
   }
 }

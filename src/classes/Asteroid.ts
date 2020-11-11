@@ -37,6 +37,10 @@ export default class Asteroid {
       y: (Math.random() - 0.5) * 0.01,
       z: (Math.random() - 0.5) * 0.01,
       r: (Math.random() - 0.5) * 0.01
+      // x: 0,
+      // y: 0,
+      // z: 0,
+      // r: 0
     };
 
     this.color = {

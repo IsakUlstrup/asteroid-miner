@@ -49,6 +49,10 @@ export default defineComponent({
     asteroid: {
       type: Asteroid,
       required: true
+    },
+    shipPosition: {
+      type: Number,
+      default: 0
     }
   },
   emits: ["target"],
@@ -64,6 +68,10 @@ export default defineComponent({
     });
     const r = computed(() => {
       return props.asteroid.position.r;
+    });
+    const scale = computed(() => {
+      // console.log("scale", (props.asteroid.position.z + props.shipPosition) / 50);
+      return (props.asteroid.position.z + props.shipPosition) / 50;
     });
 
     const roundness = 1.2;
@@ -134,6 +142,7 @@ export default defineComponent({
       y,
       z,
       r,
+      scale,
       colorMatrix,
       paths,
       setTarget,
@@ -143,7 +152,7 @@ export default defineComponent({
 });
 </script>
 
-<style scoped lang="scss" vars="{ x, y, z, r }">
+<style scoped lang="scss" vars="{ x, y, z, r, scale }">
 .asteroid {
   width: 15rem;
   user-select: none;
@@ -151,6 +160,7 @@ export default defineComponent({
   // left: var(--x);
   // top: var(--y);
   perspective: 100px;
-  transform: translate3d(var(--x), var(--y), var(--z));
+  transform-origin: 50% 50%;
+  transform: scale(var(--scale)) translate(var(--x), var(--y));
 }
 </style>
