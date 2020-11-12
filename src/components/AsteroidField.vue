@@ -95,9 +95,25 @@ export default defineComponent({
     }
 
     function update(dt: number) {
+      // asteroids
       asteroids.forEach(asteroid => {
         asteroid.update(dt);
+        // remove off screen asteroids
+        if (
+          asteroid.position.x < 0 ||
+          asteroid.position.y < 0 ||
+          (canvas.value && asteroid.position.x > canvas.value.width) ||
+          (canvas.value && asteroid.position.y > canvas.value.height)
+        ) {
+          // console.log("asteroid", asteroid.name, "is offscreen, remove");
+          asteroids.splice(asteroids.indexOf(asteroid), 1);
+        }
       });
+
+      // spawn new asteroids if count is below max
+      if (asteroids.length < config.asteroidMaxCount) {
+        asteroids.push(new Asteroid());
+      }
     }
 
     function draw(ctx: CanvasRenderingContext2D, canvas: HTMLCanvasElement) {
@@ -127,29 +143,22 @@ export default defineComponent({
       ctx.font = "14px Arial";
       ctx.fillStyle = "rgb(255, 255, 255)";
       ctx.fillText(
-        `canvas dimensions: ${canvas.width} x ${canvas.height} | FPS: ${(
+        `${canvas.width} x ${canvas.height} | FPS: ${(
           1000 / GameLoop.timing.dt
-        ).toFixed(1)}`,
+        ).toFixed(1)} | asteroids: ${asteroids.length}`,
         10,
         20
       );
     }
 
     GameLoop.addListener((dt: number) => {
-      update(dt);
+      if (ctx && canvas.value) update(dt);
       if (ctx && canvas.value) draw(ctx, canvas.value);
     });
 
     onMounted(() => {
       if (canvas.value) {
         setup(canvas.value);
-      }
-
-      // spawn asteroids
-      if (canvas.value) {
-        for (let index = 0; index < config.asteroidMaxCount; index++) {
-          asteroids[index] = new Asteroid();
-        }
       }
     });
 
