@@ -1,13 +1,4 @@
 <template>
-  <!-- <div class="beam-slots">
-    <div class="beam" v-for="(s, index) in ship.equipmentSlots" :key="s">
-      <LaserBeam
-        v-if="ship.equipment[index].type === EquipmentType.laser && target"
-        :x="target.position.x + 75"
-        :y="target.position.y + 75"
-      />
-    </div>
-  </div> -->
   <div class="ship">
     <div class="equipment-slots">
       <div
@@ -34,6 +25,7 @@
       vector
       <ul>
         <li>z: {{ target.vector.z }}</li>
+        <li>size: {{ target.size }}</li>
       </ul>
     </div>
 

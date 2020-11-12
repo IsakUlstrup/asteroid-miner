@@ -28,7 +28,7 @@ export default defineComponent({
     let ctx: CanvasRenderingContext2D | null;
     let targetObject: Asteroid | undefined = undefined;
     // const dpr = window.devicePixelRatio;
-    const dpr = config.resolutionScaling;
+    // const dpr = config.resolutionScaling;
 
     const canvasSize = {
       w: 100,
@@ -46,16 +46,16 @@ export default defineComponent({
       // size * the device pixel ratio.
       canvas.style.width = "100%";
       canvas.style.height = "100%";
-      canvas.width = rect.width * dpr;
-      canvas.height = rect.height * dpr;
-      canvasSize.w = canvas.width / dpr;
-      canvasSize.h = canvas.height / dpr;
+      canvas.width = rect.width * config.resolutionScaling;
+      canvas.height = rect.height * config.resolutionScaling;
+      canvasSize.w = canvas.width / config.resolutionScaling;
+      canvasSize.h = canvas.height / config.resolutionScaling;
       // resize canvas to fit container
       // fitToContainer(canvas);
       const ctx = canvas.getContext("2d");
-      // Scale all drawing operations by the dpr, so you
+      // Scale all drawing operations by the config.resolutionScaling, so you
       // don't have to worry about the difference.
-      if (ctx) ctx.scale(dpr, dpr);
+      if (ctx) ctx.scale(config.resolutionScaling, config.resolutionScaling);
       return ctx;
     }
 
@@ -113,11 +113,12 @@ export default defineComponent({
         asteroid.update(dt, props.ship.position);
         // remove off screen asteroids
         if (
-          asteroid.position.x < 0 ||
-          asteroid.position.y < 0 ||
+          asteroid.position.x * canvasSize.w + asteroid.size.w < 0 ||
+          asteroid.position.y * canvasSize.h + asteroid.size.h < 0 ||
           asteroid.position.z < props.ship.position ||
-          asteroid.position.x > canvasSize.w ||
-          asteroid.position.y > canvasSize.h
+          asteroid.dimensions.s <= 0 ||
+          asteroid.position.x * canvasSize.w > canvasSize.w ||
+          asteroid.position.y * canvasSize.w > canvasSize.h
         ) {
           // console.log("asteroid", asteroid.name, "is offscreen, remove");
           asteroids.splice(asteroids.indexOf(asteroid), 1);
@@ -173,7 +174,8 @@ export default defineComponent({
       ctx.font = "14px Arial";
       ctx.fillStyle = "rgb(255, 255, 255)";
       ctx.fillText(
-        `${canvasWidth * dpr} x ${canvasHeight * dpr} | FPS: ${(
+        `${canvasWidth * config.resolutionScaling} x ${canvasHeight *
+          config.resolutionScaling} | FPS: ${(
           1000 / GameLoop.timing.dt
         ).toFixed(1)} | asteroids: ${asteroids.length}`,
         10,
@@ -183,7 +185,7 @@ export default defineComponent({
 
     GameLoop.addListener((dt: number) => {
       if (ctx && canvas.value) update(dt);
-      if (ctx && canvasSize) draw(ctx, canvasSize.w, canvasSize.h );
+      if (ctx) draw(ctx, canvasSize.w, canvasSize.h);
     });
 
     onMounted(() => {
