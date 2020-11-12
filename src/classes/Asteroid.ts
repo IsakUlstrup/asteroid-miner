@@ -28,6 +28,8 @@ export default class Asteroid extends CanvasObject {
   update(dt: number) {
     this.position.x += this.vector.x * dt;
     this.position.y += this.vector.y * dt;
+    this.position.z += this.vector.y * dt;
+    this.position.r += this.vector.r * dt;
   }
   draw(ctx: CanvasRenderingContext2D, canvas: HTMLCanvasElement) {
     ctx.fillStyle = `rgb(${this.color.r}, ${this.color.g}, ${this.color.b})`;

@@ -107,6 +107,10 @@ export default defineComponent({
         ) {
           // console.log("asteroid", asteroid.name, "is offscreen, remove");
           asteroids.splice(asteroids.indexOf(asteroid), 1);
+          if (asteroid === targetObject) {
+            targetObject = undefined;
+            context.emit("target", undefined);
+          }
         }
       });
 
