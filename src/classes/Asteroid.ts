@@ -1,4 +1,5 @@
 import CanvasObject from "./CanvasObject";
+// import config from "../config";
 
 export default class Asteroid extends CanvasObject {
   name: string;
@@ -6,12 +7,14 @@ export default class Asteroid extends CanvasObject {
   id: number;
   clicked: boolean;
 
-  constructor() {
+  constructor(z: number) {
     super();
     this.name = `Asteroid #${((Math.random() + 1) * 100).toFixed(0)}`;
     this.hp = 100;
     this.id = Math.random();
     this.clicked = false;
+    this.position.z = Math.random() + z;
+    this.dimensions.s = 0;
   }
   mine(power: number) {
     this.color.r -= power;
@@ -25,11 +28,16 @@ export default class Asteroid extends CanvasObject {
       r: this.position.r += r
     };
   }
-  update(dt: number) {
+  update(dt: number, cameraPosition = 0) {
+    // position
     this.position.x += this.vector.x * dt;
     this.position.y += this.vector.y * dt;
-    this.position.z += this.vector.y * dt;
-    this.position.r += this.vector.r * dt;
+    this.position.z += this.vector.z * dt;
+
+    // scale
+    this.dimensions.s = 1 - this.position.z + cameraPosition;
+    // this.dimensions.w *= this.dimensions.s;
+    // this.dimensions.h *= this.dimensions.s;
   }
   draw(ctx: CanvasRenderingContext2D, canvas: HTMLCanvasElement) {
     ctx.fillStyle = `rgb(${this.color.r}, ${this.color.g}, ${this.color.b})`;
@@ -39,22 +47,15 @@ export default class Asteroid extends CanvasObject {
       ctx.strokeRect(
         this.position.x * canvas.width,
         this.position.y * canvas.height,
-        this.dimensions.w,
-        this.dimensions.h
-      );
-      ctx.fillRect(
-        this.position.x * canvas.width,
-        this.position.y * canvas.height,
-        this.dimensions.w,
-        this.dimensions.h
-      );
-    } else {
-      ctx.fillRect(
-        this.position.x * canvas.width,
-        this.position.y * canvas.height,
-        this.dimensions.w,
-        this.dimensions.h
+        this.size.w,
+        this.size.h
       );
     }
+    ctx.fillRect(
+      this.position.x * canvas.width,
+      this.position.y * canvas.height,
+      this.size.w,
+      this.size.h
+    );
   }
 }

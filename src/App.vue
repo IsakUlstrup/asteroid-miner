@@ -18,7 +18,7 @@ import ShipClass from "@/classes/Ship";
 
 // import SpaceAsteroid from "@/components/SpaceAsteroid.vue";
 import Asteroid from "@/classes/Asteroid";
-import config from "@/config";
+// import config from "@/config";
 // import GameLoop from "@/GameLoop";
 
 export default defineComponent({
@@ -29,11 +29,11 @@ export default defineComponent({
   },
   setup() {
     const ship = reactive(new ShipClass("a ship", 5));
-    const asteroids = reactive(new Array(config.asteroidMaxCount));
-    for (let index = 0; index < asteroids.length; index++) {
-      // const element = asteroids[index];
-      asteroids[index] = new Asteroid();
-    }
+    // const asteroids = reactive(new Array(config.asteroidMaxCount));
+    // for (let index = 0; index < asteroids.length; index++) {
+    //   // const element = asteroids[index];
+    //   // asteroids[index] = new Asteroid();
+    // }
 
     // GameLoop.addListener((dt: number) => {
     //   asteroids.forEach(a => {
@@ -57,7 +57,6 @@ export default defineComponent({
     }
 
     return {
-      asteroids,
       setTarget,
       target,
       ship

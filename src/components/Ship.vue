@@ -23,6 +23,19 @@
         />
       </div>
     </div>
+    <div class="target" v-if="target">
+      <h3>{{ target.name }}</h3>
+      <ul>
+        <li>x: {{ target.position.x.toFixed(2) }}</li>
+        <li>y: {{ target.position.y.toFixed(2) }}</li>
+        <li>z: {{ target.position.z }}</li>
+        <li>s: {{ target.dimensions.s }}</li>
+      </ul>
+      vector
+      <ul>
+        <li>z: {{ target.vector.z }}</li>
+      </ul>
+    </div>
 
     <h1>{{ ship.name }}</h1>
     <h3>reactors</h3>
@@ -102,7 +115,7 @@ export default defineComponent({
       name: "an engine",
       energyBufferSize: 50,
       energyUse: 0.01,
-      effect: 0.01
+      effect: 0.0001
     });
 
     props.ship.setEquipment(reactor, 0);

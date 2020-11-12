@@ -5,7 +5,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, onMounted, ref } from "vue";
+import { defineComponent, onMounted, reactive, ref } from "vue";
 import GameLoop from "@/GameLoop";
 import Asteroid from "@/classes/Asteroid";
 import config from "@/config";
@@ -24,7 +24,7 @@ export default defineComponent({
   emits: ["target"],
   setup(props, context) {
     const canvas = ref<HTMLCanvasElement>();
-    const asteroids: Asteroid[] = [];
+    const asteroids: Asteroid[] = reactive([]);
     let ctx: CanvasRenderingContext2D | null;
     let targetObject: Asteroid | undefined = undefined;
 
@@ -55,9 +55,9 @@ export default defineComponent({
       const hits = asteroids.filter(asteroid => {
         return (
           y > asteroid.position.y * canvas.height &&
-          y < asteroid.position.y * canvas.height + asteroid.dimensions.h &&
+          y < asteroid.position.y * canvas.height + asteroid.size.h &&
           x > asteroid.position.x * canvas.width &&
-          x < asteroid.position.x * canvas.width + asteroid.dimensions.w
+          x < asteroid.position.x * canvas.width + asteroid.size.w
         );
       });
 
@@ -97,7 +97,7 @@ export default defineComponent({
     function update(dt: number) {
       // asteroids
       asteroids.forEach(asteroid => {
-        asteroid.update(dt);
+        asteroid.update(dt, props.ship.position);
         // remove off screen asteroids
         if (
           asteroid.position.x < 0 ||
@@ -116,7 +116,8 @@ export default defineComponent({
 
       // spawn new asteroids if count is below max
       if (asteroids.length < config.asteroidMaxCount) {
-        asteroids.push(new Asteroid());
+        // console.log("new asteroid", props.ship.position);
+        asteroids.push(new Asteroid(props.ship.position));
       }
     }
 

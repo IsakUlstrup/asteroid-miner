@@ -17,8 +17,8 @@ export default class Beam extends CanvasObject {
     ctx.beginPath();
     ctx.moveTo(this.position.x, this.position.y);
     ctx.lineTo(
-      this.target.position.x * canvas.width + this.target.dimensions.w / 2,
-      this.target.position.y * canvas.height + this.target.dimensions.h / 2
+      this.target.position.x * canvas.width + this.target.size.w / 2,
+      this.target.position.y * canvas.height + this.target.size.h / 2
     );
     ctx.closePath();
     ctx.stroke();

@@ -33,7 +33,7 @@ export default class CanvasObject {
       x: (Math.random() - 0.5) * 0.00001,
       y: (Math.random() - 0.5) * 0.00001,
       z: (Math.random() - 0.5) * 0.00001,
-      r: (Math.random() - 0.5) * 0.001
+      r: (Math.random() - 0.5) * 0.00001
     };
 
     this.color = {
@@ -43,15 +43,21 @@ export default class CanvasObject {
     };
 
     this.dimensions = {
-      w: (Math.random() + 1) * 20,
-      h: (Math.random() + 1) * 20,
+      w: (Math.random() + 1) * 50,
+      h: (Math.random() + 1) * 50,
       s: 1
     };
   }
-  update(dt: number) {
+  update(dt: number, cameraPosition = 0) {
     return;
   }
-  draw(ctx: CanvasRenderingContext2D,  canvas: HTMLCanvasElement) {
+  draw(ctx: CanvasRenderingContext2D, canvas: HTMLCanvasElement, cameraPosition = 0) {
     return;
+  }
+  get size() {
+    return {
+      w: this.dimensions.w * this.dimensions.s,
+      h: this.dimensions.h * this.dimensions.s
+    }
   }
 }
