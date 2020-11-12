@@ -5,7 +5,7 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, onMounted, reactive, ref } from "vue";
+import { defineComponent, onMounted, reactive, ref } from "vue";
 import GameLoop from "@/GameLoop";
 import Asteroid from "@/classes/Asteroid";
 import config from "@/config";
@@ -27,7 +27,8 @@ export default defineComponent({
     const asteroids: Asteroid[] = reactive([]);
     let ctx: CanvasRenderingContext2D | null;
     let targetObject: Asteroid | undefined = undefined;
-    const dpr = window.devicePixelRatio;
+    // const dpr = window.devicePixelRatio;
+    const dpr = config.resolutionScaling;
 
     const canvasSize = {
       w: 100,
@@ -191,7 +192,7 @@ export default defineComponent({
       ctx.font = "14px Arial";
       ctx.fillStyle = "rgb(255, 255, 255)";
       ctx.fillText(
-        `${canvasWidth} x ${canvasHeight} | FPS: ${(
+        `${canvasWidth * dpr} x ${canvasHeight * dpr} | FPS: ${(
           1000 / GameLoop.timing.dt
         ).toFixed(1)} | asteroids: ${asteroids.length}`,
         10,
