@@ -1,5 +1,5 @@
 <template>
-  <canvas ref="canvas" id="canvas" width="150" height="150">
+  <canvas ref="canvas" id="canvas">
     canvas not supported
   </canvas>
 </template>
@@ -28,22 +28,37 @@ export default defineComponent({
     let ctx: CanvasRenderingContext2D | null;
     let targetObject: Asteroid | undefined = undefined;
 
+    // function fitToContainer(canvas: HTMLCanvasElement){
+    //   // Make it visually fill the positioned parent
+    //   canvas.style.width ='100%';
+    //   canvas.style.height='100%';
+    //   // ...then set the internal size to match
+    //   canvas.width = canvas.offsetWidth;
+    //   canvas.height = canvas.offsetHeight;
+    // }
+
     // https://www.html5rocks.com/en/tutorials/canvas/hidpi/
     function setupCanvas(canvas: HTMLCanvasElement) {
       // Get the device pixel ratio, falling back to 1.
       const dpr = window.devicePixelRatio || 1;
+      console.log(window.devicePixelRatio);
       // Get the size of the canvas in CSS pixels.
       const rect = canvas.getBoundingClientRect();
+      console.log(rect.width, rect.height);
       // Give the canvas pixel dimensions of their CSS
       // size * the device pixel ratio.
-      canvas.width = rect.width * dpr;
-      canvas.height = rect.height * dpr;
+      // canvas.style.width = '100%';
+      // canvas.style.height= '100%';
+      canvas.width = rect.width;
+      canvas.height = rect.height;
+      // canvas.style.width = "100%";
+      // canvas.style.height = "100%";
       // resize canvas to fit container
       // fitToContainer(canvas);
       const ctx = canvas.getContext("2d");
       // Scale all drawing operations by the dpr, so you
       // don't have to worry about the difference.
-      if (ctx) ctx.scale(dpr, dpr);
+      // if (ctx) ctx.scale(dpr, dpr);
       return ctx;
     }
 
@@ -83,6 +98,7 @@ export default defineComponent({
     }
 
     function setup(canvas: HTMLCanvasElement) {
+      // fitToContainer(canvas);
       ctx = setupCanvas(canvas);
 
       window.addEventListener("resize", () => {
@@ -182,5 +198,6 @@ export default defineComponent({
 canvas {
   width: 100%;
   height: 100%;
+  border: 1px solid red;
 }
 </style>
