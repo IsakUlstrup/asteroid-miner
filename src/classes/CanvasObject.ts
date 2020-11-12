@@ -51,7 +51,7 @@ export default class CanvasObject {
   update(dt: number, cameraPosition = 0) {
     return;
   }
-  draw(ctx: CanvasRenderingContext2D, canvas: HTMLCanvasElement, cameraPosition = 0) {
+  draw(ctx: CanvasRenderingContext2D, canvasWidth: number, canvasHeight: number) {
     return;
   }
   get size() {

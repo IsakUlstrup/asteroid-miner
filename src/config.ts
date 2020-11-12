@@ -9,6 +9,6 @@ export default {
   svgShapeRendering: ShapeRendering.speed,
   // asteroid level of detail. Higher number is more demaing
   asteroidPolygonModifier: 10,
-  asteroidMaxCount: 100,
+  asteroidMaxCount: 10,
   spaceDepth: 100
 };

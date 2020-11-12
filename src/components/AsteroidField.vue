@@ -5,7 +5,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, onMounted, reactive, ref } from "vue";
+import { computed, defineComponent, onMounted, reactive, ref } from "vue";
 import GameLoop from "@/GameLoop";
 import Asteroid from "@/classes/Asteroid";
 import config from "@/config";
@@ -27,6 +27,23 @@ export default defineComponent({
     const asteroids: Asteroid[] = reactive([]);
     let ctx: CanvasRenderingContext2D | null;
     let targetObject: Asteroid | undefined = undefined;
+    const dpr = window.devicePixelRatio;
+
+    const canvasSize = {
+      w: 100,
+      h: 100
+    };
+
+    // const canvasSize = computed(() => {
+    //   if (canvas.value) {
+    //     return {
+    //       w: canvas.value.width / dpr,
+    //       h: canvas.value.height / dpr
+    //     };
+    //   } else {
+    //     return null;
+    //   }
+    // });
 
     // function fitToContainer(canvas: HTMLCanvasElement){
     //   // Make it visually fill the positioned parent
@@ -37,42 +54,41 @@ export default defineComponent({
     //   canvas.height = canvas.offsetHeight;
     // }
 
-    // https://www.html5rocks.com/en/tutorials/canvas/hidpi/
     function setupCanvas(canvas: HTMLCanvasElement) {
       // Get the device pixel ratio, falling back to 1.
-      const dpr = window.devicePixelRatio || 1;
-      console.log(window.devicePixelRatio);
+      // const dpr = window.devicePixelRatio || 1;
+      // console.log(window.devicePixelRatio);
       // Get the size of the canvas in CSS pixels.
       const rect = canvas.getBoundingClientRect();
-      console.log(rect.width, rect.height);
+      // console.log(rect.width, rect.height);
       // Give the canvas pixel dimensions of their CSS
       // size * the device pixel ratio.
-      // canvas.style.width = '100%';
-      // canvas.style.height= '100%';
-      canvas.width = rect.width;
-      canvas.height = rect.height;
-      // canvas.style.width = "100%";
-      // canvas.style.height = "100%";
+      canvas.style.width = "100%";
+      canvas.style.height = "100%";
+      canvas.width = rect.width * dpr;
+      canvas.height = rect.height * dpr;
+      canvasSize.w = canvas.width / dpr;
+      canvasSize.h = canvas.height / dpr;
       // resize canvas to fit container
       // fitToContainer(canvas);
       const ctx = canvas.getContext("2d");
       // Scale all drawing operations by the dpr, so you
       // don't have to worry about the difference.
-      // if (ctx) ctx.scale(dpr, dpr);
+      if (ctx) ctx.scale(dpr, dpr);
       return ctx;
     }
 
-    function handleClick(event: MouseEvent, canvas: HTMLCanvasElement) {
+    function handleClick(event: MouseEvent) {
       const x = event.pageX,
         y = event.pageY;
 
       // get asteroids that overlap click coordinates
       const hits = asteroids.filter(asteroid => {
         return (
-          y > asteroid.position.y * canvas.height &&
-          y < asteroid.position.y * canvas.height + asteroid.size.h &&
-          x > asteroid.position.x * canvas.width &&
-          x < asteroid.position.x * canvas.width + asteroid.size.w
+          y > asteroid.position.y * canvasSize.h &&
+          y < asteroid.position.y * canvasSize.h + asteroid.size.h &&
+          x > asteroid.position.x * canvasSize.w &&
+          x < asteroid.position.x * canvasSize.w + asteroid.size.w
         );
       });
 
@@ -106,7 +122,7 @@ export default defineComponent({
       });
 
       canvas.addEventListener("click", (event: MouseEvent) => {
-        if (canvas) handleClick(event, canvas);
+        handleClick(event);
       });
     }
 
@@ -118,8 +134,8 @@ export default defineComponent({
         if (
           asteroid.position.x < 0 ||
           asteroid.position.y < 0 ||
-          (canvas.value && asteroid.position.x > canvas.value.width) ||
-          (canvas.value && asteroid.position.y > canvas.value.height)
+          asteroid.position.x > canvasSize.w ||
+          asteroid.position.y > canvasSize.h
         ) {
           // console.log("asteroid", asteroid.name, "is offscreen, remove");
           asteroids.splice(asteroids.indexOf(asteroid), 1);
@@ -137,14 +153,18 @@ export default defineComponent({
       }
     }
 
-    function draw(ctx: CanvasRenderingContext2D, canvas: HTMLCanvasElement) {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
+    function draw(
+      ctx: CanvasRenderingContext2D,
+      canvasWidth: number,
+      canvasHeight: number
+    ) {
+      ctx.clearRect(0, 0, canvasWidth, canvasHeight);
       // draw asteroids
       asteroids.forEach(asteroid => {
-        asteroid.draw(ctx, canvas);
+        asteroid.draw(ctx, canvasWidth, canvasHeight);
       });
 
-      const equipmentSpacing = canvas.width / props.ship.equipmentSlots;
+      const equipmentSpacing = canvasWidth / props.ship.equipmentSlots;
       // lasers
       for (let index = 0; index < props.ship.equipment.length; index++) {
         const e = props.ship.equipment[index];
@@ -152,19 +172,26 @@ export default defineComponent({
           if (targetObject) {
             new Beam(
               equipmentSpacing * index,
-              canvas.height,
+              canvasHeight,
               targetObject,
               e.derivedStats.effect
-            ).draw(ctx, canvas);
+            ).draw(ctx, canvasWidth, canvasHeight);
           }
         }
+      }
+
+      // canvas frame, debug
+      ctx.lineWidth = 3;
+      ctx.strokeStyle = "rgb(255, 0, 100)";
+      if (canvasSize) {
+        ctx.strokeRect(0, 0, canvasSize.w, canvasSize.h);
       }
 
       // draw debug ui
       ctx.font = "14px Arial";
       ctx.fillStyle = "rgb(255, 255, 255)";
       ctx.fillText(
-        `${canvas.width} x ${canvas.height} | FPS: ${(
+        `${canvasWidth} x ${canvasHeight} | FPS: ${(
           1000 / GameLoop.timing.dt
         ).toFixed(1)} | asteroids: ${asteroids.length}`,
         10,
@@ -174,7 +201,7 @@ export default defineComponent({
 
     GameLoop.addListener((dt: number) => {
       if (ctx && canvas.value) update(dt);
-      if (ctx && canvas.value) draw(ctx, canvas.value);
+      if (ctx && canvasSize) draw(ctx, canvasSize.w, canvasSize.h );
     });
 
     onMounted(() => {
@@ -191,13 +218,8 @@ export default defineComponent({
 </script>
 
 <style scoped lang="scss" vars="{}">
-// .wrapper {
-//   width: 100%;
-//   height: 100%;
-// }
 canvas {
   width: 100%;
   height: 100%;
-  border: 1px solid red;
 }
 </style>

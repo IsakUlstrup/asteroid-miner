@@ -39,21 +39,25 @@ export default class Asteroid extends CanvasObject {
     // this.dimensions.w *= this.dimensions.s;
     // this.dimensions.h *= this.dimensions.s;
   }
-  draw(ctx: CanvasRenderingContext2D, canvas: HTMLCanvasElement) {
+  draw(
+    ctx: CanvasRenderingContext2D,
+    canvasWidth: number,
+    canvasHeight: number
+  ) {
     ctx.fillStyle = `rgb(${this.color.r}, ${this.color.g}, ${this.color.b})`;
     ctx.strokeStyle = "rgb(255, 255, 255)";
     if (this.clicked) {
-      ctx.lineWidth = 1;
+      ctx.lineWidth = 3;
       ctx.strokeRect(
-        this.position.x * canvas.width,
-        this.position.y * canvas.height,
+        this.position.x * canvasWidth,
+        this.position.y * canvasHeight,
         this.size.w,
         this.size.h
       );
     }
     ctx.fillRect(
-      this.position.x * canvas.width,
-      this.position.y * canvas.height,
+      this.position.x * canvasWidth,
+      this.position.y * canvasHeight,
       this.size.w,
       this.size.h
     );
