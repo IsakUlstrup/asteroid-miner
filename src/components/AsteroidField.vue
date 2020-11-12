@@ -35,26 +35,6 @@ export default defineComponent({
       h: 100
     };
 
-    // const canvasSize = computed(() => {
-    //   if (canvas.value) {
-    //     return {
-    //       w: canvas.value.width / dpr,
-    //       h: canvas.value.height / dpr
-    //     };
-    //   } else {
-    //     return null;
-    //   }
-    // });
-
-    // function fitToContainer(canvas: HTMLCanvasElement){
-    //   // Make it visually fill the positioned parent
-    //   canvas.style.width ='100%';
-    //   canvas.style.height='100%';
-    //   // ...then set the internal size to match
-    //   canvas.width = canvas.offsetWidth;
-    //   canvas.height = canvas.offsetHeight;
-    // }
-
     function setupCanvas(canvas: HTMLCanvasElement) {
       // Get the device pixel ratio, falling back to 1.
       // const dpr = window.devicePixelRatio || 1;
@@ -135,6 +115,7 @@ export default defineComponent({
         if (
           asteroid.position.x < 0 ||
           asteroid.position.y < 0 ||
+          asteroid.position.z < props.ship.position ||
           asteroid.position.x > canvasSize.w ||
           asteroid.position.y > canvasSize.h
         ) {
