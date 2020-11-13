@@ -94,12 +94,70 @@ export default defineComponent({
       }
     }
 
+    const targetCoords = reactive({
+      x: 0,
+      y: 0,
+      active: false
+    });
+
+    function targetAtPosition(x: number, y: number) {
+      // get asteroids that overlap click coordinates
+      const hits = asteroids.filter(asteroid => {
+        return (
+          y > asteroid.position.y * canvasSize.h &&
+          y < asteroid.position.y * canvasSize.h + asteroid.size.h &&
+          x > asteroid.position.x * canvasSize.w &&
+          x < asteroid.position.x * canvasSize.w + asteroid.size.w
+        );
+      });
+      if (hits.length > 0) {
+        return hits[0];
+      }
+    }
+
+    function handleMouseMove(event: MouseEvent) {
+      // console.log(event.clientX * config.resolutionScaling, event.clientY * config.resolutionScaling);
+      targetCoords.x = event.clientX;
+      targetCoords.y = event.clientY;
+      // targetCoords.target = targetAtPosition(targetCoords.x, targetCoords.y);
+      console.log(targetAtPosition(targetCoords.x, targetCoords.y));
+    }
+
+    function handleTouchMove(event: TouchEvent) {
+      event.preventDefault();
+      targetCoords.active = true;
+      targetCoords.x = event.touches[0].clientX;
+      targetCoords.y = event.touches[0].clientY;
+      console.log(targetAtPosition(targetCoords.x, targetCoords.y));
+      // console.log(event.touches[0].clientX, event.touches[0].clientY);
+    }
+
     function setup(canvas: HTMLCanvasElement) {
       // fitToContainer(canvas);
       ctx = setupCanvas(canvas);
 
       window.addEventListener("resize", () => {
         ctx = setupCanvas(canvas);
+      });
+
+      canvas.addEventListener("mousemove", handleMouseMove);
+      canvas.addEventListener("touchmove", handleTouchMove);
+
+      canvas.addEventListener("mousedown", () => {
+        targetCoords.active = true;
+      });
+
+      canvas.addEventListener("mouseup", () => {
+        targetCoords.active = false;
+      });
+      canvas.addEventListener("mouseleave", () => {
+        targetCoords.active = false;
+      });
+      canvas.addEventListener("touchend", () => {
+        targetCoords.active = false;
+      });
+      canvas.addEventListener("touchcancel", () => {
+        targetCoords.active = false;
       });
 
       canvas.addEventListener("click", (event: MouseEvent) => {
@@ -168,6 +226,15 @@ export default defineComponent({
       ctx.strokeStyle = "rgb(255, 0, 100)";
       if (canvasSize) {
         ctx.strokeRect(0, 0, canvasSize.w, canvasSize.h);
+        // debug crosshair
+        if (targetCoords.active) {
+          ctx.strokeRect(
+            targetCoords.x - 10 / 2,
+            targetCoords.y - 10 / 2,
+            10,
+            10
+          );
+        }
       }
 
       // draw debug ui
