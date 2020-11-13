@@ -17,6 +17,22 @@
       @input="equipment.setPower(+$event.target.value)"
       :value="equipment.state.powerModifier"
     />
+    <h3>Color</h3>
+    <ul>
+      <li>
+        C <input type="range" max="255" name="c" v-model="colorInput.c" />
+      </li>
+      <li>
+        M <input type="range" max="255" name="m" v-model="colorInput.m" />
+      </li>
+      <li>
+        Y <input type="range" max="255" name="y" v-model="colorInput.y" />
+      </li>
+      <li>
+        K <input type="range" max="255" name="k" v-model="colorInput.k" />
+      </li>
+    </ul>
+
     <br />
     <p>mining: {{ isMining }}</p>
     Buffer: {{ equipment.state.energy.toFixed(0) }} /
@@ -28,14 +44,10 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from "vue";
+import { defineComponent, reactive, ref, watch } from "vue";
 
 import GameLoop from "@/GameLoop";
-// import Color from "color";
-
-// const color = Color("rgb(255, 255, 255)");
-// console.log(color.rgb());
-// console.log(color.darken(0.1).rgb());
+import Color, { ColorMode } from "@/classes/Color";
 
 import Equipment from "../classes/Equipment";
 import Asteroid from "../classes/Asteroid";
@@ -58,17 +70,33 @@ export default defineComponent({
   },
   setup(props) {
     const isMining = ref(false);
-    // const targetCoords = ref({
-    //   x: 0,
-    //   y: 0
-    // });
+    const colorInput = reactive({
+      c: 0,
+      m: 0,
+      y: 0,
+      k: 0
+    });
+    const color = new Color({
+      mode: ColorMode.cmyk,
+      c: 100,
+      m: 10,
+      y: 15,
+      k: 1
+    });
+    console.log(color.rgb(), color.cmyk());
+
+    watch(colorInput, () => {
+      color.setColor({
+        mode: ColorMode.cmyk,
+        c: colorInput.c,
+        m: colorInput.m,
+        y: colorInput.y,
+        k: colorInput.k
+      });
+      console.log(colorInput);
+    });
 
     function update(dt: number) {
-      // if (props.element) {
-      //   targetCoords.value.x = props.element.offsetLeft;
-      //   targetCoords.value.y = props.element.offsetTop;
-      // }
-
       if (!props.target || !isMining.value || props.target.hp <= 0) {
         isMining.value = false;
         return;
@@ -84,7 +112,8 @@ export default defineComponent({
 
     return {
       toggleMine,
-      isMining
+      isMining,
+      colorInput
     };
   }
 });

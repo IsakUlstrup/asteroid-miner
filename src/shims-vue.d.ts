@@ -6,4 +6,4 @@ declare module '*.vue' {
 
 // declare module 'color';
 
-declare module "trianglify";
+// declare module "trianglify";
