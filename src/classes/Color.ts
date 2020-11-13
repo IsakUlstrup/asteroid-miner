@@ -6,14 +6,14 @@ export enum ColorMode {
   cmyk = "cmyk"
 }
 
-interface RGBColor {
+export interface RGBColor {
   mode: ColorMode.rgb;
   r: number;
   g: number;
   b: number;
 }
 
-interface CMYKColor {
+export interface CMYKColor {
   mode: ColorMode.cmyk;
   c: number;
   m: number;
@@ -76,6 +76,9 @@ export default class Color {
   rgb() {
     return this.state;
   }
+  rgbString() {
+    return `rgb(${this.rgb().r}, ${this.rgb().g}, ${this.rgb().b})`;
+  }
   cmyk() {
     const cmyk = colorConvert.rgb.cmyk(
       this.state.r,
@@ -87,6 +90,6 @@ export default class Color {
       m: cmyk[1],
       y: cmyk[2],
       k: cmyk[3]
-    }
+    };
   }
 }

@@ -36,6 +36,9 @@
     {{ ship.equipment }}
     <h1>Equipment</h1>
 
+    <h3>Time</h3>
+    <input type="button" value="pause" @click="GameLoop.pause(true)">
+
     <h3>Chargeable ({{ ship.chargeableEquipment.length }})</h3>
     <ul>
       <li v-for="e in ship.chargeableEquipment" :key="e">
@@ -92,7 +95,7 @@ export default defineComponent({
 
     const laser = new Equipment({
       equipmentType: EquipmentType.laser,
-      energyBufferSize: 50,
+      energyBufferSize: 150,
       name: "Laser one"
     });
 
@@ -125,7 +128,8 @@ export default defineComponent({
     });
 
     return {
-      EquipmentType
+      EquipmentType,
+      GameLoop
     };
   }
 });

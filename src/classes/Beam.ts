@@ -1,4 +1,5 @@
 import CanvasObject from "./CanvasObject";
+import Color from "./Color";
 
 export default class Beam extends CanvasObject {
   target: CanvasObject;
@@ -13,9 +14,11 @@ export default class Beam extends CanvasObject {
   draw(
     ctx: CanvasRenderingContext2D,
     canvasWidth: number,
-    canvasHeight: number
+    canvasHeight: number,
+    color: Color
   ) {
-    ctx.fillStyle = `rgba(255, 0, 0, ${this.intensity})`;
+    // ctx.fillStyle = `rgba(255, 0, 0, ${this.intensity})`;
+    ctx.fillStyle = color.rgbString();
     ctx.lineWidth = this.intensity * 5;
     ctx.lineCap = "round";
 

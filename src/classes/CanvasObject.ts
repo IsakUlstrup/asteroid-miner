@@ -1,3 +1,5 @@
+import Color, { ColorMode } from "./Color";
+
 export default class CanvasObject {
   position: {
     x: number;
@@ -11,11 +13,7 @@ export default class CanvasObject {
     z: number;
     r: number;
   };
-  color: {
-    r: number;
-    g: number;
-    b: number;
-  };
+  color: Color;
   dimensions: {
     w: number;
     h: number;
@@ -36,11 +34,12 @@ export default class CanvasObject {
       r: (Math.random() - 0.5) * 0.00001
     };
 
-    this.color = {
-      r: Math.random() * 255,
-      g: Math.random() * 255,
-      b: Math.random() * 255
-    };
+    this.color = new Color({
+      mode: ColorMode.rgb,
+      r: 0,
+      g: 0,
+      b: 0
+    });
 
     this.dimensions = {
       w: (Math.random() + 1) * 50,
@@ -51,7 +50,7 @@ export default class CanvasObject {
   update(dt: number, cameraPosition = 0) {
     return;
   }
-  draw(ctx: CanvasRenderingContext2D, canvasWidth: number, canvasHeight: number) {
+  draw(ctx: CanvasRenderingContext2D, canvasWidth: number, canvasHeight: number, color: Color) {
     return;
   }
   get size() {

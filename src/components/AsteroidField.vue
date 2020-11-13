@@ -158,7 +158,7 @@ export default defineComponent({
               canvasHeight,
               targetObject,
               e.derivedStats.effect
-            ).draw(ctx, canvasWidth, canvasHeight);
+            ).draw(ctx, canvasWidth, canvasHeight, e.color);
           }
         }
       }

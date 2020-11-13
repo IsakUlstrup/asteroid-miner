@@ -1,4 +1,5 @@
 import { Item, ItemType, EquipmentType, EquipmentStats } from "../types";
+import Color, { ColorMode, RGBColor, CMYKColor } from "./Color";
 
 export default class Equipment implements Item {
   // metadata
@@ -20,6 +21,8 @@ export default class Equipment implements Item {
     energy: number;
     fuel: number;
   };
+
+  color: Color;
 
   // derived stats
   get derivedStats() {
@@ -53,6 +56,14 @@ export default class Equipment implements Item {
       energy: 0,
       fuel: this.fuelBufferSize
     };
+
+    // init color
+    this.color = new Color({
+      mode: ColorMode.rgb,
+      r: 0,
+      g: 0,
+      b: 0
+    });
   }
 
   charge(amount: number) {
@@ -78,6 +89,9 @@ export default class Equipment implements Item {
   }
   setPower(power: number) {
     this.state.powerModifier = power;
+  }
+  setColor(color: RGBColor | CMYKColor) {
+    this.color.setColor(color);
   }
   use() {
     if (this.state.energy < this.derivedStats.energyUse) return 0;

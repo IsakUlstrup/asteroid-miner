@@ -1,5 +1,6 @@
 import CanvasObject from "./CanvasObject";
 // import config from "../config";
+import { ColorMode } from "./Color";
 
 export default class Asteroid extends CanvasObject {
   name: string;
@@ -15,10 +16,16 @@ export default class Asteroid extends CanvasObject {
     this.clicked = false;
     this.position.z = Math.random() + z;
     this.dimensions.s = 0;
+    this.color.setColor({
+      mode: ColorMode.rgb,
+      r: Math.random() * 255,
+      g: Math.random() * 255,
+      b: Math.random() * 255
+    });
   }
   mine(power: number) {
-    this.color.r -= power;
-    if (this.color.r <= 0) this.color.r = 0;
+    this.color.state.r -= power;
+    if (this.color.state.r <= 0) this.color.state.r = 0;
   }
   move(x: number, y: number, z: number, r: number) {
     this.position = {
@@ -44,7 +51,7 @@ export default class Asteroid extends CanvasObject {
     canvasWidth: number,
     canvasHeight: number
   ) {
-    ctx.fillStyle = `rgb(${this.color.r}, ${this.color.g}, ${this.color.b})`;
+    ctx.fillStyle = `rgb(${this.color.rgb().r}, ${this.color.rgb().g}, ${this.color.rgb().b})`;
     ctx.strokeStyle = "rgb(255, 255, 255)";
     if (this.clicked) {
       ctx.lineWidth = 3;

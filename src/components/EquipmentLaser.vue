@@ -3,8 +3,8 @@
     <p v-if="target">
       target: {{ target.name }}
       <br />
-      rgb: {{ target.color.r.toFixed(0) }}, {{ target.color.g.toFixed(0) }},
-      {{ target.color.b.toFixed(0) }}
+      rgb: {{ target.color.rgb().r.toFixed(0) }}, {{ target.color.rgb().g.toFixed(0) }},
+      {{ target.color.rgb().b.toFixed(0) }}
     </p>
     <h1>{{ equipment.name }}</h1>
     Power:
@@ -17,19 +17,20 @@
       @input="equipment.setPower(+$event.target.value)"
       :value="equipment.state.powerModifier"
     />
-    <h3>Color</h3>
+    <h3 :style="{ color: equipment.color.rgbString() }">Color</h3>
+    ({{ equipment.color.rgbString() }})
     <ul>
       <li>
-        C <input type="range" max="255" name="c" v-model="colorInput.c" />
+        C <input type="range" min="0" max="100" name="c" v-model="colorInput.c" />
       </li>
       <li>
-        M <input type="range" max="255" name="m" v-model="colorInput.m" />
+        M <input type="range" min="0" max="100" name="m" v-model="colorInput.m" />
       </li>
       <li>
-        Y <input type="range" max="255" name="y" v-model="colorInput.y" />
+        Y <input type="range" max="100" name="y" v-model="colorInput.y" />
       </li>
       <li>
-        K <input type="range" max="255" name="k" v-model="colorInput.k" />
+        K <input type="range" max="100" name="k" v-model="colorInput.k" />
       </li>
     </ul>
 
@@ -47,12 +48,11 @@
 import { defineComponent, reactive, ref, watch } from "vue";
 
 import GameLoop from "@/GameLoop";
-import Color, { ColorMode } from "@/classes/Color";
+import { ColorMode } from "@/classes/Color";
 
 import Equipment from "../classes/Equipment";
+// import MiningLaser from "@/classes/MiningLaser";
 import Asteroid from "../classes/Asteroid";
-
-// import LaserBeam from "@/components/LaserBeam.vue";
 
 export default defineComponent({
   name: "Laser",
@@ -76,39 +76,37 @@ export default defineComponent({
       y: 0,
       k: 0
     });
-    const color = new Color({
+
+    props.equipment.setColor({
       mode: ColorMode.cmyk,
-      c: 100,
-      m: 10,
-      y: 15,
-      k: 1
+      c: +colorInput.c,
+      m: +colorInput.m,
+      y: +colorInput.y,
+      k: +colorInput.k
     });
-    console.log(color.rgb(), color.cmyk());
 
     watch(colorInput, () => {
-      color.setColor({
+      props.equipment.setColor({
         mode: ColorMode.cmyk,
-        c: colorInput.c,
-        m: colorInput.m,
-        y: colorInput.y,
-        k: colorInput.k
+        c: +colorInput.c,
+        m: +colorInput.m,
+        y: +colorInput.y,
+        k: +colorInput.k
       });
-      console.log(colorInput);
+      // console.log("out", props.equipment.color.rgb());
     });
-
-    function update(dt: number) {
-      if (!props.target || !isMining.value || props.target.hp <= 0) {
-        isMining.value = false;
-        return;
-      }
-      props.target.mine(props.equipment.use() * dt);
-    }
 
     function toggleMine() {
       isMining.value = !isMining.value;
     }
 
-    GameLoop.addListener(update);
+    GameLoop.addListener((dt: number) => {
+      if (!props.target || !isMining.value || props.target.hp <= 0) {
+        isMining.value = false;
+        return;
+      }
+      props.target.mine(props.equipment.use() * dt);
+    });
 
     return {
       toggleMine,
