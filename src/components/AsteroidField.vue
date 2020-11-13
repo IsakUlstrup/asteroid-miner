@@ -116,11 +116,10 @@ export default defineComponent({
     }
 
     function handleMouseMove(event: MouseEvent) {
-      // console.log(event.clientX * config.resolutionScaling, event.clientY * config.resolutionScaling);
       targetCoords.x = event.clientX;
       targetCoords.y = event.clientY;
-      // targetCoords.target = targetAtPosition(targetCoords.x, targetCoords.y);
-      console.log(targetAtPosition(targetCoords.x, targetCoords.y));
+      if (targetCoords.active)
+        console.log(targetAtPosition(targetCoords.x, targetCoords.y));
     }
 
     function handleTouchMove(event: TouchEvent) {
@@ -128,8 +127,8 @@ export default defineComponent({
       targetCoords.active = true;
       targetCoords.x = event.touches[0].clientX;
       targetCoords.y = event.touches[0].clientY;
-      console.log(targetAtPosition(targetCoords.x, targetCoords.y));
-      // console.log(event.touches[0].clientX, event.touches[0].clientY);
+      if (targetCoords.active)
+        console.log(targetAtPosition(targetCoords.x, targetCoords.y));
     }
 
     function setup(canvas: HTMLCanvasElement) {
