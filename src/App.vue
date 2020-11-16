@@ -1,7 +1,8 @@
 <template>
   <div id="app">
     <section class="space">
-      <AsteroidField :ship="ship" @target="setTarget" />
+      <!-- <AsteroidField :ship="ship" @target="setTarget" /> -->
+      <Screen />
     </section>
     <section class="ship">
       <Ship :target="target" :ship="ship" />
@@ -12,7 +13,8 @@
 <script lang="ts">
 import { defineComponent, reactive, ref } from "vue";
 import Ship from "@/components/Ship.vue";
-import AsteroidField from "@/components/AsteroidField.vue";
+// import AsteroidField from "@/components/AsteroidField.vue";
+import Screen from "@/components/Screen.vue";
 
 import ShipClass from "@/classes/Ship";
 
@@ -25,7 +27,8 @@ export default defineComponent({
   name: "App",
   components: {
     Ship,
-    AsteroidField
+    Screen
+    // AsteroidField
   },
   setup() {
     const ship = reactive(new ShipClass("a ship", 5));
