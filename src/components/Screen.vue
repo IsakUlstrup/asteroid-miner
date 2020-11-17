@@ -15,7 +15,7 @@ export default defineComponent({
   props: {
     resolution: {
       type: Number,
-      default: 0.5
+      default: 0.75
     },
     oneBit: {
       type: Boolean,
@@ -48,11 +48,9 @@ export default defineComponent({
     }
 
     function addAsteroid(asteroids: Asteroid[]) {
-      const radius = 30;
+      const radius = 40;
       asteroids.push(
         new Asteroid(
-          Math.random(),
-          Math.random(),
           randomIntFromInterval(4, 9),
           radius,
           props.oneBit
@@ -72,16 +70,25 @@ export default defineComponent({
     }
 
     function update() {
+      // add new asteroids if current amount is below max
       if (asteroids.length < maxAsteroids) {
         addAsteroid(asteroids);
       }
+      // update asteroids
       asteroids.forEach(asteroid => {
         asteroid.update();
         if (isOffscreen(asteroid.x, asteroid.y)) {
           asteroids.splice(asteroids.indexOf(asteroid), 1);
         }
       });
+
+      // console.log(asteroids[0].px, asteroids[0].py, asteroids[0].z, "s", asteroids[0].ps);
     }
+
+    // sort asteroids based on z-position
+    // asteroids.sort((a1, a2) => {
+    //   return a1.ps - a2.ps;
+    // });
 
     function draw(context: CanvasRenderingContext2D) {
       context.clearRect(
@@ -92,6 +99,7 @@ export default defineComponent({
       );
       context.imageSmoothingEnabled = false;
 
+      // draw asteroids
       asteroids.forEach(asteroid => {
         asteroid.draw(context, resolution.value);
       });
@@ -189,6 +197,7 @@ export default defineComponent({
 canvas {
   width: 100%;
   height: 100%;
+  user-select: none;
   image-rendering: -moz-crisp-edges;
   image-rendering: -webkit-crisp-edges;
   image-rendering: pixelated;
