@@ -51,7 +51,9 @@ export default class Asteroid extends CanvasObject {
     canvasWidth: number,
     canvasHeight: number
   ) {
-    ctx.fillStyle = `rgb(${this.color.rgb().r}, ${this.color.rgb().g}, ${this.color.rgb().b})`;
+    ctx.fillStyle = `rgb(${this.color.rgb().r}, ${this.color.rgb().g}, ${
+      this.color.rgb().b
+    })`;
     ctx.strokeStyle = "rgb(255, 255, 255)";
     if (this.clicked) {
       ctx.lineWidth = 3;

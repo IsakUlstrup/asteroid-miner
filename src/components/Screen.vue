@@ -26,6 +26,7 @@ export default defineComponent({
       default: "rgb(255, 255, 255)"
     }
   },
+  emits: ["size"],
   setup(props, context) {
     let canvas: HTMLCanvasElement | null = null;
     let ctx: CanvasRenderingContext2D | null = null;
@@ -165,7 +166,13 @@ export default defineComponent({
   bottom: 0;
   right: 0;
   opacity: 0.8;
-  background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
+  background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%),
+    linear-gradient(
+      90deg,
+      rgba(255, 0, 0, 0.06),
+      rgba(0, 255, 0, 0.02),
+      rgba(0, 0, 255, 0.06)
+    );
   z-index: 2;
   background-size: 100% var(--filterSize), var(--filterSize) 100%;
   pointer-events: none;
