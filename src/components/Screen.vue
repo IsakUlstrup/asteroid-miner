@@ -86,6 +86,41 @@ export default defineComponent({
       // console.log(asteroids[0].px, asteroids[0].py, asteroids[0].z, "s", asteroids[0].ps);
     }
 
+    const cursor = {
+      x: 0,
+      y: 0,
+      active: false
+    };
+
+    function cursorActive() {
+      cursor.active = true;
+    }
+    function cursorInactive() {
+      cursor.active = false;
+    }
+    function cursorMove(event: MouseEvent | TouchEvent) {
+      event.preventDefault();
+      if (event.type === "touchmove") {
+        const touch = event as TouchEvent;
+        const x = touch.touches[0].clientX;
+        const y = touch.touches[0].clientY;
+
+        if (x && y) {
+          cursor.x = x;
+          cursor.y = y;
+        }
+      } else if (event.type === "mousemove") {
+        const move = event as MouseEvent;
+        const x = move.clientX;
+        const y = move.clientY;
+
+        if (x && y) {
+          cursor.x = x;
+          cursor.y = y;
+        }
+      }
+    }
+
     // sort asteroids based on z-position
     // asteroids.sort((a1, a2) => {
     //   return a1.ps - a2.ps;
@@ -104,6 +139,9 @@ export default defineComponent({
       asteroids.forEach(asteroid => {
         asteroid.draw(context, resolution.value);
       });
+
+      context.strokeStyle = "rgb(255, 255, 255)";
+      context.strokeRect(cursor.x - 10, cursor.y - 10, 20, 20);
     }
 
     watch(resolution, () => {
@@ -143,6 +181,25 @@ export default defineComponent({
         // resize canvas on window resize
         window.addEventListener("resize", () => {
           if (canvas && ctx) resize(canvas, ctx);
+        });
+
+        // canvas.addEventListener("mousedown, touchstart", cursorActive);
+        // canvas.addEventListener("mouseup, mouseleave, touchend, touchcancel", cursorInactive);
+
+        ["mousedown", "touchstart"].forEach(evt => {
+          canvas?.addEventListener(evt, cursorActive, false);
+        });
+        ["mouseup", "mouseleave", "touchend", "touchcancel"].forEach(evt => {
+          canvas?.addEventListener(evt, cursorInactive, false);
+        });
+
+        canvas.addEventListener("mousemove", (event: MouseEvent) => {
+          // console.log(event.clientX, event.clientY);
+          cursorMove(event);
+        });
+        canvas.addEventListener("touchmove", (event: TouchEvent) => {
+          // console.log(event.clientX, event.clientY);
+          cursorMove(event);
         });
 
         // game loop
