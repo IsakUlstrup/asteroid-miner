@@ -62,8 +62,8 @@ export default defineComponent({
       );
     }
 
-    function isOffscreen(x: number, y: number) {
-      if (x < 0 || x > 1 || y < 0 || y > 1) {
+    function isOffscreen(x: number, y: number, size: number) {
+      if (x + size < 0 || x > 1 || y + size < 0 || y > 1) {
         return true;
       } else {
         return false;
@@ -78,7 +78,7 @@ export default defineComponent({
       // update asteroids
       asteroids.forEach(asteroid => {
         asteroid.update(dt);
-        if (isOffscreen(asteroid.x, asteroid.y)) {
+        if (isOffscreen(asteroid.x, asteroid.y, asteroid.radius * 2)) {
           asteroids.splice(asteroids.indexOf(asteroid), 1);
         }
       });
