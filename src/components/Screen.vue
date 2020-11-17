@@ -62,8 +62,8 @@ export default defineComponent({
       );
     }
 
-    function isOffscreen(x: number, y: number, size: number) {
-      if (x + size < 0 || x > 1 || y + size < 0 || y > 1) {
+    function isOffscreen(x: number, y: number) {
+      if (x < 0 || x > 1 || y < 0 || y > 1) {
         return true;
       } else {
         return false;
@@ -78,7 +78,7 @@ export default defineComponent({
       // update asteroids
       asteroids.forEach(asteroid => {
         asteroid.update(dt);
-        if (isOffscreen(asteroid.x, asteroid.y, asteroid.radius * 2)) {
+        if (isOffscreen(asteroid.x, asteroid.y)) {
           asteroids.splice(asteroids.indexOf(asteroid), 1);
         }
       });
@@ -122,9 +122,9 @@ export default defineComponent({
     }
 
     // sort asteroids based on z-position
-    // asteroids.sort((a1, a2) => {
-    //   return a1.ps - a2.ps;
-    // });
+    asteroids.sort((a1, a2) => {
+      return a1.z - a2.z;
+    });
 
     function draw(context: CanvasRenderingContext2D) {
       context.clearRect(
@@ -140,8 +140,11 @@ export default defineComponent({
         asteroid.draw(context, resolution.value);
       });
 
-      context.strokeStyle = "rgb(255, 255, 255)";
-      context.strokeRect(cursor.x - 10, cursor.y - 10, 20, 20);
+      // cursor
+      if (cursor.active) {
+        context.strokeStyle = "rgb(255, 255, 255)";
+        context.strokeRect(cursor.x - 10, cursor.y - 10, 20, 20);
+      }
     }
 
     watch(resolution, () => {
@@ -183,9 +186,6 @@ export default defineComponent({
           if (canvas && ctx) resize(canvas, ctx);
         });
 
-        // canvas.addEventListener("mousedown, touchstart", cursorActive);
-        // canvas.addEventListener("mouseup, mouseleave, touchend, touchcancel", cursorInactive);
-
         ["mousedown", "touchstart"].forEach(evt => {
           canvas?.addEventListener(evt, cursorActive, false);
         });
@@ -194,11 +194,9 @@ export default defineComponent({
         });
 
         canvas.addEventListener("mousemove", (event: MouseEvent) => {
-          // console.log(event.clientX, event.clientY);
           cursorMove(event);
         });
         canvas.addEventListener("touchmove", (event: TouchEvent) => {
-          // console.log(event.clientX, event.clientY);
           cursorMove(event);
         });
 
