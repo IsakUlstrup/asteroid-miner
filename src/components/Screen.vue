@@ -9,6 +9,7 @@
 <script lang="ts">
 import { computed, defineComponent, onMounted, toRefs, watch } from "vue";
 import Asteroid from "@/classes/Asteroid2";
+import gameLoop from "@/GameLoop";
 
 export default defineComponent({
   name: "Screen",
@@ -48,7 +49,7 @@ export default defineComponent({
     }
 
     function addAsteroid(asteroids: Asteroid[]) {
-      const radius = 40;
+      const radius = 50;
       asteroids.push(
         new Asteroid(
           randomIntFromInterval(4, 9),
@@ -69,14 +70,14 @@ export default defineComponent({
       }
     }
 
-    function update() {
+    function update(dt: number) {
       // add new asteroids if current amount is below max
       if (asteroids.length < maxAsteroids) {
         addAsteroid(asteroids);
       }
       // update asteroids
       asteroids.forEach(asteroid => {
-        asteroid.update();
+        asteroid.update(dt);
         if (isOffscreen(asteroid.x, asteroid.y)) {
           asteroids.splice(asteroids.indexOf(asteroid), 1);
         }
@@ -103,13 +104,6 @@ export default defineComponent({
       asteroids.forEach(asteroid => {
         asteroid.draw(context, resolution.value);
       });
-    }
-
-    function loop() {
-      window.requestAnimationFrame(loop);
-
-      update();
-      if (ctx) draw(ctx);
     }
 
     watch(resolution, () => {
@@ -150,10 +144,13 @@ export default defineComponent({
         window.addEventListener("resize", () => {
           if (canvas && ctx) resize(canvas, ctx);
         });
-      }
 
-      // start game loop
-      loop();
+        // game loop
+        gameLoop.addListener((dt: number) => {
+          update(dt);
+          if (ctx) draw(ctx);
+        });
+      }
     });
     return {
       filterSize

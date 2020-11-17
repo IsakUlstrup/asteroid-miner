@@ -26,13 +26,13 @@ export default class Asteroid {
     this.y = Math.random();
     // this.z = Math.random();
     this.r = Math.random() * 360;
-    this.vx = (Math.random() - 0.5) * 0.001;
-    this.vy = (Math.random() - 0.5) * 0.001;
+    this.vx = (Math.random() - 0.5) * 0.0001;
+    this.vy = (Math.random() - 0.5) * 0.0001;
     // this.vz = (Math.random() - 0.5) * 0.001;
     // this.vx = 0;
     // this.vy = 0;
     // this.vz = 0;
-    this.vr = Math.random() - 0.5;
+    this.vr = (Math.random() - 0.5) * 0.1;
 
     // this.px = 0;
     // this.py = 0;
@@ -78,16 +78,16 @@ export default class Asteroid {
       context.closePath();
       // context.globalAlpha = 0.5;
       context.fill();
-      context.globalAlpha = 1;
+      // context.globalAlpha = 1;
       context.stroke();
     }
     return offScreenCanvas;
   }
-  update() {
-    this.x += this.vx;
-    this.y += this.vy;
+  update(dt: number) {
+    this.x += this.vx * dt;
+    this.y += this.vy * dt;
     // this.z += this.vz;
-    this.r += this.vr;
+    this.r += this.vr * dt;
   }
   draw(context: CanvasRenderingContext2D, resolution: number) {
     const center = {
