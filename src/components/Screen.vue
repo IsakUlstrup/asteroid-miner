@@ -16,7 +16,7 @@ export default defineComponent({
   props: {
     resolution: {
       type: Number,
-      default: 0.75
+      default: 0.25
     },
     oneBit: {
       type: Boolean,
@@ -25,6 +25,10 @@ export default defineComponent({
     oneBitColor: {
       type: String,
       default: "rgb(255, 255, 255)"
+    },
+    aspectRatio: {
+      type: Number,
+      default: 1.5
     }
   },
   emits: ["size"],
@@ -32,7 +36,7 @@ export default defineComponent({
     let canvas: HTMLCanvasElement | null = null;
     let ctx: CanvasRenderingContext2D | null = null;
     const asteroids: Asteroid[] = [];
-    const maxAsteroids = 100;
+    const maxAsteroids = 300;
     const { resolution, oneBit } = toRefs(props);
 
     function randomIntFromInterval(min: number, max: number) {
@@ -43,8 +47,10 @@ export default defineComponent({
       canvas: HTMLCanvasElement,
       context: CanvasRenderingContext2D
     ) {
-      canvas.width = canvas.getBoundingClientRect().width * props.resolution;
+      // resize whith aspect ratio
       canvas.height = canvas.getBoundingClientRect().height * props.resolution;
+      // canvas.width = canvas.getBoundingClientRect().width * props.resolution;
+      canvas.width = canvas.getBoundingClientRect().width * props.resolution;
       context.scale(props.resolution, props.resolution);
     }
 
@@ -62,8 +68,10 @@ export default defineComponent({
       );
     }
 
-    function isOffscreen(x: number, y: number) {
-      if (x < 0 || x > 1 || y < 0 || y > 1) {
+    function isOffscreen(x: number, y: number, s: number) {
+      // console.log(s);
+      if (x < 0 || x > 1 || y < 0 || y > 1 || s < 0 || s > 10) {
+        // console.log("offscreen");
         return true;
       } else {
         return false;
@@ -78,9 +86,14 @@ export default defineComponent({
       // update asteroids
       asteroids.forEach(asteroid => {
         asteroid.update(dt);
-        if (isOffscreen(asteroid.x, asteroid.y)) {
+        if (isOffscreen(asteroid.x, asteroid.y, asteroid.ps)) {
           asteroids.splice(asteroids.indexOf(asteroid), 1);
         }
+      });
+
+      // sort asteroids based on z-position
+      asteroids.sort((a1, a2) => {
+        return a1.ps - a2.ps;
       });
 
       // console.log(asteroids[0].px, asteroids[0].py, asteroids[0].z, "s", asteroids[0].ps);
@@ -120,11 +133,6 @@ export default defineComponent({
         }
       }
     }
-
-    // sort asteroids based on z-position
-    asteroids.sort((a1, a2) => {
-      return a1.z - a2.z;
-    });
 
     function draw(context: CanvasRenderingContext2D) {
       context.clearRect(
@@ -247,6 +255,9 @@ export default defineComponent({
   height: 100%;
 }
 canvas {
+  /* display: block;
+  margin: 0 auto;
+  border: 3px solid black; */
   width: 100%;
   height: 100%;
   user-select: none;

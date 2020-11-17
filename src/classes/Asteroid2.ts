@@ -1,7 +1,3 @@
-const PERSPECTIVE = 1 * 0.6; // The field of view of our 3D scene
-const PROJECTION_CENTER_X = 1 / 2; // x center of the canvas
-const PROJECTION_CENTER_Y = 1 / 2; // y center of the canvas
-
 export default class Asteroid {
   // position
   x: number;
@@ -22,16 +18,19 @@ export default class Asteroid {
   bufferCanvas: HTMLCanvasElement;
   color: string;
   constructor(points: number, radius: number, color: string) {
+    // this.x = 0.5;
+    // this.y = 0.5;
+    // this.z = 0;
     this.x = Math.random();
     this.y = Math.random();
     this.z = Math.random();
     this.r = Math.random() * 360;
-    this.vx = (Math.random() - 0.5) * 0.0001;
-    this.vy = (Math.random() - 0.5) * 0.0001;
-    this.vz = (Math.random() - 0.5) * 0.001;
     // this.vx = 0;
     // this.vy = 0;
-    // this.vz = 0;
+    // this.vz = -0.001;
+    this.vx = (Math.random() - 0.5) * 0.0001;
+    this.vy = (Math.random() - 0.5) * 0.0001;
+    this.vz = (Math.random() - 0.5) * 0.00007;
     this.vr = (Math.random() - 0.5) * 0.1;
 
     this.px = 0;
@@ -47,13 +46,19 @@ export default class Asteroid {
     this.color = color;
     this.bufferCanvas = this.createOffscreenCanvas(this.color);
   }
-  project() {
+  project(context: CanvasRenderingContext2D, resolutionScale: number) {
+    const perspective = 2;
+    const centerX = (context.canvas.width * (1 / resolutionScale)) / 2;
+    const centerY = (context.canvas.height * (1 / resolutionScale)) / 2;
+    const scaledX = this.x * (context.canvas.width * (1 / resolutionScale));
+    const scaledY = this.y * (context.canvas.height * (1 / resolutionScale));
+    // console.log(centerX, centerY);
     // The scaleProjected will store the scale of the element based on its distance from the 'camera'
-    this.ps = PERSPECTIVE / (PERSPECTIVE + this.z);
+    this.ps = perspective / (perspective + this.z);
     // The xProjected is the x position on the 2D world
-    this.px = this.x * this.ps;
+    this.px = scaledX + (scaledX / centerX) * this.ps;
     // The yProjected is the y position on the 2D world
-    this.py = this.y * this.ps;
+    this.py = scaledY + (scaledY / centerY) * this.ps;
   }
   createOffscreenCanvas(color: string) {
     const offScreenCanvas = document.createElement("canvas");
@@ -86,30 +91,33 @@ export default class Asteroid {
   update(dt: number) {
     this.x += this.vx * dt;
     this.y += this.vy * dt;
-    // this.z += this.vz;
+    this.z += this.vz * dt;
     this.r += this.vr * dt;
   }
-  draw(context: CanvasRenderingContext2D, resolution: number) {
-    this.project();
+  draw(context: CanvasRenderingContext2D, resolutionScale: number) {
+    this.project(context, resolutionScale);
+    // console.clear();
+    // console.log(`x: ${this.x.toFixed(2)}, px: ${this.px.toFixed(0)}, y: ${this.y}, py: ${this.py.toFixed(0)}, z: ${this.z}, ps: ${this.ps}`);
     const center = {
-      x: this.px * context.canvas.width * (1 / resolution) + this.radius,
-      y: this.py * context.canvas.height * (1 / resolution) + this.radius
+      x: this.px,
+      y: this.py
     };
     context.save();
     // rotate
-    context.globalAlpha = Math.abs(1 - this.z / 1);
+    // context.globalAlpha = this.ps;
     context.translate(center.x, center.y);
-    context.scale(1 - this.z, 1 - this.z);
     context.rotate((this.r * Math.PI) / 180);
     context.translate(-center.x, -center.y);
     // draw
     context.drawImage(
       this.bufferCanvas,
-      Math.floor(this.px * context.canvas.width * (1 / resolution)),
-      Math.floor(this.py * context.canvas.height * (1 / resolution))
+      Math.floor(this.px - this.radius * this.ps),
+      Math.floor(this.py - this.radius * this.ps),
+      this.radius * 2 * this.ps,
+      this.radius * 2 * this.ps
     );
     context.restore();
     // center of rotation debug
-    // context.fillRect(center.x, center.y, 5, 5);}
+    // context.fillRect(center.x, center.y, 5, 5);
   }
 }
