@@ -151,7 +151,12 @@ export default defineComponent({
         // loop ship equipment, draw laser for each laser equipment
         for (let index = 0; index < props.ship.equipment.length; index++) {
           const equipment = props.ship.equipment[index];
-          if (equipment.type === EquipmentType.laser && equipment.state.powerModifier > 0) {
+          // draw laser if its powered
+          if (
+            equipment.type === EquipmentType.laser &&
+            equipment.state.powerModifier > 0 &&
+            equipment.state.energy > equipment.derivedStats.energyUse
+          ) {
             // laser
             context.beginPath();
             context.moveTo(
