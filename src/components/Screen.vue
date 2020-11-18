@@ -10,6 +10,12 @@
 import { computed, defineComponent, onMounted, toRefs, watch } from "vue";
 import Asteroid from "@/classes/Asteroid2";
 import CursorTracker from "@/services/CursorTracker";
+import {
+  randomInt,
+  isWithinCircle,
+  resizeCanvas,
+  getScaledCanvasDimendsions
+} from "@/services/Utils";
 import gameLoop from "@/GameLoop";
 // import Color from "@/classes/Color";
 import Ship from "@/classes/Ship";
@@ -52,44 +58,11 @@ export default defineComponent({
     let target: Asteroid;
     let cursor: CursorTracker;
 
-    function randomIntFromInterval(min: number, max: number) {
-      return Math.floor(Math.random() * (max - min + 1) + min);
-    }
-
-    function isWithinCircle(
-      x: number,
-      y: number,
-      circleX: number,
-      circleY: number,
-      circleR: number
-    ) {
-      const posY = y - circleY;
-      const posX = x - circleX;
-      const dist = Math.sqrt(posY * posY + posX * posX);
-
-      if (dist < circleR) {
-        // coords are within circle
-        return true;
-      }
-      return false;
-    }
-
-    function resize(
-      canvas: HTMLCanvasElement,
-      context: CanvasRenderingContext2D
-    ) {
-      // resize whith aspect ratio
-      canvas.height = canvas.getBoundingClientRect().height * props.resolution;
-      // canvas.width = canvas.getBoundingClientRect().width * props.resolution;
-      canvas.width = canvas.getBoundingClientRect().width * props.resolution;
-      context.scale(props.resolution, props.resolution);
-    }
-
     function addAsteroid(asteroids: Asteroid[]) {
       const radius = 50;
       asteroids.push(
         new Asteroid(
-          randomIntFromInterval(4, 9),
+          randomInt(4, 9),
           radius,
           props.oneBit
             ? { r: 255, g: 255, b: 255 }
@@ -102,18 +75,7 @@ export default defineComponent({
       );
     }
 
-    function isOffscreen(x: number, y: number, s: number) {
-      // console.log(s);
-      if (x < 0 || x > 1 || y < 0 || y > 1 || s < 0 || s > 10) {
-        // console.log("offscreen");
-        return true;
-      } else {
-        return false;
-      }
-    }
-
     function update(dt: number) {
-      // if (cursor) console.log(cursor);
       // add new asteroids if current amount is below max
       if (asteroids.length < props.maxAsteroids) {
         addAsteroid(asteroids);
@@ -121,7 +83,7 @@ export default defineComponent({
       // update asteroids
       asteroids.forEach(asteroid => {
         asteroid.update(dt);
-        if (isOffscreen(asteroid.x, asteroid.y, asteroid.ps)) {
+        if (asteroid.isOffscreen) {
           asteroids.splice(asteroids.indexOf(asteroid), 1);
         }
       });
@@ -156,16 +118,6 @@ export default defineComponent({
       }
     }
 
-    function getScaledCanvasDimendsions(
-      canvas: HTMLCanvasElement,
-      resolutionScale: number
-    ) {
-      return {
-        width: canvas.width * (1 / resolutionScale),
-        height: canvas.height * (1 / resolutionScale)
-      };
-    }
-
     function draw(context: CanvasRenderingContext2D) {
       context.clearRect(
         0,
@@ -181,11 +133,8 @@ export default defineComponent({
         asteroid.draw(context, resolution.value);
       });
 
-      // cursor
+      // beams
       if (cursor.active) {
-        // context.strokeStyle = "rgb(255, 255, 255)";
-        // context.strokeRect(cursor.x - 10, cursor.y - 10, 20, 20);
-
         const equipmentSpacing =
           getScaledCanvasDimendsions(context.canvas, props.resolution).width /
           props.ship.equipment.length;
@@ -214,7 +163,7 @@ export default defineComponent({
     }
 
     watch(resolution, () => {
-      if (canvas && ctx) resize(canvas, ctx);
+      if (canvas && ctx) resizeCanvas(ctx, props.resolution);
       if (canvas && ctx)
         context.emit("size", {
           w: ctx.canvas.width,
@@ -243,17 +192,17 @@ export default defineComponent({
       // setup canvas
       canvas = document.getElementById("canvas") as HTMLCanvasElement;
       if (canvas) ctx = canvas.getContext("2d");
-      if (ctx && canvas) {
+      if (ctx) {
         // set initial canvas size
-        resize(canvas, ctx);
+        resizeCanvas(ctx, props.resolution);
 
         // resize canvas on window resize
         window.addEventListener("resize", () => {
-          if (canvas && ctx) resize(canvas, ctx);
+          if (ctx) resizeCanvas(ctx, props.resolution);
         });
 
         // setup cursor tracker
-        cursor = new CursorTracker(canvas);
+        cursor = new CursorTracker(ctx.canvas);
 
         // game loop
         gameLoop.addListener((dt: number) => {

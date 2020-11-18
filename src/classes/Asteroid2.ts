@@ -127,4 +127,13 @@ export default class Asteroid {
     // center of rotation debug
     // context.fillRect(center.x, center.y, 5, 5);
   }
+  get isOffscreen() {
+      // console.log(s);
+      if (this.x < 0 || this.x > 1 || this.y < 0 || this.y > 1 || this.ps < 0 || this.ps > 10) {
+        // console.log("offscreen");
+        return true;
+      } else {
+        return false;
+      }
+    }
 }
