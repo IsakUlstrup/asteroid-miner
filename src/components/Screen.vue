@@ -29,6 +29,10 @@ export default defineComponent({
     aspectRatio: {
       type: Number,
       default: 1.5
+    },
+    maxAsteroids: {
+      type: Number,
+      default: 2
     }
   },
   emits: ["size"],
@@ -36,11 +40,35 @@ export default defineComponent({
     let canvas: HTMLCanvasElement | null = null;
     let ctx: CanvasRenderingContext2D | null = null;
     const asteroids: Asteroid[] = [];
-    const maxAsteroids = 300;
+    // const maxAsteroids = 1;
     const { resolution, oneBit } = toRefs(props);
+    const cursor = {
+      x: 0,
+      y: 0,
+      active: false
+    };
+    let target: Asteroid;
 
     function randomIntFromInterval(min: number, max: number) {
       return Math.floor(Math.random() * (max - min + 1) + min);
+    }
+
+    function isWithinCircle(
+      cursorX: number,
+      cursorY: number,
+      circleX: number,
+      circleY: number,
+      circleR: number
+    ) {
+      const y = cursor.y - circleY;
+      const x = cursor.x - circleX;
+      const dist = Math.sqrt(y * y + x * x);
+
+      if (dist < circleR) {
+        // coords are within circle
+        return true;
+      }
+      return false;
     }
 
     function resize(
@@ -80,7 +108,7 @@ export default defineComponent({
 
     function update(dt: number) {
       // add new asteroids if current amount is below max
-      if (asteroids.length < maxAsteroids) {
+      if (asteroids.length < props.maxAsteroids) {
         addAsteroid(asteroids);
       }
       // update asteroids
@@ -96,14 +124,26 @@ export default defineComponent({
         return a1.ps - a2.ps;
       });
 
+      // hit scan, loop asteroids backwards to find frontmost asteroid first
+      for (let index = asteroids.length - 1; index >= 0; index--) {
+        const asteroid = asteroids[index];
+        if (
+          isWithinCircle(
+            cursor.x,
+            cursor.y,
+            asteroid.px,
+            asteroid.py,
+            asteroid.radius * 2 * asteroid.ps
+          )
+        ) {
+          console.log("target aquired.", asteroid.color);
+          target = asteroid;
+          break;
+        }
+      }
+
       // console.log(asteroids[0].px, asteroids[0].py, asteroids[0].z, "s", asteroids[0].ps);
     }
-
-    const cursor = {
-      x: 0,
-      y: 0,
-      active: false
-    };
 
     function cursorActive() {
       cursor.active = true;
