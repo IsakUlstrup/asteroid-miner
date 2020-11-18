@@ -9,13 +9,11 @@
 <script lang="ts">
 import { computed, defineComponent, onMounted, toRefs, watch } from "vue";
 import Asteroid from "@/classes/Asteroid2";
+import CursorTracker from "@/services/CursorTracker";
 import gameLoop from "@/GameLoop";
 // import Color from "@/classes/Color";
 import Ship from "@/classes/Ship";
 import { EquipmentType } from "@/types/enums";
-// import { EquipmentType } from '@/types';
-// import { RGBColor } from '@/classes/Color';
-// import { RGBColor } from "@/types/color";
 
 export default defineComponent({
   name: "Screen",
@@ -50,29 +48,24 @@ export default defineComponent({
     let canvas: HTMLCanvasElement | null = null;
     let ctx: CanvasRenderingContext2D | null = null;
     const asteroids: Asteroid[] = [];
-    // const maxAsteroids = 1;
-    const { resolution, oneBit } = toRefs(props);
-    const cursor = {
-      x: 0,
-      y: 0,
-      active: false
-    };
+    const { resolution } = toRefs(props);
     let target: Asteroid;
+    let cursor: CursorTracker;
 
     function randomIntFromInterval(min: number, max: number) {
       return Math.floor(Math.random() * (max - min + 1) + min);
     }
 
     function isWithinCircle(
-      cursorX: number,
-      cursorY: number,
+      x: number,
+      y: number,
       circleX: number,
       circleY: number,
       circleR: number
     ) {
-      const y = cursor.y - circleY;
-      const x = cursor.x - circleX;
-      const dist = Math.sqrt(y * y + x * x);
+      const posY = y - circleY;
+      const posX = x - circleX;
+      const dist = Math.sqrt(posY * posY + posX * posX);
 
       if (dist < circleR) {
         // coords are within circle
@@ -120,6 +113,7 @@ export default defineComponent({
     }
 
     function update(dt: number) {
+      // if (cursor) console.log(cursor);
       // add new asteroids if current amount is below max
       if (asteroids.length < props.maxAsteroids) {
         addAsteroid(asteroids);
@@ -160,44 +154,16 @@ export default defineComponent({
           break;
         }
       }
-
-      // console.log(asteroids[0].px, asteroids[0].py, asteroids[0].z, "s", asteroids[0].ps);
-    }
-
-    function cursorActive() {
-      cursor.active = true;
-    }
-    function cursorInactive() {
-      cursor.active = false;
-    }
-    function cursorMove(event: MouseEvent | TouchEvent) {
-      event.preventDefault();
-      if (event.type === "touchmove") {
-        const touch = event as TouchEvent;
-        const x = touch.touches[0].clientX;
-        const y = touch.touches[0].clientY;
-
-        if (x && y) {
-          cursor.x = x;
-          cursor.y = y;
-        }
-      } else if (event.type === "mousemove") {
-        const move = event as MouseEvent;
-        const x = move.clientX;
-        const y = move.clientY;
-
-        if (x && y) {
-          cursor.x = x;
-          cursor.y = y;
-        }
-      }
     }
 
     function getScaledCanvasDimendsions(
       canvas: HTMLCanvasElement,
       resolutionScale: number
     ) {
-      return canvas.width * (1 / resolutionScale);
+      return {
+        width: canvas.width * (1 / resolutionScale),
+        height: canvas.height * (1 / resolutionScale)
+      };
     }
 
     function draw(context: CanvasRenderingContext2D) {
@@ -217,11 +183,11 @@ export default defineComponent({
 
       // cursor
       if (cursor.active) {
-        context.strokeStyle = "rgb(255, 255, 255)";
-        context.strokeRect(cursor.x - 10, cursor.y - 10, 20, 20);
+        // context.strokeStyle = "rgb(255, 255, 255)";
+        // context.strokeRect(cursor.x - 10, cursor.y - 10, 20, 20);
 
         const equipmentSpacing =
-          getScaledCanvasDimendsions(context.canvas, props.resolution) /
+          getScaledCanvasDimendsions(context.canvas, props.resolution).width /
           props.ship.equipment.length;
 
         // loop ship equipment, draw laser for each laser equipment
@@ -233,6 +199,7 @@ export default defineComponent({
             context.moveTo(
               equipmentSpacing * index,
               getScaledCanvasDimendsions(context.canvas, props.resolution)
+                .height
             );
             context.lineCap = "round";
             context.lineWidth = 10 * props.resolution;
@@ -285,19 +252,8 @@ export default defineComponent({
           if (canvas && ctx) resize(canvas, ctx);
         });
 
-        ["mousedown", "touchstart"].forEach(evt => {
-          canvas?.addEventListener(evt, cursorActive, false);
-        });
-        ["mouseup", "mouseleave", "touchend", "touchcancel"].forEach(evt => {
-          canvas?.addEventListener(evt, cursorInactive, false);
-        });
-
-        canvas.addEventListener("mousemove", (event: MouseEvent) => {
-          cursorMove(event);
-        });
-        canvas.addEventListener("touchmove", (event: TouchEvent) => {
-          cursorMove(event);
-        });
+        // setup cursor tracker
+        cursor = new CursorTracker(canvas);
 
         // game loop
         gameLoop.addListener((dt: number) => {
