@@ -61,6 +61,11 @@ export default class Color {
   rgbString() {
     return `rgb(${this.rgb().r}, ${this.rgb().g}, ${this.rgb().b})`;
   }
+  cmykString() {
+    return `cmyk(${this.cmyk().c}, ${this.cmyk().m}, ${this.cmyk().y}, ${
+      this.cmyk().k
+    })`;
+  }
   cmyk() {
     const cmyk = colorConvert.rgb.cmyk(
       this.state.r,

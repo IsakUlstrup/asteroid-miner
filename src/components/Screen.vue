@@ -49,13 +49,13 @@ export default defineComponent({
       required: true
     }
   },
-  emits: ["size"],
+  emits: ["size", "target"],
   setup(props, context) {
     let canvas: HTMLCanvasElement | null = null;
     let ctx: CanvasRenderingContext2D | null = null;
     const asteroids: Asteroid[] = [];
     const { resolution } = toRefs(props);
-    let target: Asteroid;
+    let target: Asteroid | undefined;
     let cursor: CursorTracker;
 
     function addAsteroid(asteroids: Asteroid[]) {
@@ -65,11 +65,12 @@ export default defineComponent({
           randomInt(4, 9),
           radius,
           props.oneBit
-            ? { r: 255, g: 255, b: 255 }
+            ? { c: 100, m: 100, y: 100, k: 100 }
             : {
-                r: Math.random() * 255,
-                g: Math.random() * 255,
-                b: Math.random() * 255
+                c: Math.random() * 100,
+                m: Math.random() * 100,
+                y: Math.random() * 100,
+                k: Math.random() * 10
               }
         )
       );
@@ -94,6 +95,7 @@ export default defineComponent({
       });
 
       // hit scan, loop asteroids backwards to find frontmost asteroid first
+      target = undefined;
       for (let index = asteroids.length - 1; index >= 0; index--) {
         const asteroid = asteroids[index];
         if (
@@ -110,12 +112,19 @@ export default defineComponent({
           target = asteroid;
           props.ship.equipment.forEach(equipment => {
             if (equipment.type === EquipmentType.laser) {
-              target.mine(equipment.use() * dt);
+              const equipmentEffect = equipment.use() * dt;
+              target?.mine({
+                c: equipment.color.cmyk().c * equipmentEffect,
+                m: equipment.color.cmyk().m * equipmentEffect,
+                y: equipment.color.cmyk().y * equipmentEffect,
+                k: equipment.color.cmyk().k * equipmentEffect
+              });
             }
           });
           break;
         }
       }
+      context.emit("target", target);
     }
 
     function draw(context: CanvasRenderingContext2D) {
@@ -142,7 +151,7 @@ export default defineComponent({
         // loop ship equipment, draw laser for each laser equipment
         for (let index = 0; index < props.ship.equipment.length; index++) {
           const equipment = props.ship.equipment[index];
-          if (equipment.type === EquipmentType.laser) {
+          if (equipment.type === EquipmentType.laser && equipment.state.powerModifier > 0) {
             // laser
             context.beginPath();
             context.moveTo(

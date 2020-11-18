@@ -1,12 +1,15 @@
 <template>
   <div class="laser">
-    <p v-if="target">
-      target: {{ target.name }}
-      <br />
-      rgb: {{ target.color.rgb().r.toFixed(0) }}, {{ target.color.rgb().g.toFixed(0) }},
-      {{ target.color.rgb().b.toFixed(0) }}
-    </p>
     <h1>{{ equipment.name }}</h1>
+    <p v-if="target">
+      <!-- target: {{ target.name }} -->
+      <!-- <br />
+      rgb: {{ target.color.rgb().r.toFixed(0) }}, {{ target.color.rgb().g.toFixed(0) }},
+      {{ target.color.rgb().b.toFixed(0) }} -->
+      <br />
+      target cmyk: {{ target.color.cmyk().c.toFixed(0) }}, {{ target.color.cmyk().m.toFixed(0) }},
+      {{ target.color.cmyk().y.toFixed(0) }}, {{ target.color.cmyk().k.toFixed(0) }}
+    </p>
     Power:
     <input
       type="range"
@@ -18,7 +21,7 @@
       :value="equipment.state.powerModifier"
     />
     <h3 :style="{ color: equipment.color.rgbString() }">Color</h3>
-    ({{ equipment.color.rgbString() }})
+    ({{ equipment.color.cmykString() }})
     <ul>
       <li>
         C <input type="range" min="0" max="100" name="c" v-model="colorInput.c" />
@@ -35,11 +38,11 @@
     </ul>
 
     <br />
-    <p>mining: {{ isMining }}</p>
+    <!-- <p>mining: {{ isMining }}</p> -->
     Buffer: {{ equipment.state.energy.toFixed(0) }} /
     {{ equipment.energyBufferSize }}
-    <p v-if="target">Target: {{ target.hp.toFixed(0) }}hp</p>
-    <input type="button" value="mine" @click="toggleMine" />
+    <!-- <p v-if="target">Target: {{ target.hp.toFixed(0) }}hp</p> -->
+    <!-- <input type="button" value="mine" @click="toggleMine" /> -->
     <p>desired energy: {{ equipment.desiredEnergy }}</p>
   </div>
 </template>
@@ -47,11 +50,11 @@
 <script lang="ts">
 import { defineComponent, reactive, ref, watch } from "vue";
 
-import GameLoop from "@/GameLoop";
+// import GameLoop from "@/GameLoop";
 
 import Equipment from "../classes/Equipment";
 // import MiningLaser from "@/classes/MiningLaser";
-import Asteroid from "../classes/Asteroid";
+import Asteroid from "../classes/Asteroid2";
 
 export default defineComponent({
   name: "Laser",
@@ -97,13 +100,13 @@ export default defineComponent({
       isMining.value = !isMining.value;
     }
 
-    GameLoop.addListener((dt: number) => {
-      if (!props.target || !isMining.value || props.target.hp <= 0) {
-        isMining.value = false;
-        return;
-      }
-      props.target.mine(props.equipment.use() * dt);
-    });
+    // GameLoop.addListener((dt: number) => {
+    //   if (!props.target || !isMining.value || props.target.hp <= 0) {
+    //     isMining.value = false;
+    //     return;
+    //   }
+    //   props.target.mine(props.equipment.use() * dt);
+    // });
 
     return {
       toggleMine,

@@ -15,17 +15,12 @@
       </div>
     </div>
     <div class="target" v-if="target">
-      <h3>{{ target.name }}</h3>
+      <!-- <h3>{{ target.name }}</h3> -->
       <ul>
-        <li>x: {{ target.position.x.toFixed(2) }}</li>
-        <li>y: {{ target.position.y.toFixed(2) }}</li>
-        <li>z: {{ target.position.z }}</li>
-        <li>s: {{ target.dimensions.s }}</li>
-      </ul>
-      vector
-      <ul>
-        <li>z: {{ target.vector.z }}</li>
-        <li>size: {{ target.size }}</li>
+        <li>x: {{ target.px.toFixed(2) }}</li>
+        <li>y: {{ target.py.toFixed(2) }}</li>
+        <li>z: {{ target.z }}</li>
+        <li>s: {{ target.ps }}</li>
       </ul>
     </div>
 
@@ -54,7 +49,7 @@ import Equipment from "@/classes/Equipment";
 import Ship from "@/classes/Ship";
 import { EquipmentType } from "../types/enums";
 import GameLoop from "../GameLoop";
-import Asteroid from "@/classes/Asteroid";
+import Asteroid from "@/classes/Asteroid2";
 
 // import LaserBeam from "@/components/LaserBeam.vue";
 import Reactor from "@/components/EquipmentReactor.vue";
@@ -88,7 +83,7 @@ export default defineComponent({
       name: "A reactor",
       energyBufferSize: 0,
       energyUse: 0,
-      effect: 0.001,
+      effect: 1,
       fuelUse: 0.001,
       fuelBufferSize: 100
     });
@@ -96,7 +91,8 @@ export default defineComponent({
     const laser = new Equipment({
       equipmentType: EquipmentType.laser,
       energyBufferSize: 150,
-      name: "Laser one"
+      name: "Laser one",
+      effect: 0.001
     });
 
     const laser2 = new Equipment({

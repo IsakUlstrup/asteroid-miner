@@ -20,7 +20,7 @@ export default class Asteroid {
   bufferCanvas: HTMLCanvasElement;
   baseColor: Color;
   color: Color;
-  constructor(points: number, radius: number, color: RGBColor | CMYKColor) {
+  constructor(points: number, radius: number, color: CMYKColor) {
     // this.x = 0.5;
     // this.y = 0.5;
     // this.z = 0;
@@ -50,8 +50,13 @@ export default class Asteroid {
     this.color.setColor(color);
     this.bufferCanvas = this.createOffscreenCanvas(this.color.rgbString());
   }
-  mine(amount: number) {
-    this.setColor(this.color.darken(amount));
+  mine(color: CMYKColor) {
+    this.setColor({
+      c: this.color.cmyk().c - color.c,
+      m: this.color.cmyk().m - color.m,
+      y: this.color.cmyk().y - color.y,
+      k: this.color.cmyk().k - color.k
+    });
   }
   project(context: CanvasRenderingContext2D, resolutionScale: number) {
     const perspective = 2;
@@ -128,12 +133,17 @@ export default class Asteroid {
     // context.fillRect(center.x, center.y, 5, 5);
   }
   get isOffscreen() {
-      // console.log(s);
-      if (this.x < 0 || this.x > 1 || this.y < 0 || this.y > 1 || this.ps < 0 || this.ps > 10) {
-        // console.log("offscreen");
-        return true;
-      } else {
-        return false;
-      }
+    if (
+      this.x < 0 ||
+      this.x > 1 ||
+      this.y < 0 ||
+      this.y > 1 ||
+      this.ps < 0 ||
+      this.ps > 10
+    ) {
+      return true;
+    } else {
+      return false;
     }
+  }
 }
