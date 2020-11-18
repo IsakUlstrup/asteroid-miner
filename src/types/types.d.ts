@@ -1,23 +1,9 @@
-export enum ShipType {
-  eve,
-  retro
-}
-
-export enum ItemType {
-  equipment
-}
+import { ItemType, EquipmentType } from "./enums";
 
 export interface Item {
   name: string;
   id: string;
   itemType: ItemType;
-}
-
-export enum EquipmentType {
-  reactor = "reactor",
-  laser = "laser",
-  none = "none",
-  engine = "engine"
 }
 
 export interface EquipmentStats {

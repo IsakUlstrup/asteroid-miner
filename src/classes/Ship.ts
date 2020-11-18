@@ -1,4 +1,4 @@
-import { ShipType, EquipmentType } from "../types";
+import { ShipType, EquipmentType } from "../types/enums";
 import Equipment from "./Equipment";
 
 export default class Ship {

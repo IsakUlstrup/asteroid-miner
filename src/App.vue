@@ -2,7 +2,7 @@
   <div id="app">
     <section class="space">
       <!-- <AsteroidField :ship="ship" @target="setTarget" /> -->
-      <Screen />
+      <Screen :ship="ship" />
     </section>
     <section class="ship">
       <Ship :target="target" :ship="ship" />

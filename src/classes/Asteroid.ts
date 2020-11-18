@@ -1,6 +1,6 @@
 import CanvasObject from "./CanvasObject";
 // import config from "../config";
-import { ColorMode } from "./Color";
+// import { ColorMode } from "./Color";
 
 export default class Asteroid extends CanvasObject {
   name: string;
@@ -17,7 +17,6 @@ export default class Asteroid extends CanvasObject {
     this.position.z = Math.random() + z;
     this.dimensions.s = 0;
     this.color.setColor({
-      mode: ColorMode.rgb,
       r: Math.random() * 255,
       g: Math.random() * 255,
       b: Math.random() * 255

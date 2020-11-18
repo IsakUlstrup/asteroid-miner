@@ -1,37 +1,10 @@
 // import colorString from "color-string";
 import colorConvert from "color-convert";
 
-export enum ColorMode {
-  rgb = "rgb",
-  cmyk = "cmyk"
-}
-
-export interface RGBColor {
-  mode: ColorMode.rgb;
-  r: number;
-  g: number;
-  b: number;
-}
-
-export interface CMYKColor {
-  mode: ColorMode.cmyk;
-  c: number;
-  m: number;
-  y: number;
-  k: number;
-}
-
-interface RGBAColor {
-  r: number;
-  g: number;
-  b: number;
-  a: number;
-}
-
 export default class Color {
   state: RGBAColor;
 
-  constructor(color: RGBColor | CMYKColor, opacity = 1) {
+  constructor(color: RGBColor | CMYKColor | RGBAColor, opacity = 1) {
     // set default state
     this.state = {
       r: 0,
@@ -42,36 +15,45 @@ export default class Color {
 
     this.setColor(color, opacity);
   }
-
-  setColor(color: RGBColor | CMYKColor, opacity = 1) {
-    // convert color to rgb if needed
+  isRGB(color: RGBColor | CMYKColor): color is RGBColor {
+    return (color as RGBColor).r !== undefined;
+  }
+  isCMYK(color: RGBColor | CMYKColor): color is CMYKColor {
+    return (color as CMYKColor).c !== undefined;
+  }
+  setColor(color: RGBColor | CMYKColor | RGBAColor, opacity = 1) {
     let convertedColor: number[];
-    switch (color.mode) {
-      case ColorMode.rgb:
-        this.state = {
-          r: color.r,
-          g: color.g,
-          b: color.b,
-          a: opacity
-        };
-        break;
-      case ColorMode.cmyk:
-        convertedColor = colorConvert.cmyk.rgb(
-          color.c,
-          color.m,
-          color.y,
-          color.k
-        );
-        this.state = {
-          r: convertedColor[0],
-          g: convertedColor[1],
-          b: convertedColor[2],
-          a: opacity
-        };
-        break;
-      default:
-        break;
+
+    if (this.isCMYK(color)) {
+      convertedColor = colorConvert.cmyk.rgb(
+        color.c,
+        color.m,
+        color.y,
+        color.k
+      );
+      this.state = {
+        r: convertedColor[0],
+        g: convertedColor[1],
+        b: convertedColor[2],
+        a: opacity
+      };
+    } else if (this.isRGB(color)) {
+      this.state = {
+        r: color.r,
+        g: color.g,
+        b: color.b,
+        a: opacity
+      };
     }
+  }
+  darken(amount: number) {
+    this.state.r -= amount;
+    if (this.state.r < 0) this.state.r = 0;
+    this.state.g -= amount;
+    if (this.state.g < 0) this.state.g = 0;
+    this.state.b -= amount;
+    if (this.state.b < 0) this.state.b = 0;
+    return this.state;
   }
   rgb() {
     return this.state;

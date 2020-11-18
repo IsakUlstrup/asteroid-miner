@@ -1,3 +1,5 @@
+import Color from "@/classes/Color";
+
 export default class Asteroid {
   // position
   x: number;
@@ -16,8 +18,9 @@ export default class Asteroid {
   points: number;
   radius: number;
   bufferCanvas: HTMLCanvasElement;
-  color: string;
-  constructor(points: number, radius: number, color: string) {
+  baseColor: Color;
+  color: Color;
+  constructor(points: number, radius: number, color: RGBColor | CMYKColor) {
     // this.x = 0.5;
     // this.y = 0.5;
     // this.z = 0;
@@ -39,12 +42,16 @@ export default class Asteroid {
 
     this.points = points;
     this.radius = radius;
-    this.color = color;
-    this.bufferCanvas = this.createOffscreenCanvas(this.color);
+    this.baseColor = new Color(color);
+    this.color = new Color(color);
+    this.bufferCanvas = this.createOffscreenCanvas(this.color.rgbString());
   }
-  setColor(color: string) {
-    this.color = color;
-    this.bufferCanvas = this.createOffscreenCanvas(this.color);
+  setColor(color: RGBColor | CMYKColor) {
+    this.color.setColor(color);
+    this.bufferCanvas = this.createOffscreenCanvas(this.color.rgbString());
+  }
+  mine(amount: number) {
+    this.setColor(this.color.darken(amount));
   }
   project(context: CanvasRenderingContext2D, resolutionScale: number) {
     const perspective = 2;
@@ -68,7 +75,7 @@ export default class Asteroid {
     if (context) {
       // context.fillRect(0, 0, offScreenCanvas.width, offScreenCanvas.height);
       context.fillStyle = color;
-      context.strokeStyle = color;
+      context.strokeStyle = this.baseColor.rgbString();
       context.lineWidth = 4;
       context.beginPath();
       for (let i = 0; i < this.points; i++) {

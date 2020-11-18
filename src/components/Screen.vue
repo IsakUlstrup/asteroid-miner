@@ -10,13 +10,19 @@
 import { computed, defineComponent, onMounted, toRefs, watch } from "vue";
 import Asteroid from "@/classes/Asteroid2";
 import gameLoop from "@/GameLoop";
+// import Color from "@/classes/Color";
+import Ship from "@/classes/Ship";
+import { EquipmentType } from "@/types/enums";
+// import { EquipmentType } from '@/types';
+// import { RGBColor } from '@/classes/Color';
+// import { RGBColor } from "@/types/color";
 
 export default defineComponent({
   name: "Screen",
   props: {
     resolution: {
       type: Number,
-      default: 0.25
+      default: 0.75
     },
     oneBit: {
       type: Boolean,
@@ -32,7 +38,11 @@ export default defineComponent({
     },
     maxAsteroids: {
       type: Number,
-      default: 2
+      default: 10
+    },
+    ship: {
+      type: Ship,
+      required: true
     }
   },
   emits: ["size"],
@@ -89,9 +99,12 @@ export default defineComponent({
           randomIntFromInterval(4, 9),
           radius,
           props.oneBit
-            ? props.oneBitColor
-            : `rgb(${Math.random() * 255}, ${Math.random() *
-                255}, ${Math.random() * 255})`
+            ? { r: 255, g: 255, b: 255 }
+            : {
+                r: Math.random() * 255,
+                g: Math.random() * 255,
+                b: Math.random() * 255
+              }
         )
       );
     }
@@ -128,16 +141,22 @@ export default defineComponent({
       for (let index = asteroids.length - 1; index >= 0; index--) {
         const asteroid = asteroids[index];
         if (
+          cursor.active &&
           isWithinCircle(
             cursor.x,
             cursor.y,
             asteroid.px,
             asteroid.py,
-            asteroid.radius * 2 * asteroid.ps
+            asteroid.radius * asteroid.ps
           )
         ) {
-          console.log("target aquired.", asteroid.color);
+          // console.log("target aquired.", asteroid.color);
           target = asteroid;
+          props.ship.equipment.forEach(equipment => {
+            if (equipment.type === EquipmentType.laser) {
+              target.mine(equipment.use() * dt);
+            }
+          });
           break;
         }
       }
@@ -174,6 +193,13 @@ export default defineComponent({
       }
     }
 
+    function getScaledCanvasDimendsions(
+      canvas: HTMLCanvasElement,
+      resolutionScale: number
+    ) {
+      return canvas.width * (1 / resolutionScale);
+    }
+
     function draw(context: CanvasRenderingContext2D) {
       context.clearRect(
         0,
@@ -182,6 +208,7 @@ export default defineComponent({
         context.canvas.height * (1 / props.resolution)
       );
       context.imageSmoothingEnabled = false;
+      context.save();
 
       // draw asteroids
       asteroids.forEach(asteroid => {
@@ -192,7 +219,31 @@ export default defineComponent({
       if (cursor.active) {
         context.strokeStyle = "rgb(255, 255, 255)";
         context.strokeRect(cursor.x - 10, cursor.y - 10, 20, 20);
+
+        const equipmentSpacing =
+          getScaledCanvasDimendsions(context.canvas, props.resolution) /
+          props.ship.equipment.length;
+
+        // loop ship equipment, draw laser for each laser equipment
+        for (let index = 0; index < props.ship.equipment.length; index++) {
+          const equipment = props.ship.equipment[index];
+          if (equipment.type === EquipmentType.laser) {
+            // laser
+            context.beginPath();
+            context.moveTo(
+              equipmentSpacing * index,
+              getScaledCanvasDimendsions(context.canvas, props.resolution)
+            );
+            context.lineCap = "round";
+            context.lineWidth = 10 * props.resolution;
+            context.lineTo(cursor.x, cursor.y);
+            context.strokeStyle = equipment.color.rgbString();
+            context.stroke();
+          }
+        }
       }
+
+      context.restore();
     }
 
     watch(resolution, () => {
@@ -204,18 +255,18 @@ export default defineComponent({
         });
     });
 
-    watch(oneBit, () => {
-      if (oneBit.value === true) {
-        asteroids.forEach(a => a.setColor(props.oneBitColor));
-      } else {
-        asteroids.forEach(a =>
-          a.setColor(
-            `rgb(${Math.random() * 255}, ${Math.random() *
-              255}, ${Math.random() * 255})`
-          )
-        );
-      }
-    });
+    // watch(oneBit, () => {
+    //   if (oneBit.value === true) {
+    //     asteroids.forEach(a => a.setColor(props.oneBitColor));
+    //   } else {
+    //     asteroids.forEach(a =>
+    //       a.setColor(
+    //         `rgb(${Math.random() * 255}, ${Math.random() *
+    //           255}, ${Math.random() * 255})`
+    //       )
+    //     );
+    //   }
+    // });
 
     const filterSize = computed(() => {
       return `${(1 / resolution.value) * 2}px`;

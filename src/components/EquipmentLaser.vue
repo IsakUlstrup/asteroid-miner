@@ -48,7 +48,6 @@
 import { defineComponent, reactive, ref, watch } from "vue";
 
 import GameLoop from "@/GameLoop";
-import { ColorMode } from "@/classes/Color";
 
 import Equipment from "../classes/Equipment";
 // import MiningLaser from "@/classes/MiningLaser";
@@ -78,7 +77,6 @@ export default defineComponent({
     });
 
     props.equipment.setColor({
-      mode: ColorMode.cmyk,
       c: +colorInput.c,
       m: +colorInput.m,
       y: +colorInput.y,
@@ -87,7 +85,6 @@ export default defineComponent({
 
     watch(colorInput, () => {
       props.equipment.setColor({
-        mode: ColorMode.cmyk,
         c: +colorInput.c,
         m: +colorInput.m,
         y: +colorInput.y,

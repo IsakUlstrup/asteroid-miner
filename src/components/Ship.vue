@@ -52,7 +52,7 @@
 import { defineComponent } from "vue";
 import Equipment from "@/classes/Equipment";
 import Ship from "@/classes/Ship";
-import { EquipmentType } from "../types";
+import { EquipmentType } from "../types/enums";
 import GameLoop from "../GameLoop";
 import Asteroid from "@/classes/Asteroid";
 

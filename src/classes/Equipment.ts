@@ -1,5 +1,6 @@
-import { Item, ItemType, EquipmentType, EquipmentStats } from "../types";
-import Color, { ColorMode, RGBColor, CMYKColor } from "./Color";
+import { ItemType, EquipmentType } from "../types/enums";
+import { Item, EquipmentStats } from "../types/types";
+import Color from "./Color";
 
 export default class Equipment implements Item {
   // metadata
@@ -59,7 +60,6 @@ export default class Equipment implements Item {
 
     // init color
     this.color = new Color({
-      mode: ColorMode.rgb,
       r: 0,
       g: 0,
       b: 0

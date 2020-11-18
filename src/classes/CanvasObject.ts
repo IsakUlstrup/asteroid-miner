@@ -1,4 +1,4 @@
-import Color, { ColorMode } from "./Color";
+import Color from "./Color";
 
 export default class CanvasObject {
   position: {
@@ -35,7 +35,6 @@ export default class CanvasObject {
     };
 
     this.color = new Color({
-      mode: ColorMode.rgb,
       r: 0,
       g: 0,
       b: 0
