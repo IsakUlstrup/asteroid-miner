@@ -21,15 +21,36 @@ export default class Color {
   isCMYK(color: RGBColor | CMYKColor): color is CMYKColor {
     return (color as CMYKColor).c !== undefined;
   }
+  isWithinRange(value: number, min: number, max: number) {
+    return value >= min && value <= max;
+  }
+  isValidCMYKChanel(value: number) {
+    return this.isWithinRange(value, 0, 100);
+  }
+  validateChanel(chanel: number, min: number, max: number) {
+    if (chanel < min) {
+      return min;
+    }
+    if (chanel > max) {
+      return max;
+    }
+    return chanel;
+  }
+  validateCMYKChanel(chanel: number) {
+    return this.validateChanel(chanel, 0, 100);
+  }
+  validateRGBChanel(chanel: number) {
+    return this.validateChanel(chanel, 0, 255);
+  }
   setColor(color: RGBColor | CMYKColor | RGBAColor, opacity = 1) {
     let convertedColor: number[];
 
     if (this.isCMYK(color)) {
       convertedColor = colorConvert.cmyk.rgb(
-        color.c,
-        color.m,
-        color.y,
-        color.k
+        this.validateCMYKChanel(color.c),
+        this.validateCMYKChanel(color.m),
+        this.validateCMYKChanel(color.y),
+        this.validateCMYKChanel(color.k)
       );
       this.state = {
         r: convertedColor[0],
@@ -39,9 +60,9 @@ export default class Color {
       };
     } else if (this.isRGB(color)) {
       this.state = {
-        r: color.r,
-        g: color.g,
-        b: color.b,
+        r: this.validateRGBChanel(color.r),
+        g: this.validateRGBChanel(color.g),
+        b: this.validateRGBChanel(color.b),
         a: opacity
       };
     }

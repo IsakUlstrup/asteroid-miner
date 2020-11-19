@@ -51,6 +51,7 @@ export default class Asteroid {
     this.bufferCanvas = this.createOffscreenCanvas(this.color.rgbString());
   }
   mine(color: CMYKColor) {
+    // console.log("mine", color);
     this.setColor({
       c: this.color.cmyk().c - color.c,
       m: this.color.cmyk().m - color.m,

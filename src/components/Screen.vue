@@ -111,7 +111,11 @@ export default defineComponent({
           // console.log("target aquired.", asteroid.color);
           target = asteroid;
           props.ship.equipment.forEach(equipment => {
-            if (equipment.type === EquipmentType.laser) {
+            if (
+              equipment.type === EquipmentType.laser &&
+              equipment.state.powerModifier > 0 &&
+              equipment.state.energy > equipment.derivedStats.energyUse
+            ) {
               const equipmentEffect = equipment.use() * dt;
               target?.mine({
                 c: equipment.color.cmyk().c * equipmentEffect,
