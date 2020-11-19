@@ -10,17 +10,19 @@
 import { computed, defineComponent, onMounted, toRefs, watch } from "vue";
 import Asteroid from "@/classes/Asteroid";
 import Beam from "@/classes/Beam";
+import Ore from "@/classes/Ore";
 import CursorTracker from "@/services/CursorTracker";
 import {
   randomInt,
   isWithinCircle,
   resizeCanvas,
-  getScaledCanvasDimendsions
+  getScaledCanvasDimendsions,
+  getPointInCircle
 } from "@/services/Utils";
 import gameLoop from "@/GameLoop";
 // import Color from "@/classes/Color";
 import Ship from "@/classes/Ship";
-import { EquipmentType } from "@/types/enums";
+import { EquipmentType, OreType } from "@/types/enums";
 
 export default defineComponent({
   name: "Screen",
@@ -55,6 +57,7 @@ export default defineComponent({
     let canvas: HTMLCanvasElement | null = null;
     let ctx: CanvasRenderingContext2D | null = null;
     const asteroids: Asteroid[] = [];
+    const ore: Ore[] = [];
     const { resolution } = toRefs(props);
     let target: Asteroid | undefined;
     let cursor: CursorTracker;
@@ -77,6 +80,25 @@ export default defineComponent({
       );
     }
 
+    function generateOre(source: Asteroid, type: OreType, amount: number) {
+      if (amount <= 0) return;
+      const randomPosition = getPointInCircle(Math.random() * 0.1);
+      const position = {
+        x: source.position.x + randomPosition.x,
+        y: source.position.y + randomPosition.y,
+        z: source.position.z,
+        r: Math.random() * 360
+      };
+      console.log(source.position.z, source.projected.s);
+      // const vector = {
+      //   x: source.vector.x,
+      //   y: source.vector.y,
+      //   z: source.vector.z,
+      //   r: 0
+      // };
+      ore.push(new Ore(position, source.vector, type));
+    }
+
     function update(dt: number) {
       // add new asteroids if current amount is below max
       if (asteroids.length < props.maxAsteroids) {
@@ -89,6 +111,14 @@ export default defineComponent({
           asteroids.splice(asteroids.indexOf(asteroid), 1);
         }
       });
+
+      // update ore
+      ore.forEach(o => {
+        o.update(dt);
+        if (o.isOffscreen) {
+          ore.splice(ore.indexOf(o), 1);
+        }
+      })
 
       // sort asteroids based on z-position
       asteroids.sort((a1, a2) => {
@@ -125,6 +155,10 @@ export default defineComponent({
                 y: equipment.color.cmyk().y * equipmentEffect,
                 k: equipment.color.cmyk().k * equipmentEffect
               });
+              generateOre(target, OreType.cyan, mined.c);
+              generateOre(target, OreType.magenta, mined.m);
+              generateOre(target, OreType.yellow, mined.y);
+              generateOre(target, OreType.black, mined.k);
               // console.log("generate loot", mined);
             }
           });
@@ -147,6 +181,10 @@ export default defineComponent({
       // draw asteroids
       asteroids.forEach(asteroid => {
         asteroid.draw(context, resolution.value);
+      });
+
+      ore.forEach(ore => {
+        ore.draw(context, resolution.value);
       });
 
       // beams

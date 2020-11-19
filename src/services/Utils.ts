@@ -41,3 +41,11 @@ export function getScaledCanvasDimendsions(
     height: canvas.height * (1 / resolutionScale)
   };
 }
+
+export function getPointInCircle(radius: number) {
+  const angle = Math.random() * Math.PI * 2;
+  return {
+    x: Math.cos(angle) * radius,
+    y: Math.sin(angle) * radius
+  }
+}

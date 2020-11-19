@@ -7,13 +7,16 @@ export default class CanvasObject {
   color: Color;
   projected: Projected;
   bufferCanvas: HTMLCanvasElement;
+  size: number;
   constructor(
     position: Vector3D,
     vector: Vector3D,
+    size: number,
     color: RGBColor | CMYKColor
   ) {
     this.position = position;
     this.vector = vector;
+    this.size = size;
     this.color = new Color(color);
     this.projected = {
       x: 0,
@@ -24,12 +27,12 @@ export default class CanvasObject {
   }
   createOffscreenCanvas(color: string) {
     const offScreenCanvas = document.createElement("canvas");
-    offScreenCanvas.width = 100;
-    offScreenCanvas.height = 100;
+    offScreenCanvas.width = this.size;
+    offScreenCanvas.height = this.size;
     const context = offScreenCanvas.getContext("2d");
     if (context) {
       context.fillStyle = color;
-      context.fillRect(0, 0, 100, 100);
+      context.fillRect(0, 0, this.size, this.size);
     }
     return offScreenCanvas;
   }
@@ -61,20 +64,21 @@ export default class CanvasObject {
     this.project(context, resolutionScale);
     context.save();
     // rotate
-    context.translate(this.projected.x, this.projected.y);
+    context.translate(this.projected.x - this.size / 2 * this.projected.s, this.projected.y - this.size / 2 * this.projected.s);
     context.rotate((this.position.r * Math.PI) / 180);
-    context.translate(-this.projected.x, -this.projected.y);
+    context.translate(-this.projected.x - this.size / 2 * this.projected.s, -this.projected.y - this.size / 2 * this.projected.s);
     // draw
     context.drawImage(
       this.bufferCanvas,
-      Math.floor(this.projected.x * this.projected.s),
-      Math.floor(this.projected.y * this.projected.s),
-      this.projected.s,
-      this.projected.s
+      Math.floor(this.projected.x - this.size / 2 * this.projected.s),
+      Math.floor(this.projected.y - this.size / 2 * this.projected.s),
+      this.size * this.projected.s,
+      this.size * this.projected.s
     );
-    context.restore();
     // center of rotation debug
-    // context.fillRect(this.px - 2.5, this.py - 2.5, 5, 5);
+    // context.fillStyle = "rgb(255, 255, 255)";
+    // context.fillRect(this.projected.x - 2.5, this.projected.y - 2.5, 5, 5);
+    context.restore();
   }
   get isOffscreen() {
     if (

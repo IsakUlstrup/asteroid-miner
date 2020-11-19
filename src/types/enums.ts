@@ -13,3 +13,10 @@ export enum ShipType {
   eve,
   retro
 }
+
+export enum OreType {
+  cyan,
+  magenta,
+  yellow,
+  black
+}

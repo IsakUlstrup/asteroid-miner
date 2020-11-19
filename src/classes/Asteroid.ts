@@ -21,6 +21,7 @@ export default class Asteroid extends CanvasObject {
         z: (Math.random() - 0.5) * 0.00007,
         r: (Math.random() - 0.5) * 0.1
       },
+      radius,
       color
     );
 
