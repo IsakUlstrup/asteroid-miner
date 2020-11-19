@@ -17,10 +17,10 @@
     <div class="target" v-if="target">
       <!-- <h3>{{ target.name }}</h3> -->
       <ul>
-        <li>x: {{ target.px.toFixed(2) }}</li>
-        <li>y: {{ target.py.toFixed(2) }}</li>
-        <li>z: {{ target.z }}</li>
-        <li>s: {{ target.ps }}</li>
+        <li>x: {{ target.projected.x.toFixed(2) }}</li>
+        <li>y: {{ target.projected.y.toFixed(2) }}</li>
+        <li>z: {{ target.position.z }}</li>
+        <li>s: {{ target.projected.s }}</li>
       </ul>
     </div>
 
@@ -49,7 +49,7 @@ import Equipment from "@/classes/Equipment";
 import Ship from "@/classes/Ship";
 import { EquipmentType } from "../types/enums";
 import GameLoop from "../GameLoop";
-import Asteroid from "@/classes/Asteroid2";
+import Asteroid from "@/classes/Asteroid";
 
 // import LaserBeam from "@/components/LaserBeam.vue";
 import Reactor from "@/components/EquipmentReactor.vue";

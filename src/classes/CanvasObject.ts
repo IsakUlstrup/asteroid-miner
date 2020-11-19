@@ -76,4 +76,18 @@ export default class CanvasObject {
     // center of rotation debug
     // context.fillRect(this.px - 2.5, this.py - 2.5, 5, 5);
   }
+  get isOffscreen() {
+    if (
+      this.position.x < 0 ||
+      this.position.x > 1 ||
+      this.position.y < 0 ||
+      this.position.y > 1 ||
+      this.projected.s < 0 ||
+      this.projected.s > 10
+    ) {
+      return true;
+    } else {
+      return false;
+    }
+  }
 }

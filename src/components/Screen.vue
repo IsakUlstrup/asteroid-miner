@@ -8,7 +8,7 @@
 
 <script lang="ts">
 import { computed, defineComponent, onMounted, toRefs, watch } from "vue";
-import Asteroid from "@/classes/Asteroid2";
+import Asteroid from "@/classes/Asteroid";
 import Beam from "@/classes/Beam";
 import CursorTracker from "@/services/CursorTracker";
 import {
@@ -92,7 +92,7 @@ export default defineComponent({
 
       // sort asteroids based on z-position
       asteroids.sort((a1, a2) => {
-        return a1.ps - a2.ps;
+        return a1.projected.s - a2.projected.s;
       });
 
       // hit scan, loop asteroids backwards to find frontmost asteroid first
@@ -104,9 +104,9 @@ export default defineComponent({
           isWithinCircle(
             cursor.x,
             cursor.y,
-            asteroid.px,
-            asteroid.py,
-            asteroid.radius * asteroid.ps
+            asteroid.projected.x,
+            asteroid.projected.y,
+            asteroid.radius * asteroid.projected.s
           )
         ) {
           // mine if any laser is active and wehave a target
@@ -125,7 +125,7 @@ export default defineComponent({
                 y: equipment.color.cmyk().y * equipmentEffect,
                 k: equipment.color.cmyk().k * equipmentEffect
               });
-              console.log("generate loot", mined);
+              // console.log("generate loot", mined);
             }
           });
           break;

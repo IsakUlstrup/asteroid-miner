@@ -54,7 +54,7 @@ import { defineComponent, reactive, ref, watch } from "vue";
 
 import Equipment from "../classes/Equipment";
 // import MiningLaser from "@/classes/MiningLaser";
-import Asteroid from "../classes/Asteroid2";
+import Asteroid from "../classes/Asteroid";
 
 export default defineComponent({
   name: "Laser",
