@@ -64,14 +64,20 @@ export default class CanvasObject {
     this.project(context, resolutionScale);
     context.save();
     // rotate
-    context.translate(this.projected.x - this.size / 2 * this.projected.s, this.projected.y - this.size / 2 * this.projected.s);
+    context.translate(
+      this.projected.x - (this.size / 2) * this.projected.s,
+      this.projected.y - (this.size / 2) * this.projected.s
+    );
     context.rotate((this.position.r * Math.PI) / 180);
-    context.translate(-this.projected.x - this.size / 2 * this.projected.s, -this.projected.y - this.size / 2 * this.projected.s);
+    context.translate(
+      -this.projected.x - (this.size / 2) * this.projected.s,
+      -this.projected.y - (this.size / 2) * this.projected.s
+    );
     // draw
     context.drawImage(
       this.bufferCanvas,
-      Math.floor(this.projected.x - this.size / 2 * this.projected.s),
-      Math.floor(this.projected.y - this.size / 2 * this.projected.s),
+      Math.floor(this.projected.x - (this.size / 2) * this.projected.s),
+      Math.floor(this.projected.y - (this.size / 2) * this.projected.s),
       this.size * this.projected.s,
       this.size * this.projected.s
     );

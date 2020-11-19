@@ -24,7 +24,7 @@
 <script lang="ts">
 import { defineComponent } from "vue";
 
-import GameLoop from "@/GameLoop";
+import GameLoop from "@/services/GameLoop";
 // import Color from "color";
 
 // const color = Color("rgb(255, 255, 255)");

@@ -19,7 +19,7 @@ import {
   getScaledCanvasDimendsions,
   getPointInCircle
 } from "@/services/Utils";
-import gameLoop from "@/GameLoop";
+import gameLoop from "@/services/GameLoop";
 // import Color from "@/classes/Color";
 import Ship from "@/classes/Ship";
 import { EquipmentType, OreType } from "@/types/enums";
@@ -118,7 +118,7 @@ export default defineComponent({
         if (o.isOffscreen) {
           ore.splice(ore.indexOf(o), 1);
         }
-      })
+      });
 
       // sort asteroids based on z-position
       asteroids.sort((a1, a2) => {

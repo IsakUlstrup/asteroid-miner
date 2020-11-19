@@ -32,7 +32,7 @@
     <h1>Equipment</h1>
 
     <h3>Time</h3>
-    <input type="button" value="pause" @click="GameLoop.pause(true)">
+    <input type="button" value="pause" @click="GameLoop.pause(true)" />
 
     <h3>Chargeable ({{ ship.chargeableEquipment.length }})</h3>
     <ul>
@@ -48,7 +48,7 @@ import { defineComponent } from "vue";
 import Equipment from "@/classes/Equipment";
 import Ship from "@/classes/Ship";
 import { EquipmentType } from "../types/enums";
-import GameLoop from "../GameLoop";
+import GameLoop from "@/services/GameLoop";
 import Asteroid from "@/classes/Asteroid";
 
 // import LaserBeam from "@/components/LaserBeam.vue";
