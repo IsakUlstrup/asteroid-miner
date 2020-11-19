@@ -109,21 +109,23 @@ export default defineComponent({
             asteroid.radius * asteroid.ps
           )
         ) {
-          // console.log("target aquired.", asteroid.color);
+          // mine if any laser is active and wehave a target
           target = asteroid;
           props.ship.equipment.forEach(equipment => {
             if (
+              target &&
               equipment.type === EquipmentType.laser &&
               equipment.state.powerModifier > 0 &&
               equipment.state.energy > equipment.derivedStats.energyUse
             ) {
               const equipmentEffect = equipment.use() * dt;
-              target?.mine({
+              const mined = target.mine({
                 c: equipment.color.cmyk().c * equipmentEffect,
                 m: equipment.color.cmyk().m * equipmentEffect,
                 y: equipment.color.cmyk().y * equipmentEffect,
                 k: equipment.color.cmyk().k * equipmentEffect
               });
+              console.log("generate loot", mined);
             }
           });
           break;
@@ -165,22 +167,14 @@ export default defineComponent({
             // laser
             new Beam(
               equipmentSpacing * index,
-              getScaledCanvasDimendsions(context.canvas, props.resolution).height,
+              getScaledCanvasDimendsions(
+                context.canvas,
+                props.resolution
+              ).height,
               cursor.x,
               cursor.y,
               1
             ).draw(context, equipment.color);
-            // context.beginPath();
-            // context.moveTo(
-            //   equipmentSpacing * index,
-            //   getScaledCanvasDimendsions(context.canvas, props.resolution)
-            //     .height
-            // );
-            // context.lineCap = "round";
-            // context.lineWidth = 10 * props.resolution;
-            // context.lineTo(cursor.x, cursor.y);
-            // context.strokeStyle = equipment.color.rgbString();
-            // context.stroke();
           }
         }
       }

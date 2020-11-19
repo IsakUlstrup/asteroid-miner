@@ -124,11 +124,18 @@ export default class Asteroid {
   }
   draw(context: CanvasRenderingContext2D, resolutionScale: number) {
     this.project(context, resolutionScale);
+    // console.clear();
+    // console.log(`x: ${this.x.toFixed(2)}, px: ${this.px.toFixed(0)}, y: ${this.y}, py: ${this.py.toFixed(0)}, z: ${this.z}, ps: ${this.ps}`);
+    const center = {
+      x: this.px,
+      y: this.py
+    };
     context.save();
     // rotate
-    context.translate(this.px, this.py);
+    // context.globalAlpha = this.ps;
+    context.translate(center.x, center.y);
     context.rotate((this.r * Math.PI) / 180);
-    context.translate(-this.px, -this.py);
+    context.translate(-center.x, -center.y);
     // draw
     context.drawImage(
       this.bufferCanvas,
@@ -139,7 +146,7 @@ export default class Asteroid {
     );
     context.restore();
     // center of rotation debug
-    // context.fillRect(this.px - 2.5, this.py - 2.5, 5, 5);
+    // context.fillRect(center.x, center.y, 5, 5);
   }
   get isOffscreen() {
     if (
