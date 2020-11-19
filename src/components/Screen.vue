@@ -9,6 +9,7 @@
 <script lang="ts">
 import { computed, defineComponent, onMounted, toRefs, watch } from "vue";
 import Asteroid from "@/classes/Asteroid2";
+import Beam from "@/classes/Beam";
 import CursorTracker from "@/services/CursorTracker";
 import {
   randomInt,
@@ -162,17 +163,24 @@ export default defineComponent({
             equipment.state.energy > equipment.derivedStats.energyUse
           ) {
             // laser
-            context.beginPath();
-            context.moveTo(
+            new Beam(
               equipmentSpacing * index,
-              getScaledCanvasDimendsions(context.canvas, props.resolution)
-                .height
-            );
-            context.lineCap = "round";
-            context.lineWidth = 10 * props.resolution;
-            context.lineTo(cursor.x, cursor.y);
-            context.strokeStyle = equipment.color.rgbString();
-            context.stroke();
+              getScaledCanvasDimendsions(context.canvas, props.resolution).height,
+              cursor.x,
+              cursor.y,
+              1
+            ).draw(context, equipment.color);
+            // context.beginPath();
+            // context.moveTo(
+            //   equipmentSpacing * index,
+            //   getScaledCanvasDimendsions(context.canvas, props.resolution)
+            //     .height
+            // );
+            // context.lineCap = "round";
+            // context.lineWidth = 10 * props.resolution;
+            // context.lineTo(cursor.x, cursor.y);
+            // context.strokeStyle = equipment.color.rgbString();
+            // context.stroke();
           }
         }
       }
