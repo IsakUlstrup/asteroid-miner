@@ -166,9 +166,10 @@ export default defineComponent({
 .equipment-slots {
   display: flex;
   flex-wrap: wrap;
+  justify-content: center;
 }
 .equipment-wrapper {
-  width: 20rem;
+  width: 17rem;
   border: 1px solid #444;
   margin: 0.5rem;
   padding: 0.5rem;

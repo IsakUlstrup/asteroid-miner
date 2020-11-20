@@ -96,9 +96,9 @@ export default defineComponent({
       // console.log("out", props.equipment.color.rgb());
     });
 
-    function toggleMine() {
-      isMining.value = !isMining.value;
-    }
+    // function toggleMine() {
+    //   isMining.value = !isMining.value;
+    // }
 
     // GameLoop.addListener((dt: number) => {
     //   if (!props.target || !isMining.value || props.target.hp <= 0) {
@@ -109,7 +109,6 @@ export default defineComponent({
     // });
 
     return {
-      toggleMine,
       isMining,
       colorInput
     };
@@ -118,4 +117,8 @@ export default defineComponent({
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
-<style scoped lang="scss"></style>
+<style scoped lang="scss">
+input[type="range"] {
+  width: 100%;
+}
+</style>

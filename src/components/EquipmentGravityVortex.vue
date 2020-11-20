@@ -65,4 +65,8 @@ export default defineComponent({
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
-<style scoped lang="scss"></style>
+<style scoped lang="scss">
+input[type="range"] {
+  width: 100%;
+}
+</style>
