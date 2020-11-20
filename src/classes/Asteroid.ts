@@ -3,7 +3,6 @@ import CanvasObject from "@/classes/CanvasObject";
 
 export default class Asteroid extends CanvasObject {
   points: number;
-  radius: number;
   bufferCanvas: HTMLCanvasElement;
   baseColor: Color;
   color: Color;
@@ -21,12 +20,11 @@ export default class Asteroid extends CanvasObject {
         z: (Math.random() - 0.5) * 0.00007,
         r: (Math.random() - 0.5) * 0.1
       },
-      radius,
+      radius * 2,
       color
     );
 
     this.points = points;
-    this.radius = radius;
     this.baseColor = new Color(color);
     this.color = new Color(color);
     this.bufferCanvas = this.createOffscreenCanvas(this.color.rgbString());
@@ -61,8 +59,8 @@ export default class Asteroid extends CanvasObject {
   }
   createOffscreenCanvas(color: string) {
     const offScreenCanvas = document.createElement("canvas");
-    offScreenCanvas.width = this.radius * 2;
-    offScreenCanvas.height = this.radius * 2;
+    offScreenCanvas.width = this.size;
+    offScreenCanvas.height = this.size;
     const context = offScreenCanvas.getContext("2d");
     if (context) {
       // context.fillRect(0, 0, offScreenCanvas.width, offScreenCanvas.height);
@@ -72,11 +70,11 @@ export default class Asteroid extends CanvasObject {
       context.beginPath();
       for (let i = 0; i < this.points; i++) {
         const x =
-          this.radius +
-          this.radius * 0.9 * Math.cos((2 * Math.PI * i) / this.points);
+          this.size / 2 +
+          (this.size / 2) * 0.9 * Math.cos((2 * Math.PI * i) / this.points);
         const y =
-          this.radius +
-          this.radius * 0.9 * Math.sin((2 * Math.PI * i) / this.points);
+          this.size / 2 +
+          (this.size / 2) * 0.9 * Math.sin((2 * Math.PI * i) / this.points);
         context.lineTo(Math.floor(x), Math.floor(y));
       }
       context.closePath();
@@ -97,10 +95,10 @@ export default class Asteroid extends CanvasObject {
     // draw
     context.drawImage(
       this.bufferCanvas,
-      Math.floor(this.projected.x - this.radius * this.projected.s),
-      Math.floor(this.projected.y - this.radius * this.projected.s),
-      this.radius * 2 * this.projected.s,
-      this.radius * 2 * this.projected.s
+      Math.floor(this.projected.x - (this.size / 2) * this.projected.s),
+      Math.floor(this.projected.y - (this.size / 2) * this.projected.s),
+      (this.size / 2) * 2 * this.projected.s,
+      (this.size / 2) * 2 * this.projected.s
     );
     context.restore();
     // center of rotation debug

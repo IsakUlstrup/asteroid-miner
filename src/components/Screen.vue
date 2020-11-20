@@ -24,6 +24,7 @@ import gameLoop from "@/services/GameLoop";
 // import Color from "@/classes/Color";
 import Ship from "@/classes/Ship";
 import { EquipmentType, OreType } from "@/types/enums";
+import CanvasObject from "@/classes/CanvasObject";
 
 export default defineComponent({
   name: "Screen",
@@ -57,15 +58,16 @@ export default defineComponent({
   setup(props, context) {
     let canvas: HTMLCanvasElement | null = null;
     let ctx: CanvasRenderingContext2D | null = null;
-    const asteroids: Asteroid[] = [];
-    const ore: Ore[] = [];
+    // const asteroids: Asteroid[] = [];
+    // const ore: Ore[] = [];
+    const canvasObjects: CanvasObject[] = [];
     const { resolution } = toRefs(props);
     let target: Asteroid | undefined;
     let cursor: CursorTracker;
 
-    function addAsteroid(asteroids: Asteroid[]) {
+    function addAsteroid(canvasObjects: CanvasObject[]) {
       const radius = 50;
-      asteroids.push(
+      canvasObjects.push(
         new Asteroid(
           randomInt(4, 9),
           radius,
@@ -79,6 +81,13 @@ export default defineComponent({
               }
         )
       );
+    }
+
+    function getAsteroids() {
+      return canvasObjects.filter(o => o instanceof Asteroid);
+    }
+    function getOre() {
+      return canvasObjects.filter(o => o instanceof Ore);
     }
 
     function generateOre(source: Asteroid, type: OreType, amount: number) {
@@ -97,39 +106,31 @@ export default defineComponent({
       //   z: source.vector.z,
       //   r: 0
       // };
-      ore.push(new Ore(position, source.vector, type, amount));
+      canvasObjects.push(new Ore(position, source.vector, type, amount));
     }
 
     function update(dt: number) {
       // add new asteroids if current amount is below max
-      if (asteroids.length < props.maxAsteroids) {
-        addAsteroid(asteroids);
+      if (getAsteroids().length < props.maxAsteroids) {
+        addAsteroid(canvasObjects);
       }
-      // update asteroids
-      asteroids.forEach(asteroid => {
-        asteroid.update(dt);
-        if (asteroid.isOffscreen) {
-          asteroids.splice(asteroids.indexOf(asteroid), 1);
-        }
-      });
-
-      // update ore
-      ore.forEach(o => {
+      // update canvas objects
+      canvasObjects.forEach(o => {
         o.update(dt);
         if (o.isOffscreen) {
-          ore.splice(ore.indexOf(o), 1);
+          canvasObjects.splice(canvasObjects.indexOf(o), 1);
         }
       });
 
       // sort asteroids based on z-position
-      asteroids.sort((a1, a2) => {
-        return a1.projected.s - a2.projected.s;
+      canvasObjects.sort((o1, o2) => {
+        return o1.projected.s - o2.projected.s;
       });
 
       // hit scan, loop asteroids backwards to find frontmost asteroid first
       target = undefined;
-      for (let index = asteroids.length - 1; index >= 0; index--) {
-        const asteroid = asteroids[index];
+      for (let index = getAsteroids().length - 1; index >= 0; index--) {
+        const asteroid = getAsteroids()[index] as Asteroid;
         if (
           cursor.active &&
           isWithinCircle(
@@ -137,7 +138,7 @@ export default defineComponent({
             cursor.y,
             asteroid.projected.x,
             asteroid.projected.y,
-            asteroid.radius * asteroid.projected.s
+            (asteroid.size / 2) * asteroid.projected.s
           )
         ) {
           // mine if any laser is active and wehave a target
@@ -169,8 +170,8 @@ export default defineComponent({
       context.emit("target", target);
 
       // gravity vortex
-      for (let index = ore.length - 1; index >= 0; index--) {
-        const o = ore[index];
+      for (let index = getOre().length - 1; index >= 0; index--) {
+        const o = getOre()[index] as Ore;
         if (cursor.active) {
           props.ship.equipment.forEach(equipment => {
             if (
@@ -191,7 +192,7 @@ export default defineComponent({
               ) {
                 // loot ore and remove it from scene
                 if (props.ship.lootOre(o.type, o.amount)) {
-                  ore.splice(ore.indexOf(o), 1);
+                  canvasObjects.splice(canvasObjects.indexOf(o), 1);
                 }
               }
             }
@@ -211,12 +212,8 @@ export default defineComponent({
       context.save();
 
       // draw asteroids
-      asteroids.forEach(asteroid => {
-        asteroid.draw(context, resolution.value);
-      });
-
-      ore.forEach(ore => {
-        ore.draw(context, resolution.value);
+      canvasObjects.forEach(o => {
+        o.draw(context, resolution.value);
       });
 
       // beams
