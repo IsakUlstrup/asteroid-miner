@@ -2,10 +2,12 @@ export default class CursorTracker {
   x: number;
   y: number;
   active: boolean;
+  element: HTMLElement;
   constructor(element: HTMLElement) {
     this.x = 0;
     this.y = 0;
     this.active = false;
+    this.element = element;
     // this is ugly and I hate it, but I had some scopting issues
     element.addEventListener(
       "mousedown",
@@ -76,14 +78,15 @@ export default class CursorTracker {
   }
   cursorMove(event: MouseEvent | TouchEvent) {
     event.preventDefault();
+    const rect = this.element.getBoundingClientRect();
     if (event.type === "touchmove") {
       const touch = event as TouchEvent;
       const x = touch.touches[0].clientX;
       const y = touch.touches[0].clientY;
 
       if (x && y) {
-        this.x = x;
-        this.y = y;
+        this.x = x - rect.left;
+        this.y = y - rect.top;
       }
     } else if (event.type === "mousemove") {
       const move = event as MouseEvent;
@@ -91,8 +94,8 @@ export default class CursorTracker {
       const y = move.clientY;
 
       if (x && y) {
-        this.x = x;
-        this.y = y;
+        this.x = x - rect.left;
+        this.y = y - rect.top;
       }
     }
   }
