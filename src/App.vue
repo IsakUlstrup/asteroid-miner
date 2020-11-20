@@ -1,7 +1,6 @@
 <template>
   <div id="app">
     <section class="space">
-      <!-- <AsteroidField :ship="ship" @target="setTarget" /> -->
       <Screen :ship="ship" @target="setTarget" />
     </section>
     <section class="ship">
@@ -13,15 +12,10 @@
 <script lang="ts">
 import { defineComponent, reactive, ref } from "vue";
 import Ship from "@/components/Ship.vue";
-// import AsteroidField from "@/components/AsteroidField.vue";
 import Screen from "@/components/Screen.vue";
 
 import ShipClass from "@/classes/Ship";
-
-// import SpaceAsteroid from "@/components/SpaceAsteroid.vue";
 import Asteroid from "@/classes/Asteroid";
-// import config from "@/config";
-// import GameLoop from "@/GameLoop";
 
 export default defineComponent({
   name: "App",
@@ -32,25 +26,10 @@ export default defineComponent({
   },
   setup() {
     const ship = reactive(new ShipClass("a ship", 5));
-    // const asteroids = reactive(new Array(config.asteroidMaxCount));
-    // for (let index = 0; index < asteroids.length; index++) {
-    //   // const element = asteroids[index];
-    //   // asteroids[index] = new Asteroid();
-    // }
-
-    // GameLoop.addListener((dt: number) => {
-    //   asteroids.forEach(a => {
-    //     if (a) {
-    //       console.log(a, dt);
-    //     }
-    //   });
-    // });
 
     const target = ref<Asteroid>();
 
     function setTarget(t: Asteroid) {
-      // console.log(t);
-      // toogle target if we click on a targeted asteroid
       if (t === target.value) {
         target.value = undefined;
         return;
@@ -107,7 +86,13 @@ body {
 
   .space {
     background: #262626;
-    flex: 2;
+    flex: 1;
+  }
+}
+
+@media (orientation: landscape) {
+  #app {
+    flex-direction: row-reverse;
   }
 }
 </style>
