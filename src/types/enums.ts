@@ -2,7 +2,8 @@ export enum EquipmentType {
   reactor = "reactor",
   laser = "laser",
   none = "none",
-  engine = "engine"
+  engine = "engine",
+  gravityVortex = "gravityVortex"
 }
 
 export enum ItemType {

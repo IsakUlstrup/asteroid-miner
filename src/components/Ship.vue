@@ -14,8 +14,17 @@
         />
       </div>
     </div>
+
+    <h1>Inventory</h1>
+    <ul>
+      <li>c: {{ ship.inventory.c }}</li>
+      <li>m: {{ ship.inventory.m }}</li>
+      <li>y: {{ ship.inventory.y }}</li>
+      <li>k: {{ ship.inventory.k }}</li>
+    </ul>
+
     <div class="target" v-if="target">
-      <!-- <h3>{{ target.name }}</h3> -->
+      <h3>target</h3>
       <ul>
         <li>x: {{ target.projected.x.toFixed(2) }}</li>
         <li>y: {{ target.projected.y.toFixed(2) }}</li>
@@ -56,6 +65,7 @@ import Reactor from "@/components/EquipmentReactor.vue";
 import Laser from "@/components/EquipmentLaser.vue";
 import None from "@/components/EquipmentNone.vue";
 import Engine from "@/components/EquipmentEngine.vue";
+import GravityVortex from "@/components/EquipmentGravityVortex.vue";
 
 export default defineComponent({
   name: "Ship",
@@ -64,7 +74,8 @@ export default defineComponent({
     Reactor,
     Laser,
     None,
-    Engine
+    Engine,
+    GravityVortex
   },
   props: {
     ship: {
@@ -109,9 +120,18 @@ export default defineComponent({
       effect: 0.0001
     });
 
+    const gravityVortex = new Equipment({
+      equipmentType: EquipmentType.gravityVortex,
+      name: "Gravity vortex generator",
+      energyBufferSize: 50,
+      energyUse: 0.01,
+      effect: 100
+    });
+
     props.ship.setEquipment(reactor, 0);
     props.ship.setEquipment(laser, 1);
     props.ship.setEquipment(laser2, 2);
+    props.ship.setEquipment(gravityVortex, 3);
     props.ship.setEquipment(engine, 4);
 
     GameLoop.addListener((dt: number) => {

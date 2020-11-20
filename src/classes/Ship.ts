@@ -1,4 +1,4 @@
-import { ShipType, EquipmentType } from "../types/enums";
+import { ShipType, EquipmentType, OreType } from "../types/enums";
 import Equipment from "./Equipment";
 
 export default class Ship {
@@ -7,6 +7,12 @@ export default class Ship {
   type: ShipType;
   equipmentSlots: number;
   position: number;
+  inventory: {
+    c: number;
+    m: number;
+    y: number;
+    k: number;
+  }
 
   constructor(name: string, slots: number) {
     this.name = name;
@@ -15,6 +21,12 @@ export default class Ship {
     this.equipment.fill(new Equipment({ equipmentType: EquipmentType.none }));
     this.type = ShipType.eve;
     this.position = 0;
+    this.inventory = {
+      c: 0,
+      m: 0,
+      y: 0,
+      k: 0
+    };
   }
   get reactors() {
     return this.equipment.filter(e => e && e.type === "reactor");
@@ -25,6 +37,25 @@ export default class Ship {
   }
   move(speed: number) {
     this.position += speed;
+  }
+  lootOre(type: OreType, amount: number) {
+    switch (type) {
+      case OreType.cyan:
+        this.inventory.c += amount;
+        break;
+      case OreType.magenta:
+        this.inventory.m += amount;
+        break;
+      case OreType.yellow:
+        this.inventory.y += amount;
+        break;
+      case OreType.black:
+        this.inventory.k += amount;
+        break;
+      default:
+        break;
+    }
+    return true;
   }
   generateEnergy() {
     let energy = 0;

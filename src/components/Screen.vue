@@ -17,7 +17,8 @@ import {
   isWithinCircle,
   resizeCanvas,
   getScaledCanvasDimendsions,
-  getPointInCircle
+  getPointInCircle,
+  circlesIntersect
 } from "@/services/Utils";
 import gameLoop from "@/services/GameLoop";
 // import Color from "@/classes/Color";
@@ -89,14 +90,14 @@ export default defineComponent({
         z: source.position.z,
         r: Math.random() * 360
       };
-      console.log(source.position.z, source.projected.s);
+      // console.log(source.position.z, source.projected.s);
       // const vector = {
       //   x: source.vector.x,
       //   y: source.vector.y,
       //   z: source.vector.z,
       //   r: 0
       // };
-      ore.push(new Ore(position, source.vector, type));
+      ore.push(new Ore(position, source.vector, type, amount));
     }
 
     function update(dt: number) {
@@ -166,6 +167,37 @@ export default defineComponent({
         }
       }
       context.emit("target", target);
+
+      // gravity vortex
+      for (let index = ore.length - 1; index >= 0; index--) {
+        const o = ore[index];
+        if (cursor.active) {
+          props.ship.equipment.forEach(equipment => {
+            if (
+              equipment.type === EquipmentType.gravityVortex &&
+              equipment.state.powerModifier > 0 &&
+              equipment.state.energy > equipment.derivedStats.energyUse
+            ) {
+              equipment.use();
+              if (
+                circlesIntersect(
+                  o.projected.x,
+                  o.projected.y,
+                  o.size / 2,
+                  cursor.x,
+                  cursor.y,
+                  equipment.derivedStats.effect
+                )
+              ) {
+                // loot ore and remove it from scene
+                if (props.ship.lootOre(o.type, o.amount)) {
+                  ore.splice(ore.indexOf(o), 1);
+                }
+              }
+            }
+          });
+        }
+      }
     }
 
     function draw(context: CanvasRenderingContext2D) {
@@ -213,6 +245,27 @@ export default defineComponent({
               cursor.y,
               1
             ).draw(context, equipment.color);
+          }
+
+          // draw gravity vortex if it's powered
+          if (
+            ctx &&
+            equipment.type === EquipmentType.gravityVortex &&
+            equipment.state.powerModifier > 0 &&
+            equipment.state.energy > equipment.derivedStats.energyUse
+          ) {
+            // vortex
+            ctx.restore();
+            ctx.beginPath();
+            ctx.strokeStyle = "rgb(255, 255, 255)";
+            ctx.arc(
+              cursor.x,
+              cursor.y,
+              equipment.derivedStats.effect,
+              0,
+              2 * Math.PI
+            );
+            ctx.stroke();
           }
         }
       }

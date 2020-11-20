@@ -16,8 +16,8 @@ export default class Asteroid extends CanvasObject {
         r: Math.random()
       },
       {
-        x: (Math.random() - 0.5) * 0.0001,
-        y: (Math.random() - 0.5) * 0.0001,
+        x: (Math.random() - 0.5) * 0.00001,
+        y: (Math.random() - 0.5) * 0.00001,
         z: (Math.random() - 0.5) * 0.00007,
         r: (Math.random() - 0.5) * 0.1
       },
