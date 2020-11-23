@@ -1,6 +1,15 @@
 <template>
   <div class="screen-container">
     <div class="screen crt">
+      <div class="hud">
+        <p>NAM {{ ship.name }}</p>
+        <p>SPD {{ ship.vector }}</p>
+        <p>
+          INV
+          {{ ship.inventory.c.toFixed(0) }}c {{ ship.inventory.m.toFixed(0) }}m
+          {{ ship.inventory.y.toFixed(0) }}y {{ ship.inventory.k.toFixed(0) }}k
+        </p>
+      </div>
       <canvas id="canvas"></canvas>
     </div>
   </div>
@@ -349,6 +358,13 @@ export default defineComponent({
   position: relative;
   width: 100%;
   height: 100%;
+}
+.hud {
+  position: absolute;
+  color: white;
+  padding: 2rem;
+  user-select: none;
+  pointer-events: none;
 }
 .screen {
   width: 100%;
