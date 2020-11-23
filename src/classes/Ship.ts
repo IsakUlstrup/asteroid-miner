@@ -12,7 +12,7 @@ export default class Ship {
     m: number;
     y: number;
     k: number;
-  }
+  };
 
   constructor(name: string, slots: number) {
     this.name = name;
@@ -67,7 +67,8 @@ export default class Ship {
   chargeEquipment(amount: number) {
     let energyLeft = amount;
     this.chargeableEquipment.forEach(eq => {
-      energyLeft -= eq?.charge(energyLeft / this.chargeableEquipment.length) || 0;
+      energyLeft -=
+        eq?.charge(energyLeft / this.chargeableEquipment.length) || 0;
     });
   }
   get chargeableEquipment() {

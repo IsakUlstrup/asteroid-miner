@@ -36,8 +36,12 @@ export default class CanvasObject {
     }
     return offScreenCanvas;
   }
-  project(context: CanvasRenderingContext2D, resolutionScale: number) {
-    const perspective = 2;
+  project(
+    context: CanvasRenderingContext2D,
+    resolutionScale: number,
+    cameraPosition = 0
+  ) {
+    const perspective = 1;
     const canvasSize = getScaledCanvasDimendsions(
       context.canvas,
       resolutionScale
@@ -50,9 +54,10 @@ export default class CanvasObject {
     const scaledY = this.position.y * canvasSize.height;
 
     // set 2d coordinates and scale based on 3d position
-    this.projected.s = perspective / (perspective + this.position.z);
-    this.projected.x = scaledX + (scaledX / centerX) * this.projected.s;
-    this.projected.y = scaledY + (scaledY / centerY) * this.projected.s;
+    this.projected.s =
+      perspective / (perspective + this.position.z - cameraPosition);
+    this.projected.x = scaledX * (scaledX / centerX) * this.projected.s;
+    this.projected.y = scaledY * (scaledY / centerY) * this.projected.s;
   }
   update(dt: number) {
     this.position.x += this.vector.x * dt;
@@ -60,8 +65,12 @@ export default class CanvasObject {
     this.position.z += this.vector.z * dt;
     this.position.r += this.vector.r * dt;
   }
-  draw(context: CanvasRenderingContext2D, resolutionScale: number) {
-    this.project(context, resolutionScale);
+  draw(
+    context: CanvasRenderingContext2D,
+    resolutionScale: number,
+    cameraPosition = 0
+  ) {
+    this.project(context, resolutionScale, cameraPosition);
     context.save();
     // rotate
     context.translate(

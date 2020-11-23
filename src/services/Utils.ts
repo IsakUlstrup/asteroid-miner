@@ -70,5 +70,5 @@ export function getPointInCircle(radius: number) {
   return {
     x: Math.cos(angle) * radius,
     y: Math.sin(angle) * radius
-  }
+  };
 }

@@ -78,7 +78,8 @@ export default defineComponent({
                 m: Math.random() * 100,
                 y: Math.random() * 100,
                 k: Math.random() * 10
-              }
+              },
+          props.ship.position
         )
       );
     }
@@ -201,7 +202,7 @@ export default defineComponent({
       }
     }
 
-    function draw(context: CanvasRenderingContext2D) {
+    function draw(context: CanvasRenderingContext2D, cameraPosition: number) {
       context.clearRect(
         0,
         0,
@@ -213,7 +214,7 @@ export default defineComponent({
 
       // draw asteroids
       canvasObjects.forEach(o => {
-        o.draw(context, resolution.value);
+        o.draw(context, resolution.value, cameraPosition);
       });
 
       // beams
@@ -315,7 +316,7 @@ export default defineComponent({
         // game loop
         gameLoop.addListener((dt: number) => {
           update(dt);
-          if (ctx) draw(ctx);
+          if (ctx) draw(ctx, props.ship.position);
         });
       }
     });

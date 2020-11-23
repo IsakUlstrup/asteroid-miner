@@ -6,19 +6,24 @@ export default class Asteroid extends CanvasObject {
   bufferCanvas: HTMLCanvasElement;
   baseColor: Color;
   color: Color;
-  constructor(points: number, radius: number, color: CMYKColor) {
+  constructor(
+    points: number,
+    radius: number,
+    color: CMYKColor,
+    cameraPosition = 0
+  ) {
     super(
       {
         x: Math.random(),
         y: Math.random(),
-        z: Math.random(),
+        z: cameraPosition + Math.random(),
         r: Math.random()
       },
       {
         x: (Math.random() - 0.5) * 0.00001,
         y: (Math.random() - 0.5) * 0.00001,
         z: (Math.random() - 0.5) * 0.00007,
-        r: (Math.random() - 0.5) * 0.1
+        r: (Math.random() - 0.5) * 0.01
       },
       radius * 2,
       color
@@ -85,8 +90,12 @@ export default class Asteroid extends CanvasObject {
     }
     return offScreenCanvas;
   }
-  draw(context: CanvasRenderingContext2D, resolutionScale: number) {
-    this.project(context, resolutionScale);
+  draw(
+    context: CanvasRenderingContext2D,
+    resolutionScale: number,
+    cameraPosition = 0
+  ) {
+    this.project(context, resolutionScale, cameraPosition);
     context.save();
     // rotate
     context.translate(this.projected.x, this.projected.y);
@@ -97,11 +106,11 @@ export default class Asteroid extends CanvasObject {
       this.bufferCanvas,
       Math.floor(this.projected.x - (this.size / 2) * this.projected.s),
       Math.floor(this.projected.y - (this.size / 2) * this.projected.s),
-      (this.size / 2) * 2 * this.projected.s,
-      (this.size / 2) * 2 * this.projected.s
+      this.size * this.projected.s,
+      this.size * this.projected.s
     );
     context.restore();
     // center of rotation debug
-    // context.fillRect(this.px - 2.5, this.py - 2.5, 5, 5);
+    // context.fillRect(this.projected.x - 2.5, this.projected.y - 2.5, 5, 5);
   }
 }

@@ -33,15 +33,18 @@
       </ul>
     </div>
 
-    <h1>{{ ship.name }}</h1>
+    <!-- <h1>{{ ship.name }}</h1>
     <h3>reactors</h3>
     {{ ship.reactors }}
     <h3>equipment</h3>
     {{ ship.equipment }}
-    <h1>Equipment</h1>
+    <h1>Equipment</h1> -->
 
-    <h3>Time</h3>
+    <h1>Time</h1>
     <input type="button" value="pause" @click="GameLoop.pause(true)" />
+    <input type="button" value="unpause" @click="GameLoop.pause(false)" />
+    <input type="button" value="1x" @click="GameLoop.setSpeed(1)" />
+    <input type="button" value="5x" @click="GameLoop.setSpeed(5)" />
 
     <h3>Chargeable ({{ ship.chargeableEquipment.length }})</h3>
     <ul>
@@ -117,7 +120,7 @@ export default defineComponent({
       name: "an engine",
       energyBufferSize: 50,
       energyUse: 0.01,
-      effect: 0.0001
+      effect: 0.001
     });
 
     const gravityVortex = new Equipment({

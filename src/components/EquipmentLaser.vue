@@ -7,8 +7,10 @@
       rgb: {{ target.color.rgb().r.toFixed(0) }}, {{ target.color.rgb().g.toFixed(0) }},
       {{ target.color.rgb().b.toFixed(0) }} -->
       <br />
-      target cmyk: {{ target.color.cmyk().c.toFixed(0) }}, {{ target.color.cmyk().m.toFixed(0) }},
-      {{ target.color.cmyk().y.toFixed(0) }}, {{ target.color.cmyk().k.toFixed(0) }}
+      target cmyk: {{ target.color.cmyk().c.toFixed(0) }},
+      {{ target.color.cmyk().m.toFixed(0) }},
+      {{ target.color.cmyk().y.toFixed(0) }},
+      {{ target.color.cmyk().k.toFixed(0) }}
     </p>
     Power:
     <input
@@ -24,10 +26,12 @@
     ({{ equipment.color.cmykString() }})
     <ul>
       <li>
-        C <input type="range" min="0" max="100" name="c" v-model="colorInput.c" />
+        C
+        <input type="range" min="0" max="100" name="c" v-model="colorInput.c" />
       </li>
       <li>
-        M <input type="range" min="0" max="100" name="m" v-model="colorInput.m" />
+        M
+        <input type="range" min="0" max="100" name="m" v-model="colorInput.m" />
       </li>
       <li>
         Y <input type="range" max="100" name="y" v-model="colorInput.y" />
