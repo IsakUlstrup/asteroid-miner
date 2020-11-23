@@ -25,7 +25,7 @@ export default defineComponent({
     // AsteroidField
   },
   setup() {
-    const ship = reactive(new ShipClass("a ship", 5));
+    const ship = reactive(new ShipClass("a ship", 8));
 
     const target = ref<Asteroid>();
 
