@@ -1,5 +1,6 @@
 import Color from "./Color";
 import { getScaledCanvasDimendsions } from "../services/Utils";
+import config from '@/config';
 
 export default class CanvasObject {
   position: Vector3D;
@@ -88,9 +89,10 @@ export default class CanvasObject {
       this.size * this.projected.s
     );
     // center of rotation debug
-    // context.fillStyle = "rgb(255, 255, 255)";
-    // context.fillRect(this.projected.x - 2.5, this.projected.y - 2.5, 5, 5);
-    // context.restore();
+    if (config.debug) {
+      context.fillStyle = "rgb(255, 255, 255)";
+      context.fillRect(this.projected.x - 2.5, this.projected.y - 2.5, 5, 5);
+    }
   }
   get isOffscreen() {
     if (

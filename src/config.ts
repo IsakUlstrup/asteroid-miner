@@ -3,5 +3,6 @@ export default {
   asteroidPolygonModifier: 10,
   asteroidMaxCount: 10,
   spaceDepth: 100,
-  resolutionScaling: window.devicePixelRatio
+  resolutionScaling: window.devicePixelRatio,
+  debug: false
 };
