@@ -12,7 +12,6 @@ export interface EquipmentStats {
   id?: string;
   effect?: number;
   energyUse?: number;
-  energyBufferSize?: number;
   fuelUse?: number;
   fuelBufferSize?: number;
 }

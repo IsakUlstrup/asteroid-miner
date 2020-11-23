@@ -161,7 +161,6 @@ export default defineComponent({
               generateOre(target, OreType.magenta, mined.m);
               generateOre(target, OreType.yellow, mined.y);
               generateOre(target, OreType.black, mined.k);
-              // console.log("generate loot", mined);
             }
           });
           break;

@@ -95,7 +95,6 @@ export default defineComponent({
     const reactor = new Equipment({
       equipmentType: EquipmentType.reactor,
       name: "A reactor",
-      energyBufferSize: 0,
       energyUse: 0,
       effect: 50,
       fuelUse: 0.001,
@@ -104,22 +103,28 @@ export default defineComponent({
 
     const laser = new Equipment({
       equipmentType: EquipmentType.laser,
-      energyBufferSize: 150,
       name: "Laser one",
       effect: 0.001,
       energyUse: 10
     });
 
-    // const laser2 = new Equipment({
-    //   equipmentType: EquipmentType.laser,
-    //   energyBufferSize: 150,
-    //   name: "Laser two"
-    // });
+    const laser2 = new Equipment({
+      equipmentType: EquipmentType.laser,
+      name: "Laser two",
+      energyUse: 20,
+      effect: 0.005
+    });
+
+    const laser3 = new Equipment({
+      equipmentType: EquipmentType.laser,
+      name: "Laser three",
+      energyUse: 30,
+      effect: 0.002
+    });
 
     const engine = new Equipment({
       equipmentType: EquipmentType.engine,
       name: "an engine",
-      energyBufferSize: 50,
       energyUse: 5,
       effect: 0.001
     });
@@ -127,7 +132,6 @@ export default defineComponent({
     const gravityVortex = new Equipment({
       equipmentType: EquipmentType.gravityVortex,
       name: "Gravity vortex generator",
-      energyBufferSize: 50,
       energyUse: 5,
       effect: 100
     });
@@ -137,6 +141,8 @@ export default defineComponent({
     // props.ship.setEquipment(laser2, 2);
     props.ship.setEquipment(gravityVortex, 3);
     props.ship.setEquipment(engine, 4);
+    props.ship.setEquipment(laser2, 5);
+    props.ship.setEquipment(laser3, 7);
 
     GameLoop.addListener((dt: number) => {
       props.ship.update(dt);
