@@ -126,7 +126,7 @@ export default defineComponent({
       equipmentType: EquipmentType.engine,
       name: "an engine",
       energyUse: 5,
-      effect: 0.001
+      effect: 0.00001
     });
 
     const gravityVortex = new Equipment({

@@ -11,8 +11,11 @@
       @input="equipment.setPower(+$event.target.value)"
       :value="equipment.state.powerModifier"
     />
-    <br />
-    <p>position: {{ ship.position.toFixed(2) }}</p>
+    <p>
+      position: {{ ship.position.toFixed(2) }}
+      <br />
+      vector: {{ ship.vector.toFixed(5) }}
+    </p>
     <p>
       thrust: {{ equipment.derivedStats.effect }}<br />
       energy: {{ equipment.state.energy.toFixed(0) }}/

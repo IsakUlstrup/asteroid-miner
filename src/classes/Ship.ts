@@ -7,6 +7,7 @@ export default class Ship {
   type: ShipType;
   equipmentSlots: number;
   position: number;
+  vector: number;
   inventory: {
     c: number;
     m: number;
@@ -22,6 +23,7 @@ export default class Ship {
     this.equipment.fill(new Equipment({ equipmentType: EquipmentType.none }));
     this.type = ShipType.eve;
     this.position = 0;
+    this.vector = 0;
     this.inventory = {
       c: 0,
       m: 0,
@@ -39,9 +41,6 @@ export default class Ship {
   setEquipment(equipment: Equipment, slot: number) {
     if (slot > this.equipmentSlots) return;
     this.equipment[slot] = equipment;
-  }
-  move(speed: number) {
-    this.position += speed;
   }
   lootOre(type: OreType, amount: number) {
     switch (type) {
@@ -83,14 +82,11 @@ export default class Ship {
       // energy distribution
       this.chargeEquipment(energy);
     }
-    // thrust
-    let acceleration = 0;
+    // vector / movement
     this.engines.forEach(engine => {
-      acceleration += engine.use() * dt;
+      this.vector += engine.use() * dt;
     });
-    if (acceleration) {
-      this.move(acceleration);
-    }
+    this.position += this.vector;
   }
   get poweredEquipment() {
     // get non-reactor equipment that wants energy, sort by energy amount
