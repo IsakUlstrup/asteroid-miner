@@ -47,7 +47,7 @@ export default defineComponent({
     },
     maxAsteroids: {
       type: Number,
-      default: 10
+      default: 20
     },
     ship: {
       type: Ship,
@@ -139,7 +139,7 @@ export default defineComponent({
             cursor.y,
             asteroid.projected.x,
             asteroid.projected.y,
-            (asteroid.size / 2) * asteroid.projected.s
+            (asteroid.size * asteroid.projected.s) / 2
           )
         ) {
           // mine if any laser is active and wehave a target
@@ -355,9 +355,6 @@ export default defineComponent({
   height: 100%;
 }
 canvas {
-  /* display: block;
-  margin: 0 auto;
-  border: 3px solid black; */
   width: 100%;
   height: 100%;
   user-select: none;

@@ -56,8 +56,8 @@ export default class CanvasObject {
     // set 2d coordinates and scale based on 3d position
     this.projected.s =
       perspective / (perspective + this.position.z - cameraPosition);
-    this.projected.x = scaledX * (scaledX / centerX) * this.projected.s;
-    this.projected.y = scaledY * (scaledY / centerY) * this.projected.s;
+    this.projected.x = scaledX * this.projected.s + centerX;
+    this.projected.y = scaledY * this.projected.s + centerY;
   }
   update(dt: number) {
     this.position.x += this.vector.x * dt;
@@ -74,33 +74,30 @@ export default class CanvasObject {
     context.save();
     // rotate
     context.translate(
-      this.projected.x - (this.size / 2) * this.projected.s,
-      this.projected.y - (this.size / 2) * this.projected.s
+      this.projected.x + (this.size * this.projected.s) / 2,
+      this.projected.y + (this.size * this.projected.s) / 2
     );
     context.rotate((this.position.r * Math.PI) / 180);
-    context.translate(
-      -this.projected.x - (this.size / 2) * this.projected.s,
-      -this.projected.y - (this.size / 2) * this.projected.s
-    );
+    context.restore();
     // draw
     context.drawImage(
       this.bufferCanvas,
-      Math.floor(this.projected.x - (this.size / 2) * this.projected.s),
-      Math.floor(this.projected.y - (this.size / 2) * this.projected.s),
+      Math.floor(this.projected.x - (this.size * this.projected.s) / 2),
+      Math.floor(this.projected.y - (this.size * this.projected.s) / 2),
       this.size * this.projected.s,
       this.size * this.projected.s
     );
     // center of rotation debug
     // context.fillStyle = "rgb(255, 255, 255)";
     // context.fillRect(this.projected.x - 2.5, this.projected.y - 2.5, 5, 5);
-    context.restore();
+    // context.restore();
   }
   get isOffscreen() {
     if (
-      this.position.x < 0 ||
-      this.position.x > 1 ||
-      this.position.y < 0 ||
-      this.position.y > 1 ||
+      this.position.x < -0.5 ||
+      this.position.x > 0.5 ||
+      this.position.y < -0.5 ||
+      this.position.y > 0.5 ||
       this.projected.s < 0 ||
       this.projected.s > 10
     ) {

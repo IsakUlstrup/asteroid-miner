@@ -14,8 +14,8 @@ export default class Asteroid extends CanvasObject {
   ) {
     super(
       {
-        x: Math.random(),
-        y: Math.random(),
+        x: Math.random() - 0.5,
+        y: Math.random() - 0.5,
         z: cameraPosition + Math.random(),
         r: Math.random()
       },
@@ -89,28 +89,5 @@ export default class Asteroid extends CanvasObject {
       context.stroke();
     }
     return offScreenCanvas;
-  }
-  draw(
-    context: CanvasRenderingContext2D,
-    resolutionScale: number,
-    cameraPosition = 0
-  ) {
-    this.project(context, resolutionScale, cameraPosition);
-    context.save();
-    // rotate
-    context.translate(this.projected.x, this.projected.y);
-    context.rotate((this.position.r * Math.PI) / 180);
-    context.translate(-this.projected.x, -this.projected.y);
-    // draw
-    context.drawImage(
-      this.bufferCanvas,
-      Math.floor(this.projected.x - (this.size / 2) * this.projected.s),
-      Math.floor(this.projected.y - (this.size / 2) * this.projected.s),
-      this.size * this.projected.s,
-      this.size * this.projected.s
-    );
-    context.restore();
-    // center of rotation debug
-    // context.fillRect(this.projected.x - 2.5, this.projected.y - 2.5, 5, 5);
   }
 }
