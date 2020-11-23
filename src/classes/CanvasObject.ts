@@ -1,6 +1,6 @@
 import Color from "./Color";
 import { getScaledCanvasDimendsions } from "../services/Utils";
-import config from '@/config';
+import config from "@/config";
 
 export default class CanvasObject {
   position: Vector3D;

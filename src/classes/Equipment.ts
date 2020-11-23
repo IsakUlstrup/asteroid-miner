@@ -12,7 +12,7 @@ export default class Equipment implements Item {
   // stats
   effect: number;
   energyUse: number;
-  energyBufferSize: number;
+  // energyBufferSize: number;
   fuelUse: number;
   fuelBufferSize: number;
 
@@ -49,8 +49,8 @@ export default class Equipment implements Item {
     this.type = stats.equipmentType;
     this.effect = stats.effect !== undefined ? stats.effect : 1;
     this.energyUse = stats.energyUse !== undefined ? stats.energyUse : 1;
-    this.energyBufferSize =
-      stats.energyBufferSize !== undefined ? stats.energyBufferSize : 10;
+    // this.energyBufferSize =
+    //   stats.energyBufferSize !== undefined ? stats.energyBufferSize : 10;
     this.fuelUse = stats.fuelUse !== undefined ? stats.fuelUse : 0;
     this.fuelBufferSize =
       stats.fuelBufferSize !== undefined ? stats.fuelBufferSize : 0;
