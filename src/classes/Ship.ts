@@ -13,6 +13,7 @@ export default class Ship {
     y: number;
     k: number;
   };
+  surplusEnergy: number;
 
   constructor(name: string, slots: number) {
     this.name = name;
@@ -27,9 +28,13 @@ export default class Ship {
       y: 0,
       k: 0
     };
+    this.surplusEnergy = 0;
   }
   get reactors() {
-    return this.equipment.filter(e => e && e.type === "reactor");
+    return this.equipment.filter(e => e && e.type === EquipmentType.reactor);
+  }
+  get engines() {
+    return this.equipment.filter(e => e && e.type === EquipmentType.engine);
   }
   setEquipment(equipment: Equipment, slot: number) {
     if (slot > this.equipmentSlots) return;
@@ -66,20 +71,36 @@ export default class Ship {
   }
   chargeEquipment(amount: number) {
     let energyLeft = amount;
-    this.chargeableEquipment.forEach(eq => {
-      energyLeft -=
-        eq?.charge(energyLeft / this.chargeableEquipment.length) || 0;
+    this.poweredEquipment.forEach(eq => {
+      energyLeft -= eq.setEnergy(energyLeft / this.poweredEquipment.length);
     });
+    this.surplusEnergy = energyLeft;
   }
-  get chargeableEquipment() {
+  update(dt: number) {
+    // energy distribution
+    if (this.poweredEquipment.length > 0) {
+      const energy = this.generateEnergy();
+      // energy distribution
+      this.chargeEquipment(energy);
+    }
+    // thrust
+    let acceleration = 0;
+    this.engines.forEach(engine => {
+      acceleration += engine.use() * dt;
+    });
+    if (acceleration) {
+      this.move(acceleration);
+    }
+  }
+  get poweredEquipment() {
     // get non-reactor equipment that wants energy, sort by energy amount
     return this.equipment
       .filter(e => e && e.type !== EquipmentType.reactor && e.desiredEnergy > 0)
       .sort((n1, n2) => {
-        if (n1 && n2 && n1.desiredEnergy > n2.desiredEnergy) {
+        if (n1 && n2 && n1.state.powerModifier > n2.state.powerModifier) {
           return 1;
         }
-        if (n1 && n2 && n1.desiredEnergy < n2.desiredEnergy) {
+        if (n1 && n2 && n1.state.powerModifier < n2.state.powerModifier) {
           return -1;
         }
         return 0;

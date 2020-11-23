@@ -148,8 +148,7 @@ export default defineComponent({
             if (
               target &&
               equipment.type === EquipmentType.laser &&
-              equipment.state.powerModifier > 0 &&
-              equipment.state.energy > equipment.derivedStats.energyUse
+              equipment.state.powerModifier > 0
             ) {
               const equipmentEffect = equipment.use() * dt;
               const mined = target.mine({
@@ -177,8 +176,7 @@ export default defineComponent({
           props.ship.equipment.forEach(equipment => {
             if (
               equipment.type === EquipmentType.gravityVortex &&
-              equipment.state.powerModifier > 0 &&
-              equipment.state.energy > equipment.derivedStats.energyUse
+              equipment.state.powerModifier > 0
             ) {
               equipment.use();
               if (
@@ -229,8 +227,7 @@ export default defineComponent({
           // draw laser if its powered
           if (
             equipment.type === EquipmentType.laser &&
-            equipment.state.powerModifier > 0 &&
-            equipment.state.energy > equipment.derivedStats.energyUse
+            equipment.state.powerModifier > 0
           ) {
             // laser
             new Beam(
@@ -249,8 +246,7 @@ export default defineComponent({
           if (
             ctx &&
             equipment.type === EquipmentType.gravityVortex &&
-            equipment.state.powerModifier > 0 &&
-            equipment.state.energy > equipment.derivedStats.energyUse
+            equipment.state.powerModifier > 0
           ) {
             // vortex
             ctx.restore();

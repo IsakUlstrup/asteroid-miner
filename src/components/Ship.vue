@@ -46,9 +46,9 @@
     <input type="button" value="1x" @click="GameLoop.setSpeed(1)" />
     <input type="button" value="5x" @click="GameLoop.setSpeed(5)" />
 
-    <h3>Chargeable ({{ ship.chargeableEquipment.length }})</h3>
+    <h3>Powered equipment ({{ ship.poweredEquipment.length }})</h3>
     <ul>
-      <li v-for="e in ship.chargeableEquipment" :key="e">
+      <li v-for="e in ship.poweredEquipment" :key="e">
         <p v-if="e">{{ e.name }} ({{ e.desiredEnergy }})</p>
       </li>
     </ul>
@@ -97,7 +97,7 @@ export default defineComponent({
       name: "A reactor",
       energyBufferSize: 0,
       energyUse: 0,
-      effect: 1,
+      effect: 50,
       fuelUse: 0.001,
       fuelBufferSize: 100
     });
@@ -106,20 +106,21 @@ export default defineComponent({
       equipmentType: EquipmentType.laser,
       energyBufferSize: 150,
       name: "Laser one",
-      effect: 0.001
+      effect: 0.001,
+      energyUse: 10
     });
 
-    const laser2 = new Equipment({
-      equipmentType: EquipmentType.laser,
-      energyBufferSize: 150,
-      name: "Laser two"
-    });
+    // const laser2 = new Equipment({
+    //   equipmentType: EquipmentType.laser,
+    //   energyBufferSize: 150,
+    //   name: "Laser two"
+    // });
 
     const engine = new Equipment({
       equipmentType: EquipmentType.engine,
       name: "an engine",
       energyBufferSize: 50,
-      energyUse: 0.01,
+      energyUse: 5,
       effect: 0.001
     });
 
@@ -127,23 +128,24 @@ export default defineComponent({
       equipmentType: EquipmentType.gravityVortex,
       name: "Gravity vortex generator",
       energyBufferSize: 50,
-      energyUse: 0.01,
+      energyUse: 5,
       effect: 100
     });
 
     props.ship.setEquipment(reactor, 0);
     props.ship.setEquipment(laser, 1);
-    props.ship.setEquipment(laser2, 2);
+    // props.ship.setEquipment(laser2, 2);
     props.ship.setEquipment(gravityVortex, 3);
     props.ship.setEquipment(engine, 4);
 
     GameLoop.addListener((dt: number) => {
+      props.ship.update(dt);
       // energy generation, if any equipment needs it
-      if (props.ship.chargeableEquipment.length > 0) {
-        const energy = props.ship.generateEnergy() * dt;
-        // energy distribution
-        props.ship.chargeEquipment(energy);
-      }
+      // if (props.ship.chargeableEquipment.length > 0) {
+      //   const energy = props.ship.generateEnergy();
+      //   // energy distribution
+      //   props.ship.chargeEquipment(energy);
+      // }
     });
 
     return {

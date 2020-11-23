@@ -28,8 +28,12 @@ export default class Equipment implements Item {
   // derived stats
   get derivedStats() {
     return {
-      maxEnergy: this.energyBufferSize * this.state.powerModifier,
-      effect: this.effect * this.state.powerModifier,
+      // maxEnergy: this.energyBufferSize * this.state.powerModifier,
+      effect:
+        this.state.energy >= this.energyUse * this.state.powerModifier
+          ? this.effect * this.state.powerModifier
+          : this.effect *
+            ((this.state.energy / this.energyUse) * this.state.powerModifier),
       energyUse: this.energyUse * this.state.powerModifier,
       fuelUse: this.fuelUse * this.state.powerModifier
     };
@@ -65,23 +69,43 @@ export default class Equipment implements Item {
       b: 0
     });
   }
-
-  charge(amount: number) {
-    if (this.desiredEnergy <= 0) return;
-
-    if (amount > this.desiredEnergy) {
-      this.state.energy = this.derivedStats.maxEnergy;
-      return this.desiredEnergy;
-    } else {
-      this.state.energy += amount;
-      return amount;
+  setEnergy(amount: number) {
+    this.state.energy = amount;
+    if (this.state.energy > this.derivedStats.energyUse) {
+      this.state.energy = this.derivedStats.energyUse;
     }
+    return this.state.energy;
+    // if (amount > this.derivedStats.energyUse) {
+    //   this.state.energy = this.derivedStats.energyUse;
+    //   return amount - this.derivedStats.energyUse;
+    // } else {
+    //   this.state.energy = amount;
+    //   return amount;
+    // }
   }
-  discharge(amount: number) {
-    if (amount <= 0) return;
-    this.state.energy -= amount;
-    if (this.state.energy < 0) this.state.energy = 0;
-  }
+  // charge(amount: number) {
+  //   if (this.desiredEnergy <= 0) return;
+
+  //   if (amount > this.desiredEnergy) {
+  //     this.state.energy = this.desiredEnergy;
+  //     return this.desiredEnergy;
+  //   } else {
+  //     this.state.energy += amount;
+  //     return amount;
+  //   }
+  // }
+  // discharge(amount: number) {
+  //   if (amount <= 0) return;
+  //   this.state.energy -= amount;
+  //   if (this.state.energy < 0) this.state.energy = 0;
+  // }
+  // getDerivedEffect(): number {
+  //   if (this.state.energy >= this.derivedStats.energyUse) {
+  //     return this.effect * this.state.powerModifier;
+  //   } else {
+  //     return this.effect * (this.state.energy / this.derivedStats.energyUse);
+  //   }
+  // }
   useFuel(amount: number) {
     if (amount <= 0) return;
     this.state.fuel -= amount;
@@ -96,16 +120,11 @@ export default class Equipment implements Item {
   use() {
     if (this.state.energy < this.derivedStats.energyUse) return 0;
     if (this.state.fuel < this.derivedStats.fuelUse) return 0;
-    this.discharge(this.derivedStats.energyUse);
+    // this.discharge(this.derivedStats.energyUse);
     this.useFuel(this.derivedStats.fuelUse);
     return this.derivedStats.effect;
   }
   get desiredEnergy() {
-    const desired = this.derivedStats.maxEnergy - this.state.energy;
-    if (desired > 0) {
-      return desired;
-    } else {
-      return 0;
-    }
+    return this.derivedStats.energyUse;
   }
 }

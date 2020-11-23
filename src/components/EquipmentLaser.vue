@@ -42,17 +42,14 @@
     </ul>
 
     <br />
-    <!-- <p>mining: {{ isMining }}</p> -->
-    Buffer: {{ equipment.state.energy.toFixed(0) }} /
-    {{ equipment.energyBufferSize }}
-    <!-- <p v-if="target">Target: {{ target.hp.toFixed(0) }}hp</p> -->
-    <!-- <input type="button" value="mine" @click="toggleMine" /> -->
-    <p>desired energy: {{ equipment.desiredEnergy }}</p>
+    effect: {{ equipment.derivedStats.effect }}<br />
+    energy: {{ equipment.state.energy.toFixed(0) }}/
+    {{ equipment.derivedStats.energyUse }}w
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent, reactive, ref, watch } from "vue";
+import { defineComponent, reactive, watch } from "vue";
 
 // import GameLoop from "@/GameLoop";
 
@@ -75,7 +72,7 @@ export default defineComponent({
     }
   },
   setup(props) {
-    const isMining = ref(false);
+    // const isMining = ref(false);
     const colorInput = reactive({
       c: 0,
       m: 0,
@@ -113,7 +110,6 @@ export default defineComponent({
     // });
 
     return {
-      isMining,
       colorInput
     };
   }

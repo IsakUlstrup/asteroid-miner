@@ -11,16 +11,17 @@
       @input="equipment.setPower(+$event.target.value)"
       :value="equipment.state.powerModifier"
     />
-    <br />
-    {{ equipment.state.energy.toFixed(0) }} /
-    {{ equipment.energyBufferSize }}
-    <p>energy use {{ equipment.derivedStats.energyUse }}</p>
-    <p>fuel {{ equipment.state.fuel }} / {{ equipment.fuelBufferSize }}</p>
-    <p>effect {{ equipment.derivedStats.effect }}</p>
+    <p>
+      fuel {{ equipment.state.fuel.toFixed(2) }} /
+      {{ equipment.fuelBufferSize }}
+    </p>
+    <p>output {{ equipment.derivedStats.effect }}w</p>
+    <p>ship surplus energy: {{ ship.surplusEnergy.toFixed(2) }}w</p>
   </div>
 </template>
 
 <script lang="ts">
+import Ship from "@/classes/Ship";
 import { defineComponent } from "vue";
 import Equipment from "../classes/Equipment";
 
@@ -29,6 +30,10 @@ export default defineComponent({
   props: {
     equipment: {
       type: Equipment,
+      required: true
+    },
+    ship: {
+      type: Ship,
       required: true
     }
   }

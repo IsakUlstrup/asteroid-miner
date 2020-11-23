@@ -12,8 +12,9 @@
       :value="equipment.state.powerModifier"
     />
     <p>
-      Buffer: {{ equipment.state.energy.toFixed(0) }} /
-      {{ equipment.energyBufferSize }}
+      aoe: {{ equipment.derivedStats.effect }}<br />
+      energy: {{ equipment.state.energy.toFixed(0) }}/
+      {{ equipment.derivedStats.energyUse }}w
     </p>
   </div>
 </template>
@@ -21,18 +22,8 @@
 <script lang="ts">
 import { defineComponent } from "vue";
 
-import GameLoop from "@/services/GameLoop";
-// import Color from "color";
-
-// const color = Color("rgb(255, 255, 255)");
-// console.log(color.rgb());
-// console.log(color.darken(0.1).rgb());
-
 import Equipment from "@/classes/Equipment";
 import Ship from "@/classes/Ship";
-// import Asteroid from "../classes/Asteroid";
-
-// import LaserBeam from "@/components/LaserBeam.vue";
 
 export default defineComponent({
   name: "Laser",
@@ -46,20 +37,6 @@ export default defineComponent({
       type: Ship,
       required: true
     }
-  },
-  setup(props) {
-    function moveShip(dt: number) {
-      // console.log(props.equipment.use() * dt);
-      props.ship.move(props.equipment.use() * dt);
-    }
-
-    function update(dt: number) {
-      moveShip(dt);
-    }
-
-    GameLoop.addListener(update);
-
-    return {};
   }
 });
 </script>
