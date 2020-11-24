@@ -1,5 +1,5 @@
 <template>
-  <div class="ship">
+  <div class="computer">
     <div class="equipment-slots">
       <div
         class="equipment-wrapper"
@@ -34,13 +34,6 @@
       </ul>
     </div>
 
-    <!-- <h1>{{ ship.name }}</h1>
-    <h3>reactors</h3>
-    {{ ship.reactors }}
-    <h3>equipment</h3>
-    {{ ship.equipment }}
-    <h1>Equipment</h1> -->
-
     <h1>Time</h1>
     <input type="button" value="pause" @click="GameLoop.pause(true)" />
     <input type="button" value="unpause" @click="GameLoop.pause(false)" />
@@ -63,8 +56,6 @@ import Ship from "@/classes/Ship";
 import { EquipmentType } from "../types/enums";
 import GameLoop from "@/services/GameLoop";
 import Asteroid from "@/classes/Asteroid";
-
-// import LaserBeam from "@/components/LaserBeam.vue";
 import Reactor from "@/components/EquipmentReactor.vue";
 import Laser from "@/components/EquipmentLaser.vue";
 import None from "@/components/EquipmentNone.vue";
@@ -72,9 +63,8 @@ import Engine from "@/components/EquipmentEngine.vue";
 import GravityVortex from "@/components/EquipmentGravityVortex.vue";
 
 export default defineComponent({
-  name: "Ship",
+  name: "Computer",
   components: {
-    // LaserBeam,
     Reactor,
     Laser,
     None,
@@ -147,12 +137,6 @@ export default defineComponent({
 
     GameLoop.addListener((dt: number) => {
       props.ship.update(dt);
-      // energy generation, if any equipment needs it
-      // if (props.ship.chargeableEquipment.length > 0) {
-      //   const energy = props.ship.generateEnergy();
-      //   // energy distribution
-      //   props.ship.chargeEquipment(energy);
-      // }
     });
 
     return {
@@ -170,7 +154,7 @@ export default defineComponent({
   justify-content: space-between;
   text-align: center;
 }
-.ship {
+.computer {
   overflow-y: scroll;
   height: 100%;
   background: white;

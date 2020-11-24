@@ -3,15 +3,15 @@
     <section class="space">
       <Screen :ship="ship" @target="setTarget" />
     </section>
-    <section class="ship">
-      <Ship :target="target" :ship="ship" />
+    <section class="computer">
+      <Computer :target="target" :ship="ship" />
     </section>
   </div>
 </template>
 
 <script lang="ts">
 import { defineComponent, reactive, ref } from "vue";
-import Ship from "@/components/Ship.vue";
+import Computer from "@/components/Computer.vue";
 import Screen from "@/components/Screen.vue";
 
 import ShipClass from "@/classes/Ship";
@@ -20,7 +20,7 @@ import Asteroid from "@/classes/Asteroid";
 export default defineComponent({
   name: "App",
   components: {
-    Ship,
+    Computer,
     Screen
     // AsteroidField
   },
@@ -93,6 +93,11 @@ body {
 @media (orientation: landscape) {
   #app {
     flex-direction: row-reverse;
+  }
+}
+@media (orientation: landscape) and (min-height: 700px) {
+  #app {
+    flex-direction: column;
   }
 }
 </style>
