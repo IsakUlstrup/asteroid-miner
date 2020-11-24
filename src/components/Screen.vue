@@ -3,12 +3,11 @@
     <div class="screen crt">
       <div class="hud">
         <p>NAM {{ ship.name }}</p>
-        <p>SPD {{ ship.vector }}</p>
-        <p>
-          INV
-          {{ ship.inventory.c.toFixed(0) }}c {{ ship.inventory.m.toFixed(0) }}m
-          {{ ship.inventory.y.toFixed(0) }}y {{ ship.inventory.k.toFixed(0) }}k
-        </p>
+        <p>SPD {{ ship.vector.toFixed(4) }}</p>
+        <InventoryDisplay
+          :inventory="ship.inventory"
+          :inventory-size="ship.inventorySize"
+        />
       </div>
       <canvas id="canvas"></canvas>
     </div>
@@ -20,6 +19,7 @@ import { computed, defineComponent, onMounted, toRefs, watch } from "vue";
 import Asteroid from "@/classes/Asteroid";
 import Beam from "@/classes/Beam";
 import Ore from "@/classes/Ore";
+import InventoryDisplay from "@/components/HUDInventoryMeter.vue";
 import CursorTracker from "@/services/CursorTracker";
 import {
   randomInt,
@@ -30,13 +30,15 @@ import {
   circlesIntersect
 } from "@/services/Utils";
 import gameLoop from "@/services/GameLoop";
-// import Color from "@/classes/Color";
 import Ship from "@/classes/Ship";
 import { EquipmentType, OreType } from "@/types/enums";
 import CanvasObject from "@/classes/CanvasObject";
 
 export default defineComponent({
   name: "Screen",
+  components: {
+    InventoryDisplay
+  },
   props: {
     resolution: {
       type: Number,

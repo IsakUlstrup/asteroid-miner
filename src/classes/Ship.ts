@@ -8,12 +8,8 @@ export default class Ship {
   equipmentSlots: number;
   position: number;
   vector: number;
-  inventory: {
-    c: number;
-    m: number;
-    y: number;
-    k: number;
-  };
+  inventory: CMYKColor;
+  inventorySize: number;
   surplusEnergy: number;
 
   constructor(name: string, slots: number) {
@@ -30,6 +26,7 @@ export default class Ship {
       y: 0,
       k: 0
     };
+    this.inventorySize = 2000;
     this.surplusEnergy = 0;
   }
   get reactors() {
@@ -43,6 +40,7 @@ export default class Ship {
     this.equipment[slot] = equipment;
   }
   lootOre(type: OreType, amount: number) {
+    if (this.availableInventorySpace < amount) return false;
     switch (type) {
       case OreType.cyan:
         this.inventory.c += amount;
@@ -87,6 +85,12 @@ export default class Ship {
       this.vector += engine.use() * dt;
     });
     this.position += this.vector;
+  }
+  get availableInventorySpace() {
+    return (
+      this.inventorySize -
+      (this.inventory.c - this.inventory.m, this.inventory.y, this.inventory.k)
+    );
   }
   get poweredEquipment() {
     // get non-reactor equipment that wants energy, sort by energy amount

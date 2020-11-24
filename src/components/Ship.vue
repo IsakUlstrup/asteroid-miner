@@ -22,6 +22,7 @@
       <li>y: {{ ship.inventory.y }}</li>
       <li>k: {{ ship.inventory.k }}</li>
     </ul>
+    {{ ship.availableInventorySpace }}
 
     <div class="target" v-if="target">
       <h3>target</h3>
