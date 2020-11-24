@@ -160,14 +160,12 @@ export default defineComponent({
               equipment.state.powerModifier > 0
             ) {
               const equipmentEffect = equipment.use() * dt;
-              console.log(equipmentEffect);
               const mined = target.mine({
                 c: equipment.color.cmyk().c * equipmentEffect,
                 m: equipment.color.cmyk().m * equipmentEffect,
                 y: equipment.color.cmyk().y * equipmentEffect,
                 k: equipment.color.cmyk().k * equipmentEffect
               });
-              // console.log(mined);
               generateOre(target, OreType.cyan, mined.c);
               generateOre(target, OreType.magenta, mined.m);
               generateOre(target, OreType.yellow, mined.y);
