@@ -19,11 +19,8 @@
     />
     <h3 :style="{ color: equipment.color.rgbString() }">Color</h3>
     ({{ equipment.color.cmykString() }})
-    <select name="color" v-model="selectedColor">
-      <option v-for="color in colorPresets" :key="color" :value="color">{{
-        color.name
-      }}</option>
-    </select>
+
+    <ColorSelect :colors="colorPresets" @color="setColor" />
 
     <br />
     effect: {{ equipment.derivedStats.effect }}<br />
@@ -33,17 +30,16 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, watch, ref } from "vue";
-
-// import GameLoop from "@/GameLoop";
-
+import { defineComponent, ref } from "vue";
 import Equipment from "../classes/Equipment";
-// import MiningLaser from "@/classes/MiningLaser";
 import Asteroid from "../classes/Asteroid";
+import ColorSelect from "@/components/UIColorSelect.vue";
 
 export default defineComponent({
   name: "Laser",
-  components: {},
+  components: {
+    ColorSelect
+  },
   props: {
     equipment: {
       type: Equipment,
@@ -78,19 +74,19 @@ export default defineComponent({
 
     props.equipment.setColor(selectedColor.value.color);
 
-    watch(selectedColor, () => {
-      props.equipment.setColor(selectedColor.value.color);
-    });
+    function setColor(color: CMYKColor) {
+      props.equipment.setColor(color);
+    }
 
     return {
       selectedColor,
-      colorPresets
+      colorPresets,
+      setColor
     };
   }
 });
 </script>
 
-<!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped lang="scss">
 input[type="range"] {
   width: 100%;

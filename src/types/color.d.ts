@@ -14,3 +14,8 @@ declare interface CMYKColor {
 declare interface RGBAColor extends RGBColor {
   a: number;
 }
+
+declare interface CMYKColorList {
+  name: string;
+  color: CMYKColor;
+}
