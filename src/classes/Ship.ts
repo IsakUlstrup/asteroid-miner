@@ -89,7 +89,10 @@ export default class Ship {
   get availableInventorySpace() {
     return (
       this.inventorySize -
-      (this.inventory.c - this.inventory.m, this.inventory.y, this.inventory.k)
+      this.inventory.c -
+      this.inventory.m -
+      this.inventory.y -
+      this.inventory.k
     );
   }
   get poweredEquipment() {
