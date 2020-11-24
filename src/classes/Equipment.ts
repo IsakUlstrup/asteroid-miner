@@ -75,37 +75,7 @@ export default class Equipment implements Item {
       this.state.energy = this.derivedStats.energyUse;
     }
     return this.state.energy;
-    // if (amount > this.derivedStats.energyUse) {
-    //   this.state.energy = this.derivedStats.energyUse;
-    //   return amount - this.derivedStats.energyUse;
-    // } else {
-    //   this.state.energy = amount;
-    //   return amount;
-    // }
   }
-  // charge(amount: number) {
-  //   if (this.desiredEnergy <= 0) return;
-
-  //   if (amount > this.desiredEnergy) {
-  //     this.state.energy = this.desiredEnergy;
-  //     return this.desiredEnergy;
-  //   } else {
-  //     this.state.energy += amount;
-  //     return amount;
-  //   }
-  // }
-  // discharge(amount: number) {
-  //   if (amount <= 0) return;
-  //   this.state.energy -= amount;
-  //   if (this.state.energy < 0) this.state.energy = 0;
-  // }
-  // getDerivedEffect(): number {
-  //   if (this.state.energy >= this.derivedStats.energyUse) {
-  //     return this.effect * this.state.powerModifier;
-  //   } else {
-  //     return this.effect * (this.state.energy / this.derivedStats.energyUse);
-  //   }
-  // }
   useFuel(amount: number) {
     if (amount <= 0) return;
     this.state.fuel -= amount;
@@ -118,9 +88,7 @@ export default class Equipment implements Item {
     this.color.setColor(color);
   }
   use() {
-    if (this.state.energy < this.derivedStats.energyUse) return 0;
     if (this.state.fuel < this.derivedStats.fuelUse) return 0;
-    // this.discharge(this.derivedStats.energyUse);
     this.useFuel(this.derivedStats.fuelUse);
     return this.derivedStats.effect;
   }
