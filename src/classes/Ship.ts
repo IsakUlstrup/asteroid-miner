@@ -12,6 +12,7 @@ export default class Ship {
   vector: number;
   inventory: CMYKColor;
   inventorySize: number;
+  energy: number;
   surplusEnergy: number;
 
   constructor(name: string, slots: number, internalSlots = 4) {
@@ -30,6 +31,7 @@ export default class Ship {
       k: 0
     };
     this.inventorySize = 2000;
+    this.energy = 0;
     this.surplusEnergy = 0;
   }
   get reactors() {
@@ -81,22 +83,26 @@ export default class Ship {
   }
   chargeEquipment(amount: number) {
     let energyLeft = amount;
-    this.poweredEquipment.forEach(eq => {
-      energyLeft -= eq.setEnergy(energyLeft / this.poweredEquipment.length);
+    this.poweredModules.forEach(module => {
+      energyLeft -= module.setEnergy(
+        Math.min(
+          amount / this.poweredModules.length,
+          module.derivedStats.energyUse
+        )
+      );
     });
     this.surplusEnergy = energyLeft;
   }
   update(dt: number) {
     // energy distribution
-    if (this.poweredEquipment.length > 0) {
-      const energy = this.generateEnergy();
+    if (this.poweredModules.length > 0) {
+      this.energy = this.generateEnergy();
       // energy distribution
-      this.chargeEquipment(energy);
+      this.chargeEquipment(this.energy);
     }
     // vector / movement
     this.engines.forEach(engine => {
       this.vector += engine.use() * dt;
-      console.log(engine.use() * dt);
     });
     this.position += this.vector;
   }
@@ -109,7 +115,7 @@ export default class Ship {
       this.inventory.k
     );
   }
-  get poweredEquipment() {
+  get poweredModules() {
     // get non-reactor equipment that wants energy, sort by energy amount
     return [...this.modules, ...this.internalModules]
       .filter(e => e && e.type !== ModuleType.reactor && e.desiredEnergy > 0)

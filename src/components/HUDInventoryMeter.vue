@@ -13,7 +13,7 @@
 import { computed, defineComponent } from "vue";
 
 export default defineComponent({
-  name: "Laser",
+  name: "HUDInventoryMeter",
   components: {},
   props: {
     inventory: {

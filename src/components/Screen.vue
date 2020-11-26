@@ -2,10 +2,11 @@
   <div class="screen-container">
     <div class="screen crt">
       <div class="hud">
-        <InventoryDisplay
+        <HUDInventoryDisplay
           :inventory="ship.inventory"
           :inventory-size="ship.inventorySize"
         />
+        <HUDMeter :max="ship.energy" :value="ship.surplusEnergy" />
       </div>
       <canvas id="canvas"></canvas>
     </div>
@@ -14,7 +15,8 @@
 
 <script lang="ts">
 import { computed, defineComponent, onMounted, toRefs } from "vue";
-import InventoryDisplay from "@/components/HUDInventoryMeter.vue";
+import HUDInventoryDisplay from "@/components/HUDInventoryMeter.vue";
+import HUDMeter from "@/components/HUDMeter.vue";
 import { resizeCanvas } from "@/services/Utils";
 import Ship from "@/classes/Ship";
 
@@ -23,7 +25,8 @@ import SpaceGame from "@/classes/SpaceGame";
 export default defineComponent({
   name: "Screen",
   components: {
-    InventoryDisplay
+    HUDInventoryDisplay,
+    HUDMeter
   },
   props: {
     resolution: {
@@ -83,7 +86,7 @@ export default defineComponent({
 });
 </script>
 
-<style scoped vars="{ filterSize }">
+<style lang="scss" scoped vars="{ filterSize }">
 /* http://aleclownes.com/2017/02/01/crt-display.html */
 .crt::before {
   content: " ";
@@ -112,11 +115,16 @@ export default defineComponent({
 }
 .hud {
   width: 20%;
+  max-width: 150px;
   position: absolute;
   color: white;
   padding: 1rem;
   user-select: none;
   pointer-events: none;
+
+  * {
+    margin-bottom: 1rem;
+  }
 }
 .screen {
   width: 100%;

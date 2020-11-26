@@ -22,49 +22,54 @@
         @input="ship.setEnginePower(+$event.target.value)"
       />
     </div>
-    <div class="module-slots">
-      <ModuleWrapper
-        v-for="module in ship.modules"
-        :key="module"
-        :module="module"
-        :ship="ship"
-      />
-    </div>
+    <div class="scrollable">
+      <div class="module-slots">
+        <ModuleWrapper
+          v-for="module in ship.modules"
+          :key="module"
+          :module="module"
+          :ship="ship"
+        />
+      </div>
 
-    <h1>Inventory</h1>
-    <ul>
-      <li>c: {{ ship.inventory.c }}</li>
-      <li>m: {{ ship.inventory.m }}</li>
-      <li>y: {{ ship.inventory.y }}</li>
-      <li>k: {{ ship.inventory.k }}</li>
-    </ul>
-    {{ ship.availableInventorySpace }}
-
-    <div class="target" v-if="target">
-      <h3>target</h3>
+      <h1>Inventory</h1>
       <ul>
-        <li>x: {{ target.projected.x.toFixed(2) }}</li>
-        <li>y: {{ target.projected.y.toFixed(2) }}</li>
-        <li>z: {{ target.position.z }}</li>
-        <li>s: {{ target.projected.s }}</li>
+        <li>c: {{ ship.inventory.c }}</li>
+        <li>m: {{ ship.inventory.m }}</li>
+        <li>y: {{ ship.inventory.y }}</li>
+        <li>k: {{ ship.inventory.k }}</li>
+      </ul>
+      {{ ship.availableInventorySpace }}
+
+      <div class="target" v-if="target">
+        <h3>target</h3>
+        <ul>
+          <li>x: {{ target.projected.x.toFixed(2) }}</li>
+          <li>y: {{ target.projected.y.toFixed(2) }}</li>
+          <li>z: {{ target.position.z }}</li>
+          <li>s: {{ target.projected.s }}</li>
+        </ul>
+      </div>
+
+      <h3>position</h3>
+      {{ ship.position }}
+
+      <h3>energy</h3>
+      {{ ship.surplusEnergy }}/{{ ship.energy }}w
+
+      <h1>Time</h1>
+      <input type="button" value="pause" @click="GameLoop.pause(true)" />
+      <input type="button" value="unpause" @click="GameLoop.pause(false)" />
+      <input type="button" value="1x" @click="GameLoop.setSpeed(1)" />
+      <input type="button" value="5x" @click="GameLoop.setSpeed(5)" />
+
+      <h3>Powered equipment ({{ ship.poweredModules.length }})</h3>
+      <ul>
+        <li v-for="e in ship.poweredModules" :key="e">
+          <p v-if="e">{{ e.name }} ({{ e.desiredEnergy }})</p>
+        </li>
       </ul>
     </div>
-
-    <h3>position</h3>
-    {{ ship.position }}
-
-    <h1>Time</h1>
-    <input type="button" value="pause" @click="GameLoop.pause(true)" />
-    <input type="button" value="unpause" @click="GameLoop.pause(false)" />
-    <input type="button" value="1x" @click="GameLoop.setSpeed(1)" />
-    <input type="button" value="5x" @click="GameLoop.setSpeed(5)" />
-
-    <h3>Powered equipment ({{ ship.poweredEquipment.length }})</h3>
-    <ul>
-      <li v-for="e in ship.poweredEquipment" :key="e">
-        <p v-if="e">{{ e.name }} ({{ e.desiredEnergy }})</p>
-      </li>
-    </ul>
   </div>
 </template>
 
@@ -121,7 +126,7 @@ export default defineComponent({
     const laser3 = new Module({
       moduleType: ModuleType.laser,
       name: "Laser three",
-      energyUse: 30,
+      energyUse: 50,
       effect: 0.002
     });
 
@@ -156,9 +161,12 @@ export default defineComponent({
 
 <style scoped lang="scss">
 .computer {
-  overflow-y: scroll;
   height: 100%;
   background: white;
+}
+.scrollable {
+  overflow-y: scroll;
+  height: 100%;
 }
 .module-slots {
   display: flex;
