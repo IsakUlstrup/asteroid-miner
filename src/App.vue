@@ -80,7 +80,6 @@ body {
   display: flex;
   flex-direction: column;
 
-
   section {
     flex: 1;
     overflow: hidden;
@@ -88,7 +87,6 @@ body {
 
   .space {
     background: #262626;
-    flex: 1;
   }
 }
 

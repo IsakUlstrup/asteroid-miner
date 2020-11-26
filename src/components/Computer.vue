@@ -161,10 +161,7 @@ export default defineComponent({
 
 <style scoped lang="scss">
 .computer {
-  height: 100%;
   background: white;
-}
-.scrollable {
   overflow-y: scroll;
   height: 100%;
 }
@@ -172,7 +169,6 @@ export default defineComponent({
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
-  padding: 1rem;
 }
 .internal-controls {
   background: linear-gradient(to bottom, #fff, #ddd);
