@@ -9,6 +9,7 @@ export default class CanvasObject {
   projected: Projected;
   bufferCanvas: HTMLCanvasElement;
   size: number;
+  visible = true;
   constructor(
     position: Vector3D,
     vector: Vector3D,
@@ -71,6 +72,7 @@ export default class CanvasObject {
     resolutionScale: number,
     cameraPosition = 0
   ) {
+    if (!this.visible) return;
     this.project(context, resolutionScale, cameraPosition);
     context.save();
     // rotate

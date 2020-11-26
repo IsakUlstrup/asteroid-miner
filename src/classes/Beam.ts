@@ -1,31 +1,43 @@
-// import CanvasObject from "./CanvasObject";
-// import Asteroid from "./Asteroid2";
+import CursorTracker from "@/services/CursorTracker";
+import CanvasObject from "./CanvasObject";
 import Color from "./Color";
+import Module from "./Module";
+import ModuleEffect from "./ModuleEffect";
 
-export default class Beam {
-  // target: Asteroid;
+export default class Beam extends ModuleEffect {
   intensity: number;
-  x: number;
-  y: number;
-  targetX: number;
-  targetY: number;
+  target: Vector3D;
+  module: Module;
   constructor(
     x: number,
     y: number,
-    targetX: number,
-    targetY: number,
-    intensity: number
+    intensity: number,
+    color: Color,
+    module: Module,
+    target: Vector3D,
+    cursor: CursorTracker
   ) {
-    // this.target = target;
-    this.x = x;
-    this.y = y;
-    this.targetX = targetX;
-    this.targetY = targetY;
+    super(
+      { x: x, y: y, z: 0, r: 0 },
+      {
+        r: 0,
+        g: 0,
+        b: 0
+      },
+      module,
+      target,
+      cursor
+    );
+    this.color = color;
+    this.module = module;
+    this.target = target;
     this.intensity = intensity;
   }
-  draw(ctx: CanvasRenderingContext2D, color: Color) {
+  draw(ctx: CanvasRenderingContext2D) {
+    if (!this.visible) return;
     // ctx.fillStyle = `rgba(255, 0, 0, ${this.intensity})`;
-    ctx.fillStyle = color.rgbString();
+    ctx.restore();
+    ctx.fillStyle = this.color.rgbString();
     ctx.lineWidth = this.intensity * 5;
     ctx.lineCap = "round";
 
@@ -33,10 +45,10 @@ export default class Beam {
 
     ctx.beginPath();
     ctx.lineJoin = "round";
-    ctx.moveTo(this.x, this.y);
-    ctx.lineTo(this.targetX - perspective, this.targetY);
-    ctx.lineTo(this.targetX + perspective, this.targetY);
-    ctx.lineTo(this.x + 10, this.y);
+    ctx.moveTo(this.position.x, this.position.y);
+    ctx.lineTo(this.target.x - perspective, this.target.y);
+    ctx.lineTo(this.target.x + perspective, this.target.y);
+    ctx.lineTo(this.position.x + 10, this.position.y);
     ctx.fill();
   }
 }

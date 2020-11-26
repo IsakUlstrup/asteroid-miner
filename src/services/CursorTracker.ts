@@ -1,11 +1,14 @@
 export default class CursorTracker {
-  x: number;
-  y: number;
+  position: Vector3D;
   active: boolean;
   element: HTMLElement;
   constructor(element: HTMLElement) {
-    this.x = 0;
-    this.y = 0;
+    this.position = {
+      x: 0,
+      y: 0,
+      z: 0,
+      r: 0
+    };
     this.active = false;
     this.element = element;
     // this is ugly and I hate it, but I had some scopting issues
@@ -20,8 +23,8 @@ export default class CursorTracker {
       "touchstart",
       (event: TouchEvent) => {
         event.preventDefault();
-        this.x = event.touches[0].clientX;
-        this.y = event.touches[0].clientY;
+        this.position.x = event.touches[0].clientX;
+        this.position.y = event.touches[0].clientY;
         this.cursorActive();
       },
       false
@@ -85,8 +88,8 @@ export default class CursorTracker {
       const y = touch.touches[0].clientY;
 
       if (x && y) {
-        this.x = x - rect.left;
-        this.y = y - rect.top;
+        this.position.x = x - rect.left;
+        this.position.y = y - rect.top;
       }
     } else if (event.type === "mousemove") {
       const move = event as MouseEvent;
@@ -94,8 +97,8 @@ export default class CursorTracker {
       const y = move.clientY;
 
       if (x && y) {
-        this.x = x - rect.left;
-        this.y = y - rect.top;
+        this.position.x = x - rect.left;
+        this.position.y = y - rect.top;
       }
     }
   }

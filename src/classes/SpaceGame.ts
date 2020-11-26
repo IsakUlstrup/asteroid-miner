@@ -14,11 +14,13 @@ import CursorTracker from "@/services/CursorTracker";
 import { ModuleType, OreType } from "@/types/enums";
 import Beam from "@/classes/Beam";
 import GameLoop from "@/services/GameLoop";
+import GravityVortex from "./GravityVortex";
 
 export default class SpaceGame {
   ship: Ship;
   context: CanvasRenderingContext2D;
   gameObjects: CanvasObject[] = [];
+  moduleEffects: CanvasObject[] = [];
   target: Asteroid | undefined;
   cursor: CursorTracker;
   resolutionScale: number;
@@ -33,6 +35,7 @@ export default class SpaceGame {
     this.resolutionScale = resolutionScale;
   }
   start() {
+    this.updateModules();
     GameLoop.addListener((dt: number) => {
       this.update(dt);
       this.draw(this.context, this.ship.position);
@@ -77,6 +80,88 @@ export default class SpaceGame {
   getOre() {
     return this.gameObjects.filter(o => o instanceof Ore);
   }
+  asteroidHitScan(x: number, y: number, asteroids: Asteroid[]) {
+    // hit scan, loop asteroids backwards to find frontmost asteroid first
+    for (let index = asteroids.length - 1; index >= 0; index--) {
+      const asteroid = asteroids[index];
+      if (
+        isWithinCircle(
+          x,
+          y,
+          asteroid.projected.x,
+          asteroid.projected.y,
+          (asteroid.size * asteroid.projected.s) / 2
+        )
+      ) {
+        // mine if any laser is active and wehave a target
+        this.target = asteroid;
+        return asteroid;
+      }
+    }
+    // context.emit("target", target);
+  }
+  oreHitscan(ore: Ore, x: number, y: number, r: number) {
+    return circlesIntersect(
+      ore.projected.x,
+      ore.projected.y,
+      ore.size / 2,
+      x,
+      y,
+      r
+    );
+  }
+  mineAsteroid(asteroid: Asteroid, ship: Ship, dt: number) {
+    ship.modules.forEach(module => {
+      if (module.type === ModuleType.laser && module.state.powerModifier > 0) {
+        const moduleEffect = module.use() * dt;
+        const mined = asteroid.mine({
+          c: module.color.cmyk().c * moduleEffect,
+          m: module.color.cmyk().m * moduleEffect,
+          y: module.color.cmyk().y * moduleEffect,
+          k: module.color.cmyk().k * moduleEffect
+        });
+        this.generateOre(asteroid, OreType.cyan, mined.c);
+        this.generateOre(asteroid, OreType.magenta, mined.m);
+        this.generateOre(asteroid, OreType.yellow, mined.y);
+        this.generateOre(asteroid, OreType.black, mined.k);
+      }
+    });
+  }
+  updateModules() {
+    const canvasSize = getScaledCanvasDimendsions(
+      this.context.canvas,
+      this.resolutionScale
+    );
+    const spacing = canvasSize.width / this.ship.modules.length;
+    this.moduleEffects = [];
+
+    for (let index = 0; index < this.ship.modules.length; index++) {
+      const module = this.ship.modules[index];
+      switch (module.type) {
+        case ModuleType.laser:
+          this.moduleEffects.push(
+            new Beam(
+              spacing * index,
+              canvasSize.height,
+              1,
+              module.color,
+              module,
+              this.cursor.position,
+              this.cursor
+            )
+          );
+          break;
+        case ModuleType.gravityVortex:
+          this.moduleEffects.push(
+            new GravityVortex(module, this.cursor.position, this.cursor)
+          );
+          break;
+
+        default:
+          break;
+      }
+    }
+  }
   update(dt: number) {
     // update ship
     this.ship.update(dt);
@@ -92,49 +177,28 @@ export default class SpaceGame {
       }
     });
 
-    // sort asteroids based on z-position
+    // module visual effects
+    this.moduleEffects.forEach(me => {
+      me.update(dt);
+    });
+
+    // sort gameobjects based on z-position
     this.gameObjects.sort((o1, o2) => {
       return o1.projected.s - o2.projected.s;
     });
 
-    // hit scan, loop asteroids backwards to find frontmost asteroid first
-    for (let index = this.getAsteroids().length - 1; index >= 0; index--) {
-      const asteroid = this.getAsteroids()[index] as Asteroid;
-      if (
-        this.cursor.active &&
-        isWithinCircle(
-          this.cursor.x,
-          this.cursor.y,
-          asteroid.projected.x,
-          asteroid.projected.y,
-          (asteroid.size * asteroid.projected.s) / 2
-        )
-      ) {
-        // mine if any laser is active and wehave a target
-        this.target = asteroid;
-        this.ship.modules.forEach(module => {
-          if (
-            this.target &&
-            module.type === ModuleType.laser &&
-            module.state.powerModifier > 0
-          ) {
-            const moduleEffect = module.use() * dt;
-            const mined = this.target.mine({
-              c: module.color.cmyk().c * moduleEffect,
-              m: module.color.cmyk().m * moduleEffect,
-              y: module.color.cmyk().y * moduleEffect,
-              k: module.color.cmyk().k * moduleEffect
-            });
-            this.generateOre(this.target, OreType.cyan, mined.c);
-            this.generateOre(this.target, OreType.magenta, mined.m);
-            this.generateOre(this.target, OreType.yellow, mined.y);
-            this.generateOre(this.target, OreType.black, mined.k);
-          }
-        });
-        break;
+    // asteroid hitscan and mining
+    if (this.cursor.active) {
+      const target = this.asteroidHitScan(
+        this.cursor.position.x,
+        this.cursor.position.y,
+        this.getAsteroids() as Asteroid[]
+      );
+
+      if (target) {
+        this.mineAsteroid(target, this.ship, dt);
       }
     }
-    // context.emit("target", target);
 
     // gravity vortex
     for (let index = this.getOre().length - 1; index >= 0; index--) {
@@ -145,15 +209,15 @@ export default class SpaceGame {
             module.type === ModuleType.gravityVortex &&
             module.state.powerModifier > 0
           ) {
-            module.use();
+            const moduleeffect = module.use();
             if (
               circlesIntersect(
                 o.projected.x,
                 o.projected.y,
                 o.size / 2,
-                this.cursor.x,
-                this.cursor.y,
-                module.derivedStats.effect
+                this.cursor.position.x,
+                this.cursor.position.y,
+                moduleeffect
               )
             ) {
               // loot ore and remove it from scene
@@ -175,56 +239,10 @@ export default class SpaceGame {
     context.clearRect(0, 0, canvasSize.width, canvasSize.height);
     context.imageSmoothingEnabled = false;
     context.save();
-
-    // draw asteroids
-    this.gameObjects.forEach(o => {
+    // draw gameobjects
+    [...this.gameObjects, ...this.moduleEffects].forEach(o => {
+      context.restore();
       o.draw(context, this.resolutionScale, cameraPosition);
     });
-
-    // beams
-    if (this.cursor.active) {
-      const spacing = canvasSize.width / this.ship.modules.length;
-
-      // loop ship equipment, draw laser for each laser equipment
-      for (let index = 0; index < this.ship.modules.length; index++) {
-        const module = this.ship.modules[index];
-        // draw laser if its powered
-        if (
-          module.type === ModuleType.laser &&
-          module.state.powerModifier > 0
-        ) {
-          // laser
-          new Beam(
-            spacing * index,
-            canvasSize.height,
-            this.cursor.x,
-            this.cursor.y,
-            1
-          ).draw(context, module.color);
-        }
-
-        // draw gravity vortex if it's powered
-        if (
-          context &&
-          module.type === ModuleType.gravityVortex &&
-          module.state.powerModifier > 0
-        ) {
-          // vortex
-          context.restore();
-          context.beginPath();
-          context.strokeStyle = "rgb(255, 255, 255)";
-          context.arc(
-            this.cursor.x,
-            this.cursor.y,
-            module.derivedStats.effect,
-            0,
-            2 * Math.PI
-          );
-          context.stroke();
-        }
-      }
-    }
-
-    context.restore();
   }
 }
