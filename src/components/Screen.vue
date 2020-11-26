@@ -16,23 +16,11 @@
 
 <script lang="ts">
 import { computed, defineComponent, onMounted, toRefs, watch } from "vue";
-import Asteroid from "@/classes/Asteroid";
-import Beam from "@/classes/Beam";
-import Ore from "@/classes/Ore";
 import InventoryDisplay from "@/components/HUDInventoryMeter.vue";
-import CursorTracker from "@/services/CursorTracker";
-import {
-  randomInt,
-  isWithinCircle,
-  resizeCanvas,
-  getScaledCanvasDimendsions,
-  getPointInCircle,
-  circlesIntersect
-} from "@/services/Utils";
-import gameLoop from "@/services/GameLoop";
+import { resizeCanvas } from "@/services/Utils";
 import Ship from "@/classes/Ship";
-import { EquipmentType, OreType } from "@/types/enums";
-import CanvasObject from "@/classes/CanvasObject";
+
+import SpaceGame from "@/classes/SpaceGame";
 
 export default defineComponent({
   name: "Screen",
@@ -65,264 +53,28 @@ export default defineComponent({
       required: true
     }
   },
-  emits: ["size", "target"],
-  setup(props, context) {
-    let canvas: HTMLCanvasElement | null = null;
-    let ctx: CanvasRenderingContext2D | null = null;
-    // const asteroids: Asteroid[] = [];
-    // const ore: Ore[] = [];
-    const canvasObjects: CanvasObject[] = [];
+  setup(props) {
     const { resolution } = toRefs(props);
-    let target: Asteroid | undefined;
-    let cursor: CursorTracker;
-
-    function addAsteroid(canvasObjects: CanvasObject[]) {
-      const radius = 50;
-      canvasObjects.push(
-        new Asteroid(
-          randomInt(4, 9),
-          radius,
-          props.oneBit
-            ? { c: 100, m: 100, y: 100, k: 100 }
-            : {
-                c: Math.random() * 100,
-                m: Math.random() * 100,
-                y: Math.random() * 100,
-                k: Math.random() * 10
-              },
-          props.ship.position
-        )
-      );
-    }
-
-    function getAsteroids() {
-      return canvasObjects.filter(o => o instanceof Asteroid);
-    }
-    function getOre() {
-      return canvasObjects.filter(o => o instanceof Ore);
-    }
-
-    function generateOre(source: Asteroid, type: OreType, amount: number) {
-      if (amount <= 0) return;
-      const randomPosition = getPointInCircle(Math.random() * 0.1);
-      const position = {
-        x: source.position.x + randomPosition.x,
-        y: source.position.y + randomPosition.y,
-        z: source.position.z,
-        r: Math.random() * 360
-      };
-      // console.log(source.position.z, source.projected.s);
-      // const vector = {
-      //   x: source.vector.x,
-      //   y: source.vector.y,
-      //   z: source.vector.z,
-      //   r: 0
-      // };
-      canvasObjects.push(new Ore(position, source.vector, type, amount));
-    }
-
-    function update(dt: number) {
-      // add new asteroids if current amount is below max
-      if (getAsteroids().length < props.maxAsteroids) {
-        addAsteroid(canvasObjects);
-      }
-      // update canvas objects
-      canvasObjects.forEach(o => {
-        o.update(dt);
-        if (o.isOffscreen) {
-          canvasObjects.splice(canvasObjects.indexOf(o), 1);
-        }
-      });
-
-      // sort asteroids based on z-position
-      canvasObjects.sort((o1, o2) => {
-        return o1.projected.s - o2.projected.s;
-      });
-
-      // hit scan, loop asteroids backwards to find frontmost asteroid first
-      target = undefined;
-      for (let index = getAsteroids().length - 1; index >= 0; index--) {
-        const asteroid = getAsteroids()[index] as Asteroid;
-        if (
-          cursor.active &&
-          isWithinCircle(
-            cursor.x,
-            cursor.y,
-            asteroid.projected.x,
-            asteroid.projected.y,
-            (asteroid.size * asteroid.projected.s) / 2
-          )
-        ) {
-          // mine if any laser is active and wehave a target
-          target = asteroid;
-          props.ship.equipment.forEach(equipment => {
-            if (
-              target &&
-              equipment.type === EquipmentType.laser &&
-              equipment.state.powerModifier > 0
-            ) {
-              const equipmentEffect = equipment.use() * dt;
-              const mined = target.mine({
-                c: equipment.color.cmyk().c * equipmentEffect,
-                m: equipment.color.cmyk().m * equipmentEffect,
-                y: equipment.color.cmyk().y * equipmentEffect,
-                k: equipment.color.cmyk().k * equipmentEffect
-              });
-              generateOre(target, OreType.cyan, mined.c);
-              generateOre(target, OreType.magenta, mined.m);
-              generateOre(target, OreType.yellow, mined.y);
-              generateOre(target, OreType.black, mined.k);
-            }
-          });
-          break;
-        }
-      }
-      context.emit("target", target);
-
-      // gravity vortex
-      for (let index = getOre().length - 1; index >= 0; index--) {
-        const o = getOre()[index] as Ore;
-        if (cursor.active) {
-          props.ship.equipment.forEach(equipment => {
-            if (
-              equipment.type === EquipmentType.gravityVortex &&
-              equipment.state.powerModifier > 0
-            ) {
-              equipment.use();
-              if (
-                circlesIntersect(
-                  o.projected.x,
-                  o.projected.y,
-                  o.size / 2,
-                  cursor.x,
-                  cursor.y,
-                  equipment.derivedStats.effect
-                )
-              ) {
-                // loot ore and remove it from scene
-                if (props.ship.lootOre(o.type, o.amount)) {
-                  canvasObjects.splice(canvasObjects.indexOf(o), 1);
-                }
-              }
-            }
-          });
-        }
-      }
-    }
-
-    function draw(context: CanvasRenderingContext2D, cameraPosition: number) {
-      context.clearRect(
-        0,
-        0,
-        context.canvas.width * (1 / props.resolution),
-        context.canvas.height * (1 / props.resolution)
-      );
-      context.imageSmoothingEnabled = false;
-      context.save();
-
-      // draw asteroids
-      canvasObjects.forEach(o => {
-        o.draw(context, resolution.value, cameraPosition);
-      });
-
-      // beams
-      if (cursor.active) {
-        const equipmentSpacing =
-          getScaledCanvasDimendsions(context.canvas, props.resolution).width /
-          props.ship.equipment.length;
-
-        // loop ship equipment, draw laser for each laser equipment
-        for (let index = 0; index < props.ship.equipment.length; index++) {
-          const equipment = props.ship.equipment[index];
-          // draw laser if its powered
-          if (
-            equipment.type === EquipmentType.laser &&
-            equipment.state.powerModifier > 0
-          ) {
-            // laser
-            new Beam(
-              equipmentSpacing * index,
-              getScaledCanvasDimendsions(
-                context.canvas,
-                props.resolution
-              ).height,
-              cursor.x,
-              cursor.y,
-              1
-            ).draw(context, equipment.color);
-          }
-
-          // draw gravity vortex if it's powered
-          if (
-            ctx &&
-            equipment.type === EquipmentType.gravityVortex &&
-            equipment.state.powerModifier > 0
-          ) {
-            // vortex
-            ctx.restore();
-            ctx.beginPath();
-            ctx.strokeStyle = "rgb(255, 255, 255)";
-            ctx.arc(
-              cursor.x,
-              cursor.y,
-              equipment.derivedStats.effect,
-              0,
-              2 * Math.PI
-            );
-            ctx.stroke();
-          }
-        }
-      }
-
-      context.restore();
-    }
-
-    watch(resolution, () => {
-      if (canvas && ctx) resizeCanvas(ctx, props.resolution);
-      if (canvas && ctx)
-        context.emit("size", {
-          w: ctx.canvas.width,
-          h: ctx.canvas.height
-        });
-    });
-
-    // watch(oneBit, () => {
-    //   if (oneBit.value === true) {
-    //     asteroids.forEach(a => a.setColor(props.oneBitColor));
-    //   } else {
-    //     asteroids.forEach(a =>
-    //       a.setColor(
-    //         `rgb(${Math.random() * 255}, ${Math.random() *
-    //           255}, ${Math.random() * 255})`
-    //       )
-    //     );
-    //   }
-    // });
-
     const filterSize = computed(() => {
       return `${(1 / resolution.value) * 2}px`;
     });
 
     onMounted(() => {
       // setup canvas
-      canvas = document.getElementById("canvas") as HTMLCanvasElement;
-      if (canvas) ctx = canvas.getContext("2d");
+      const canvas = document.getElementById("canvas") as HTMLCanvasElement;
+      const ctx = canvas.getContext("2d");
       if (ctx) {
         // set initial canvas size
         resizeCanvas(ctx, props.resolution);
+        // setup and start space game
+        const game = new SpaceGame(ctx, props.ship, props.resolution);
+        game.start();
 
         // resize canvas on window resize
         window.addEventListener("resize", () => {
-          if (ctx) resizeCanvas(ctx, props.resolution);
-        });
-
-        // setup cursor tracker
-        cursor = new CursorTracker(ctx.canvas);
-
-        // game loop
-        gameLoop.addListener((dt: number) => {
-          update(dt);
-          if (ctx) draw(ctx, props.ship.position);
+          if (ctx) {
+            resizeCanvas(ctx, props.resolution);
+          }
         });
       }
     });
@@ -333,7 +85,6 @@ export default defineComponent({
 });
 </script>
 
-<!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped vars="{ filterSize }">
 /* http://aleclownes.com/2017/02/01/crt-display.html */
 .crt::before {
