@@ -1,19 +1,19 @@
 <template>
   <div class="equipment-wrapper">
-    <component :is="module.type" :equipment="module" :ship="ship" />
+    <component :is="module.type" :module="module" :ship="ship" />
   </div>
 </template>
 
 <script lang="ts">
 import { defineComponent } from "vue";
-import Equipment from "@/classes/Equipment";
+import Module from "@/classes/Module";
 import Ship from "@/classes/Ship";
 
-import Reactor from "@/components/EquipmentReactor.vue";
-import Laser from "@/components/EquipmentLaser.vue";
-import None from "@/components/EquipmentNone.vue";
-import Engine from "@/components/EquipmentEngine.vue";
-import GravityVortex from "@/components/EquipmentGravityVortex.vue";
+import Reactor from "@/components/ModuleReactor.vue";
+import Laser from "@/components/ModuleLaser.vue";
+import None from "@/components/ModuleNone.vue";
+import Engine from "@/components/ModuleEngine.vue";
+import GravityVortex from "@/components/ModuleGravityVortex.vue";
 
 export default defineComponent({
   name: "ModuleWrapper",
@@ -26,7 +26,7 @@ export default defineComponent({
   },
   props: {
     module: {
-      type: Equipment,
+      type: Module,
       required: true
     },
     ship: {

@@ -1,11 +1,11 @@
-import { ShipType, EquipmentType, OreType } from "../types/enums";
-import Equipment from "./Equipment";
+import { ShipType, ModuleType, OreType } from "../types/enums";
+import Module from "./Module";
 
 export default class Ship {
-  equipment: Equipment[];
+  modules: Module[];
   name: string;
   type: ShipType;
-  equipmentSlots: number;
+  moduleSlots: number;
   position: number;
   vector: number;
   inventory: CMYKColor;
@@ -14,9 +14,9 @@ export default class Ship {
 
   constructor(name: string, slots: number) {
     this.name = name;
-    this.equipmentSlots = slots;
-    this.equipment = new Array(slots);
-    this.equipment.fill(new Equipment({ equipmentType: EquipmentType.none }));
+    this.moduleSlots = slots;
+    this.modules = new Array(slots);
+    this.modules.fill(new Module({ moduleType: ModuleType.none }));
     this.type = ShipType.eve;
     this.position = 0;
     this.vector = 0;
@@ -30,14 +30,14 @@ export default class Ship {
     this.surplusEnergy = 0;
   }
   get reactors() {
-    return this.equipment.filter(e => e && e.type === EquipmentType.reactor);
+    return this.modules.filter(e => e && e.type === ModuleType.reactor);
   }
   get engines() {
-    return this.equipment.filter(e => e && e.type === EquipmentType.engine);
+    return this.modules.filter(e => e && e.type === ModuleType.engine);
   }
-  setEquipment(equipment: Equipment, slot: number) {
-    if (slot > this.equipmentSlots) return;
-    this.equipment[slot] = equipment;
+  setEquipment(equipment: Module, slot: number) {
+    if (slot > this.moduleSlots) return;
+    this.modules[slot] = equipment;
   }
   lootOre(type: OreType, amount: number) {
     if (this.availableInventorySpace < amount) return false;
@@ -97,8 +97,8 @@ export default class Ship {
   }
   get poweredEquipment() {
     // get non-reactor equipment that wants energy, sort by energy amount
-    return this.equipment
-      .filter(e => e && e.type !== EquipmentType.reactor && e.desiredEnergy > 0)
+    return this.modules
+      .filter(e => e && e.type !== ModuleType.reactor && e.desiredEnergy > 0)
       .sort((n1, n2) => {
         if (n1 && n2 && n1.state.powerModifier > n2.state.powerModifier) {
           return 1;

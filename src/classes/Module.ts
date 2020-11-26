@@ -1,13 +1,13 @@
-import { ItemType, EquipmentType } from "../types/enums";
-import { Item, EquipmentStats } from "../types/types";
+import { ItemType, ModuleType } from "../types/enums";
+import { Item, ModuleStats } from "../types/types";
 import Color from "./Color";
 
-export default class Equipment implements Item {
+export default class Module implements Item {
   // metadata
   name: string;
   id: string;
   itemType: ItemType.equipment;
-  type: EquipmentType;
+  type: ModuleType;
 
   // stats
   effect: number;
@@ -39,14 +39,14 @@ export default class Equipment implements Item {
     };
   }
 
-  constructor(stats: EquipmentStats) {
+  constructor(stats: ModuleStats) {
     // set metadata
     this.name = stats.name !== undefined ? stats.name : "unnamed equipment";
     this.id = stats.id !== undefined ? stats.id : "89345-43534-234";
     this.itemType = ItemType.equipment;
 
     // set base stats
-    this.type = stats.equipmentType;
+    this.type = stats.moduleType;
     this.effect = stats.effect !== undefined ? stats.effect : 1;
     this.energyUse = stats.energyUse !== undefined ? stats.energyUse : 1;
     // this.energyBufferSize =

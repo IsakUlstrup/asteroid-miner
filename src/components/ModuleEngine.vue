@@ -1,6 +1,6 @@
 <template>
   <div class="engine">
-    <h1>{{ equipment.name }}</h1>
+    <h1>{{ module.name }}</h1>
     Power:
     <input
       type="range"
@@ -8,8 +8,8 @@
       min="0"
       max="1"
       step="0.1"
-      @input="equipment.setPower(+$event.target.value)"
-      :value="equipment.state.powerModifier"
+      @input="module.setPower(+$event.target.value)"
+      :value="module.state.powerModifier"
     />
     <p>
       position: {{ ship.position.toFixed(2) }}
@@ -17,24 +17,24 @@
       vector: {{ ship.vector.toFixed(5) }}
     </p>
     <p>
-      thrust: {{ equipment.derivedStats.effect }}<br />
-      energy: {{ equipment.state.energy.toFixed(0) }}/
-      {{ equipment.derivedStats.energyUse }}w
+      thrust: {{ module.derivedStats.effect }}<br />
+      energy: {{ module.state.energy.toFixed(0) }}/
+      {{ module.derivedStats.energyUse }}w
     </p>
   </div>
 </template>
 
 <script lang="ts">
 import { defineComponent } from "vue";
-import Equipment from "@/classes/Equipment";
+import Module from "@/classes/Module";
 import Ship from "@/classes/Ship";
 
 export default defineComponent({
   name: "Laser",
   components: {},
   props: {
-    equipment: {
-      type: Equipment,
+    module: {
+      type: Module,
       required: true
     },
     ship: {

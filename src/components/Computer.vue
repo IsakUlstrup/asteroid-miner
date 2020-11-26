@@ -2,7 +2,7 @@
   <div class="computer">
     <div class="equipment-slots">
       <ModuleWrapper
-        v-for="module in ship.equipment"
+        v-for="module in ship.modules"
         :key="module"
         :module="module"
         :ship="ship"
@@ -45,9 +45,9 @@
 
 <script lang="ts">
 import { defineComponent } from "vue";
-import Equipment from "@/classes/Equipment";
+import Module from "@/classes/Module";
 import Ship from "@/classes/Ship";
-import { EquipmentType } from "../types/enums";
+import { ModuleType } from "../types/enums";
 import GameLoop from "@/services/GameLoop";
 import Asteroid from "@/classes/Asteroid";
 
@@ -70,8 +70,8 @@ export default defineComponent({
     }
   },
   setup(props) {
-    const reactor = new Equipment({
-      equipmentType: EquipmentType.reactor,
+    const reactor = new Module({
+      moduleType: ModuleType.reactor,
       name: "A reactor",
       energyUse: 0,
       effect: 50,
@@ -79,36 +79,36 @@ export default defineComponent({
       fuelBufferSize: 100
     });
 
-    const laser = new Equipment({
-      equipmentType: EquipmentType.laser,
+    const laser = new Module({
+      moduleType: ModuleType.laser,
       name: "Laser one",
       effect: 0.001,
       energyUse: 10
     });
 
-    const laser2 = new Equipment({
-      equipmentType: EquipmentType.laser,
+    const laser2 = new Module({
+      moduleType: ModuleType.laser,
       name: "Laser two",
       energyUse: 20,
       effect: 0.005
     });
 
-    const laser3 = new Equipment({
-      equipmentType: EquipmentType.laser,
+    const laser3 = new Module({
+      moduleType: ModuleType.laser,
       name: "Laser three",
       energyUse: 30,
       effect: 0.002
     });
 
-    const engine = new Equipment({
-      equipmentType: EquipmentType.engine,
+    const engine = new Module({
+      moduleType: ModuleType.engine,
       name: "an engine",
       energyUse: 5,
       effect: 0.00001
     });
 
-    const gravityVortex = new Equipment({
-      equipmentType: EquipmentType.gravityVortex,
+    const gravityVortex = new Module({
+      moduleType: ModuleType.gravityVortex,
       name: "Gravity vortex generator",
       energyUse: 5,
       effect: 100
@@ -122,7 +122,7 @@ export default defineComponent({
     props.ship.setEquipment(laser3, 7);
 
     return {
-      EquipmentType,
+      ModuleType,
       GameLoop
     };
   }

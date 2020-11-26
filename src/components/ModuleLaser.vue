@@ -1,6 +1,6 @@
 <template>
   <div class="laser">
-    <h1>{{ equipment.name }}</h1>
+    <h1>{{ module.name }}</h1>
     <p v-if="target">
       target cmyk: {{ target.color.cmyk().c.toFixed(0) }},
       {{ target.color.cmyk().m.toFixed(0) }},
@@ -14,24 +14,24 @@
       min="0"
       max="1"
       step="0.1"
-      @input="equipment.setPower(+$event.target.value)"
-      :value="equipment.state.powerModifier"
+      @input="module.setPower(+$event.target.value)"
+      :value="module.state.powerModifier"
     />
-    <h3 :style="{ color: equipment.color.rgbString() }">Color</h3>
-    ({{ equipment.color.cmykString() }})
+    <h3 :style="{ color: module.color.rgbString() }">Color</h3>
+    ({{ module.color.cmykString() }})
 
     <ColorSelect :colors="colorPresets" @color="setColor" />
 
     <br />
-    effect: {{ equipment.derivedStats.effect }}<br />
-    energy: {{ equipment.state.energy.toFixed(0) }}/
-    {{ equipment.derivedStats.energyUse }}w
+    effect: {{ module.derivedStats.effect }}<br />
+    energy: {{ module.state.energy.toFixed(0) }}/
+    {{ module.derivedStats.energyUse }}w
   </div>
 </template>
 
 <script lang="ts">
 import { defineComponent, ref } from "vue";
-import Equipment from "../classes/Equipment";
+import Module from "../classes/Module";
 import Asteroid from "../classes/Asteroid";
 import ColorSelect from "@/components/UIColorSelect.vue";
 
@@ -41,8 +41,8 @@ export default defineComponent({
     ColorSelect
   },
   props: {
-    equipment: {
-      type: Equipment,
+    module: {
+      type: Module,
       required: true
     },
     target: {
@@ -72,10 +72,10 @@ export default defineComponent({
     ];
     const selectedColor = ref(colorPresets[0]);
 
-    props.equipment.setColor(selectedColor.value.color);
+    props.module.setColor(selectedColor.value.color);
 
     function setColor(color: CMYKColor) {
-      props.equipment.setColor(color);
+      props.module.setColor(color);
     }
 
     return {

@@ -1,4 +1,4 @@
-import { ItemType, EquipmentType } from "./enums";
+import { ItemType, ModuleType } from "./enums";
 
 export interface Item {
   name: string;
@@ -6,8 +6,8 @@ export interface Item {
   itemType: ItemType;
 }
 
-export interface EquipmentStats {
-  equipmentType: EquipmentType;
+export interface ModuleStats {
+  moduleType: ModuleType;
   name?: string;
   id?: string;
   effect?: number;

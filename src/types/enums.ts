@@ -1,4 +1,4 @@
-export enum EquipmentType {
+export enum ModuleType {
   reactor = "reactor",
   laser = "laser",
   none = "none",

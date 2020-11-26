@@ -11,7 +11,7 @@ import {
 } from "@/services/Utils";
 import config from "@/config";
 import CursorTracker from "@/services/CursorTracker";
-import { EquipmentType, OreType } from "@/types/enums";
+import { ModuleType, OreType } from "@/types/enums";
 import Beam from "@/classes/Beam";
 import GameLoop from "@/services/GameLoop";
 
@@ -112,18 +112,18 @@ export default class SpaceGame {
       ) {
         // mine if any laser is active and wehave a target
         this.target = asteroid;
-        this.ship.equipment.forEach(equipment => {
+        this.ship.modules.forEach(module => {
           if (
             this.target &&
-            equipment.type === EquipmentType.laser &&
-            equipment.state.powerModifier > 0
+            module.type === ModuleType.laser &&
+            module.state.powerModifier > 0
           ) {
-            const equipmentEffect = equipment.use() * dt;
+            const moduleEffect = module.use() * dt;
             const mined = this.target.mine({
-              c: equipment.color.cmyk().c * equipmentEffect,
-              m: equipment.color.cmyk().m * equipmentEffect,
-              y: equipment.color.cmyk().y * equipmentEffect,
-              k: equipment.color.cmyk().k * equipmentEffect
+              c: module.color.cmyk().c * moduleEffect,
+              m: module.color.cmyk().m * moduleEffect,
+              y: module.color.cmyk().y * moduleEffect,
+              k: module.color.cmyk().k * moduleEffect
             });
             this.generateOre(this.target, OreType.cyan, mined.c);
             this.generateOre(this.target, OreType.magenta, mined.m);
@@ -140,12 +140,12 @@ export default class SpaceGame {
     for (let index = this.getOre().length - 1; index >= 0; index--) {
       const o = this.getOre()[index] as Ore;
       if (this.cursor.active) {
-        this.ship.equipment.forEach(equipment => {
+        this.ship.modules.forEach(module => {
           if (
-            equipment.type === EquipmentType.gravityVortex &&
-            equipment.state.powerModifier > 0
+            module.type === ModuleType.gravityVortex &&
+            module.state.powerModifier > 0
           ) {
-            equipment.use();
+            module.use();
             if (
               circlesIntersect(
                 o.projected.x,
@@ -153,7 +153,7 @@ export default class SpaceGame {
                 o.size / 2,
                 this.cursor.x,
                 this.cursor.y,
-                equipment.derivedStats.effect
+                module.derivedStats.effect
               )
             ) {
               // loot ore and remove it from scene
@@ -183,31 +183,31 @@ export default class SpaceGame {
 
     // beams
     if (this.cursor.active) {
-      const equipmentSpacing = canvasSize.width / this.ship.equipment.length;
+      const spacing = canvasSize.width / this.ship.modules.length;
 
       // loop ship equipment, draw laser for each laser equipment
-      for (let index = 0; index < this.ship.equipment.length; index++) {
-        const equipment = this.ship.equipment[index];
+      for (let index = 0; index < this.ship.modules.length; index++) {
+        const module = this.ship.modules[index];
         // draw laser if its powered
         if (
-          equipment.type === EquipmentType.laser &&
-          equipment.state.powerModifier > 0
+          module.type === ModuleType.laser &&
+          module.state.powerModifier > 0
         ) {
           // laser
           new Beam(
-            equipmentSpacing * index,
+            spacing * index,
             canvasSize.height,
             this.cursor.x,
             this.cursor.y,
             1
-          ).draw(context, equipment.color);
+          ).draw(context, module.color);
         }
 
         // draw gravity vortex if it's powered
         if (
           context &&
-          equipment.type === EquipmentType.gravityVortex &&
-          equipment.state.powerModifier > 0
+          module.type === ModuleType.gravityVortex &&
+          module.state.powerModifier > 0
         ) {
           // vortex
           context.restore();
@@ -216,7 +216,7 @@ export default class SpaceGame {
           context.arc(
             this.cursor.x,
             this.cursor.y,
-            equipment.derivedStats.effect,
+            module.derivedStats.effect,
             0,
             2 * Math.PI
           );
