@@ -1,18 +1,12 @@
 <template>
   <div class="computer">
     <div class="equipment-slots">
-      <div
-        class="equipment-wrapper"
-        v-for="equipment in ship.equipment"
-        :key="equipment"
-      >
-        <component
-          :is="equipment.type"
-          :equipment="equipment"
-          :target="target"
-          :ship="ship"
-        />
-      </div>
+      <ModuleWrapper
+        v-for="module in ship.equipment"
+        :key="module"
+        :module="module"
+        :ship="ship"
+      />
     </div>
 
     <h1>Inventory</h1>
@@ -56,20 +50,13 @@ import Ship from "@/classes/Ship";
 import { EquipmentType } from "../types/enums";
 import GameLoop from "@/services/GameLoop";
 import Asteroid from "@/classes/Asteroid";
-import Reactor from "@/components/EquipmentReactor.vue";
-import Laser from "@/components/EquipmentLaser.vue";
-import None from "@/components/EquipmentNone.vue";
-import Engine from "@/components/EquipmentEngine.vue";
-import GravityVortex from "@/components/EquipmentGravityVortex.vue";
+
+import ModuleWrapper from "@/components/ModuleWrapper.vue";
 
 export default defineComponent({
   name: "Computer",
   components: {
-    Reactor,
-    Laser,
-    None,
-    Engine,
-    GravityVortex
+    ModuleWrapper
   },
   props: {
     ship: {
@@ -129,7 +116,6 @@ export default defineComponent({
 
     props.ship.setEquipment(reactor, 0);
     props.ship.setEquipment(laser, 1);
-    // props.ship.setEquipment(laser2, 2);
     props.ship.setEquipment(gravityVortex, 3);
     props.ship.setEquipment(engine, 4);
     props.ship.setEquipment(laser2, 5);
@@ -144,12 +130,6 @@ export default defineComponent({
 </script>
 
 <style scoped lang="scss">
-.beam-slots {
-  display: flex;
-  background: white;
-  justify-content: space-between;
-  text-align: center;
-}
 .computer {
   overflow-y: scroll;
   height: 100%;
@@ -159,11 +139,5 @@ export default defineComponent({
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
-}
-.equipment-wrapper {
-  width: 15rem;
-  border: 1px solid #444;
-  margin: 0.5rem;
-  padding: 0.5rem;
 }
 </style>
