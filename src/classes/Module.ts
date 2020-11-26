@@ -12,7 +12,6 @@ export default class Module implements Item {
   // stats
   effect: number;
   energyUse: number;
-  // energyBufferSize: number;
   fuelUse: number;
   fuelBufferSize: number;
 
@@ -28,7 +27,6 @@ export default class Module implements Item {
   // derived stats
   get derivedStats() {
     return {
-      // maxEnergy: this.energyBufferSize * this.state.powerModifier,
       effect:
         this.state.energy >= this.energyUse * this.state.powerModifier
           ? this.effect * this.state.powerModifier
@@ -49,8 +47,6 @@ export default class Module implements Item {
     this.type = stats.moduleType;
     this.effect = stats.effect !== undefined ? stats.effect : 1;
     this.energyUse = stats.energyUse !== undefined ? stats.energyUse : 1;
-    // this.energyBufferSize =
-    //   stats.energyBufferSize !== undefined ? stats.energyBufferSize : 10;
     this.fuelUse = stats.fuelUse !== undefined ? stats.fuelUse : 0;
     this.fuelBufferSize =
       stats.fuelBufferSize !== undefined ? stats.fuelBufferSize : 0;

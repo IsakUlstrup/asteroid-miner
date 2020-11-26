@@ -1,6 +1,28 @@
 <template>
   <div class="computer">
-    <div class="equipment-slots">
+    <div class="internal-controls">
+      reactor
+      <input
+        type="range"
+        name="power"
+        min="0"
+        max="1"
+        step="0.1"
+        value="0"
+        @input="ship.setReactorPower(+$event.target.value)"
+      />
+      engine
+      <input
+        type="range"
+        name="power"
+        min="0"
+        max="1"
+        step="0.1"
+        value="0"
+        @input="ship.setEnginePower(+$event.target.value)"
+      />
+    </div>
+    <div class="module-slots">
       <ModuleWrapper
         v-for="module in ship.modules"
         :key="module"
@@ -27,6 +49,9 @@
         <li>s: {{ target.projected.s }}</li>
       </ul>
     </div>
+
+    <h3>position</h3>
+    {{ ship.position }}
 
     <h1>Time</h1>
     <input type="button" value="pause" @click="GameLoop.pause(true)" />
@@ -114,12 +139,12 @@ export default defineComponent({
       effect: 100
     });
 
-    props.ship.setEquipment(reactor, 0);
-    props.ship.setEquipment(laser, 1);
-    props.ship.setEquipment(gravityVortex, 3);
-    props.ship.setEquipment(engine, 4);
-    props.ship.setEquipment(laser2, 5);
-    props.ship.setEquipment(laser3, 7);
+    props.ship.setInternalModule(reactor, 0);
+    props.ship.setModule(laser, 1);
+    props.ship.setModule(gravityVortex, 3);
+    props.ship.setInternalModule(engine, 1);
+    props.ship.setModule(laser2, 5);
+    props.ship.setModule(laser3, 7);
 
     return {
       ModuleType,
@@ -135,9 +160,19 @@ export default defineComponent({
   height: 100%;
   background: white;
 }
-.equipment-slots {
+.module-slots {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
+  padding: 1rem;
+}
+.internal-controls {
+  background: linear-gradient(to bottom, #fff, #ddd);
+  padding: 1rem;
+  text-align: center;
+
+  input[type="range"] {
+    width: 8rem;
+  }
 }
 </style>

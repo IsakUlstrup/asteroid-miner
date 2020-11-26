@@ -41,6 +41,7 @@ export default defineComponent({
 .equipment-wrapper {
   width: 15rem;
   border: 1px solid #444;
+  border-radius: 0.3rem;
   margin: 0.5rem;
   padding: 0.5rem;
 }

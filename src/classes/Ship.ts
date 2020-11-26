@@ -3,18 +3,21 @@ import Module from "./Module";
 
 export default class Ship {
   modules: Module[];
+  moduleSlots: number;
+  internalModules: Module[] = [];
+  internalModuleSlots: number;
   name: string;
   type: ShipType;
-  moduleSlots: number;
   position: number;
   vector: number;
   inventory: CMYKColor;
   inventorySize: number;
   surplusEnergy: number;
 
-  constructor(name: string, slots: number) {
+  constructor(name: string, slots: number, internalSlots = 4) {
     this.name = name;
     this.moduleSlots = slots;
+    this.internalModuleSlots = internalSlots;
     this.modules = new Array(slots);
     this.modules.fill(new Module({ moduleType: ModuleType.none }));
     this.type = ShipType.eve;
@@ -30,14 +33,24 @@ export default class Ship {
     this.surplusEnergy = 0;
   }
   get reactors() {
-    return this.modules.filter(e => e && e.type === ModuleType.reactor);
+    return this.internalModules.filter(e => e && e.type === ModuleType.reactor);
   }
   get engines() {
-    return this.modules.filter(e => e && e.type === ModuleType.engine);
+    return this.internalModules.filter(e => e && e.type === ModuleType.engine);
   }
-  setEquipment(equipment: Module, slot: number) {
+  setModule(module: Module, slot: number) {
     if (slot > this.moduleSlots) return;
-    this.modules[slot] = equipment;
+    this.modules[slot] = module;
+  }
+  setInternalModule(module: Module, slot: number) {
+    if (slot > this.internalModuleSlots) return;
+    this.internalModules[slot] = module;
+  }
+  setReactorPower(power: number) {
+    this.reactors.forEach(reactor => reactor.setPower(power));
+  }
+  setEnginePower(power: number) {
+    this.engines.forEach(engine => engine.setPower(power));
   }
   lootOre(type: OreType, amount: number) {
     if (this.availableInventorySpace < amount) return false;
@@ -83,6 +96,7 @@ export default class Ship {
     // vector / movement
     this.engines.forEach(engine => {
       this.vector += engine.use() * dt;
+      console.log(engine.use() * dt);
     });
     this.position += this.vector;
   }
@@ -97,7 +111,7 @@ export default class Ship {
   }
   get poweredEquipment() {
     // get non-reactor equipment that wants energy, sort by energy amount
-    return this.modules
+    return [...this.modules, ...this.internalModules]
       .filter(e => e && e.type !== ModuleType.reactor && e.desiredEnergy > 0)
       .sort((n1, n2) => {
         if (n1 && n2 && n1.state.powerModifier > n2.state.powerModifier) {

@@ -3,7 +3,8 @@ export enum ModuleType {
   laser = "laser",
   none = "none",
   engine = "engine",
-  gravityVortex = "gravityVortex"
+  gravityVortex = "gravityVortex",
+  navigation = "navigation"
 }
 
 export enum ItemType {

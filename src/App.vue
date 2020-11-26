@@ -66,6 +66,7 @@ html {
 
 body {
   font-size: 1.4rem;
+  line-height: 2rem;
   background: #262626;
 }
 
@@ -78,6 +79,7 @@ body {
   height: 100vh;
   display: flex;
   flex-direction: column;
+
 
   section {
     flex: 1;

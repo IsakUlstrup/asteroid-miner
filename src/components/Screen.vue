@@ -114,7 +114,7 @@ export default defineComponent({
   width: 20%;
   position: absolute;
   color: white;
-  padding: 2rem;
+  padding: 1rem;
   user-select: none;
   pointer-events: none;
 }
