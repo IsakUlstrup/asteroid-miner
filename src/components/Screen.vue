@@ -2,8 +2,6 @@
   <div class="screen-container">
     <div class="screen crt">
       <div class="hud">
-        <p>NAM {{ ship.name }}</p>
-        <p>SPD {{ ship.vector.toFixed(4) }}</p>
         <InventoryDisplay
           :inventory="ship.inventory"
           :inventory-size="ship.inventorySize"
@@ -15,7 +13,7 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, onMounted, toRefs, watch } from "vue";
+import { computed, defineComponent, onMounted, toRefs } from "vue";
 import InventoryDisplay from "@/components/HUDInventoryMeter.vue";
 import { resizeCanvas } from "@/services/Utils";
 import Ship from "@/classes/Ship";
@@ -113,6 +111,7 @@ export default defineComponent({
   height: 100%;
 }
 .hud {
+  width: 20%;
   position: absolute;
   color: white;
   padding: 2rem;

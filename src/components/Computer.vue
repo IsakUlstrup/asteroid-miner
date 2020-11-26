@@ -135,10 +135,6 @@ export default defineComponent({
     props.ship.setEquipment(laser2, 5);
     props.ship.setEquipment(laser3, 7);
 
-    GameLoop.addListener((dt: number) => {
-      props.ship.update(dt);
-    });
-
     return {
       EquipmentType,
       GameLoop

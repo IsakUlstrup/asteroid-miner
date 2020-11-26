@@ -78,6 +78,8 @@ export default class SpaceGame {
     return this.gameObjects.filter(o => o instanceof Ore);
   }
   update(dt: number) {
+    // update ship
+    this.ship.update(dt);
     // add new asteroids if current amount is below max
     if (this.getAsteroids().length < config.asteroidMaxCount) {
       this.addAsteroid(this.gameObjects);
