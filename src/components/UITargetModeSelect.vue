@@ -1,31 +1,50 @@
 <template>
-  <div class="target-mode-select">
-    <input type="radio" id="none" name="target-mode" :value="TargetMode.none" />
-    <label for="none">None</label>
+  <form class="target-mode-select">
+    <input
+      type="radio"
+      :id="module.id + '-none'"
+      :name="module.id"
+      :value="TargetMode.none"
+      @click="module.setTargetingMode(TargetMode.none)"
+    />
+    <label :for="module.id + '-none'">None</label>
     <br />
 
     <input
       type="radio"
-      id="manual"
-      name="target-mode"
+      :id="module.id + '-manual'"
+      :name="module.id"
       :value="TargetMode.manual"
+      @click="module.setTargetingMode(TargetMode.manual)"
     />
-    <label for="manual">Manual</label>
+    <label :for="module.id + '-manual'">Manual</label>
     <br />
 
-    <input type="radio" id="auto" name="target-mode" :value="TargetMode.auto" />
-    <label for="auto">Auto</label>
-  </div>
+    <input
+      type="radio"
+      :id="module.id + '-auto'"
+      :name="module.id"
+      :value="TargetMode.auto"
+      @click="module.setTargetingMode(TargetMode.auto)"
+    />
+    <label :for="module.id + '-auto'">Auto</label>
+  </form>
 </template>
 
 <script lang="ts">
 import { defineComponent } from "vue";
 import { TargetMode } from "@/types/enums";
+import Module from "@/classes/Module";
 
 export default defineComponent({
   name: "UITargetModeSelect",
   components: {},
-  props: {},
+  props: {
+    module: {
+      type: Module,
+      required: true
+    }
+  },
   emits: ["color"],
   setup(props) {
     return {

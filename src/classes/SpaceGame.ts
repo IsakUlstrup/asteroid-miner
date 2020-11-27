@@ -11,7 +11,7 @@ import {
 } from "@/services/Utils";
 import config from "@/config";
 import CursorTracker from "@/services/CursorTracker";
-import { ModuleType, OreType } from "@/types/enums";
+import { ModuleType, OreType, TargetMode } from "@/types/enums";
 import Beam from "@/classes/Beam";
 import GameLoop from "@/services/GameLoop";
 import GravityVortex from "./GravityVortex";
@@ -174,6 +174,24 @@ export default class SpaceGame {
       o.update(dt);
       if (o.isOffscreen) {
         this.removeGameObject(o);
+      }
+    });
+
+    // targeting
+    this.ship.modules.forEach(m => {
+      if (m.targetMode === TargetMode.auto) {
+        m.target = this.getAsteroids()[0] as Asteroid;
+        const moduleEffect = m.use() * dt;
+        const mined = m.target.mine({
+          c: m.color.cmyk().c * moduleEffect,
+          m: m.color.cmyk().m * moduleEffect,
+          y: m.color.cmyk().y * moduleEffect,
+          k: m.color.cmyk().k * moduleEffect
+        });
+        this.generateOre(m.target, OreType.cyan, mined.c);
+        this.generateOre(m.target, OreType.magenta, mined.m);
+        this.generateOre(m.target, OreType.yellow, mined.y);
+        this.generateOre(m.target, OreType.black, mined.k);
       }
     });
 

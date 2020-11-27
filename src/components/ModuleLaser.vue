@@ -22,7 +22,8 @@
 
     <ColorSelect :colors="colorPresets" @color="setColor" />
 
-    <UITargetModeSelect />
+    <UITargetModeSelect :module="module" />
+    {{ module.targetMode }}
 
     <br />
     effect: {{ module.derivedStats.effect }}<br />

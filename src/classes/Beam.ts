@@ -1,5 +1,4 @@
 import CursorTracker from "@/services/CursorTracker";
-import CanvasObject from "./CanvasObject";
 import Color from "./Color";
 import Module from "./Module";
 import ModuleEffect from "./ModuleEffect";
