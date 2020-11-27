@@ -127,6 +127,9 @@ export default class SpaceGame {
       }
     });
   }
+  getRandomAsteroid(asteroids: Asteroid[]) {
+    return asteroids[Math.floor(Math.random() * asteroids.length)];
+  }
   updateModules() {
     const canvasSize = getScaledCanvasDimendsions(
       this.context.canvas,
@@ -180,18 +183,25 @@ export default class SpaceGame {
     // targeting
     this.ship.modules.forEach(m => {
       if (m.targetMode === TargetMode.auto) {
-        m.target = this.getAsteroids()[0] as Asteroid;
-        const moduleEffect = m.use() * dt;
-        const mined = m.target.mine({
-          c: m.color.cmyk().c * moduleEffect,
-          m: m.color.cmyk().m * moduleEffect,
-          y: m.color.cmyk().y * moduleEffect,
-          k: m.color.cmyk().k * moduleEffect
-        });
-        this.generateOre(m.target, OreType.cyan, mined.c);
-        this.generateOre(m.target, OreType.magenta, mined.m);
-        this.generateOre(m.target, OreType.yellow, mined.y);
-        this.generateOre(m.target, OreType.black, mined.k);
+        // radnom target
+        if (!m.target)
+          m.target = this.getRandomAsteroid(this.getAsteroids() as Asteroid[]);
+
+        if (m.target instanceof Asteroid) {
+          const moduleEffect = m.use() * dt;
+          const mined = m.target.mine({
+            c: m.color.cmyk().c * moduleEffect,
+            m: m.color.cmyk().m * moduleEffect,
+            y: m.color.cmyk().y * moduleEffect,
+            k: m.color.cmyk().k * moduleEffect
+          });
+          this.generateOre(m.target, OreType.cyan, mined.c);
+          this.generateOre(m.target, OreType.magenta, mined.m);
+          this.generateOre(m.target, OreType.yellow, mined.y);
+          this.generateOre(m.target, OreType.black, mined.k);
+        }
+      } else {
+        m.target = undefined;
       }
     });
 

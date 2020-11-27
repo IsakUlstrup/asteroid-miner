@@ -1,9 +1,10 @@
 import CursorTracker from "@/services/CursorTracker";
+import { TargetMode } from "@/types/enums";
 import CanvasObject from "./CanvasObject";
 import Module from "./Module";
 
 export default class ModuleEffect extends CanvasObject {
-  target: Vector3D;
+  target: Vector3D | Projected;
   module: Module;
   cursor: CursorTracker;
   constructor(
@@ -19,8 +20,27 @@ export default class ModuleEffect extends CanvasObject {
     this.cursor = cursor;
   }
   update() {
-    this.visible =
-      this.module.state.powerModifier > 0 && this.cursor.active ? true : false;
+    if (this.module.targetMode === TargetMode.auto && this.module.target) {
+      this.target = this.module.target.projected;
+    } else {
+      this.target = this.cursor.position;
+    }
+
+    if (
+      this.module.state.powerModifier > 0 &&
+      this.module.targetMode === TargetMode.auto &&
+      this.module.target
+    ) {
+      this.visible = true;
+    } else if (
+      this.module.state.powerModifier > 0 &&
+      this.module.targetMode === TargetMode.manual &&
+      this.cursor.active
+    ) {
+      this.visible = true;
+    } else {
+      this.visible = false;
+    }
   }
   draw(ctx: CanvasRenderingContext2D) {
     if (!this.visible) return;
