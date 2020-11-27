@@ -37,7 +37,7 @@ export default class SpaceGame {
       k: Math.random() * 100
     };
     this.canvasObjects.push(
-      new Asteroid((Math.random() + 1) * 4, 100, color, 0)
+      new Asteroid((Math.floor(Math.random() + 2) * 4), 100, color, 0)
     );
   }
 }

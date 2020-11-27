@@ -23,12 +23,20 @@ export default class Laser extends Module {
       context.stroke();
     }
   }
+  isValidTarget(target: CanvasObject) {
+    if (target.isOffscreen) return false;
+    return true;
+  }
   update() {
+    if (this.target && !this.isValidTarget(this.target))
+      this.target = undefined;
     if (!this.target && this.canvasObjects.length > 0) {
       // find random target
+      console.log("looking for target");
       this.target = this.canvasObjects[
         Math.floor(Math.random() * this.canvasObjects.length)
       ];
+      console.log("target found!", this.target);
     }
   }
 }

@@ -39,8 +39,16 @@ export default class RenderManager {
     }
   }
   private update(dt: number) {
+    // sort gameobjects based on z-position
+    this.canvasObjects.sort((o1, o2) => {
+      return o1.projected.s - o2.projected.s;
+    });
+
     this.canvasObjects.forEach(object => {
       object.update(dt);
+      if (object.isOffscreen) {
+        this.removeCanvasObject(object);
+      }
     });
   }
   private draw(context: CanvasRenderingContext2D) {
