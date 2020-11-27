@@ -8,6 +8,7 @@ export default class SpaceGame {
   renderer: RenderManager;
   ship: Ship;
   canvasObjects: CanvasObject[] = [];
+  hudObjects: CanvasObject[] = [];
   constructor(
     context: CanvasRenderingContext2D,
     resolutionScale = 1,
@@ -19,6 +20,7 @@ export default class SpaceGame {
     this.renderer = new RenderManager(
       context,
       this.canvasObjects,
+      this.hudObjects,
       this.ship.position,
       resolutionScale
     );
@@ -27,7 +29,7 @@ export default class SpaceGame {
     for (let index = 0; index < 10; index++) {
       this.addAsteroid();
     }
-    this.canvasObjects.push(this.ship);
+    this.hudObjects.push(this.ship);
   }
   addAsteroid() {
     const color = {

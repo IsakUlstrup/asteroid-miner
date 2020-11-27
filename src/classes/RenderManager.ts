@@ -6,16 +6,19 @@ export default class RenderManager {
   private context: CanvasRenderingContext2D;
   private resolutionScale: number;
   private canvasObjects: CanvasObject[];
+  private hudObjects: CanvasObject[];
   private cameraPosition: Transform;
   constructor(
     context: CanvasRenderingContext2D,
     canvasObjects: CanvasObject[],
+    hudObjects: CanvasObject[],
     cameraPosition: Transform,
     resolutionScale = 1
   ) {
     this.context = context;
     this.resolutionScale = resolutionScale;
     this.canvasObjects = canvasObjects;
+    this.hudObjects = hudObjects;
     this.cameraPosition = cameraPosition;
     this.context.save();
 
@@ -50,6 +53,10 @@ export default class RenderManager {
         this.removeCanvasObject(object);
       }
     });
+
+    this.hudObjects.forEach(object => {
+      object.update(dt);
+    });
   }
   private draw(context: CanvasRenderingContext2D) {
     const canvasSize = getScaledCanvasDimendsions(
@@ -57,7 +64,15 @@ export default class RenderManager {
       this.resolutionScale
     );
     context.clearRect(0, 0, canvasSize.width, canvasSize.height);
+
+    // draw canvasObjects
     this.canvasObjects.forEach(object => {
+      context.restore();
+      object.draw(context, this.resolutionScale, this.cameraPosition.z);
+    });
+
+    // draw HUD
+    this.hudObjects.forEach(object => {
       context.restore();
       object.draw(context, this.resolutionScale, this.cameraPosition.z);
     });

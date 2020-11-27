@@ -37,9 +37,9 @@ export default class Ship extends CanvasObject {
       m.update(dt);
     });
   }
-  draw(context: CanvasRenderingContext2D) {
+  draw(context: CanvasRenderingContext2D, resolutionScale: number) {
     this.modules.forEach(m => {
-      m.draw(context);
+      m.draw(context, resolutionScale);
     });
   }
 }
