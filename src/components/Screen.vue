@@ -93,9 +93,9 @@ export default defineComponent({
   position: relative;
   width: 100%;
   height: 100%;
-  border: 0.8rem solid #eee;
+  border: 1rem solid #eee;
   background: #eee;
-  border-radius: 0.8rem;
+  border-radius: 1rem;
   overflow: hidden;
 }
 .hud {
@@ -118,7 +118,8 @@ export default defineComponent({
 canvas {
   border-radius: 0.5rem;
   overflow: hidden;
-  box-shadow: 0 0 10rem rgba($color: #000000, $alpha: 0.6) inset;
+  border: 0.2rem solid #333;
+  box-shadow: 0 0 15rem rgba($color: #000000, $alpha: 0.7) inset;
   width: 100%;
   height: 100%;
   background: white;

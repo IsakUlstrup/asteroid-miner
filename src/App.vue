@@ -23,13 +23,23 @@ export default defineComponent({
 
 <style lang="scss">
 * {
-  margin: 0;
   padding: 0;
+  margin: 0;
   box-sizing: border-box;
 }
+
+ul {
+  list-style: none;
+}
+
+html {
+  font-size: 62.5%;
+}
+
 body {
-  height: 100vh;
-  width: 100%;
+  font-size: 1.4rem;
+  line-height: 2rem;
+  background: #262626;
 }
 #app {
   font-family: Avenir, Helvetica, Arial, sans-serif;
@@ -38,7 +48,7 @@ body {
   text-align: center;
   color: #2c3e50;
   padding: 5%;
-  height: 100%;
+  height: 100vh;
   background: #262626;
 }
 </style>
