@@ -1,13 +1,7 @@
 <template>
   <div class="screen-container">
     <div class="screen crt">
-      <div class="hud">
-        <HUDInventoryDisplay
-          :inventory="ship.inventory"
-          :inventory-size="ship.inventorySize"
-        />
-        <HUDMeter :max="ship.energy" :value="ship.surplusEnergy" />
-      </div>
+      <div class="hud"></div>
       <canvas id="canvas"></canvas>
     </div>
   </div>
@@ -15,31 +9,17 @@
 
 <script lang="ts">
 import { computed, defineComponent, onMounted, toRefs } from "vue";
-import HUDInventoryDisplay from "@/components/HUDInventoryMeter.vue";
-import HUDMeter from "@/components/HUDMeter.vue";
 import { resizeCanvas } from "@/services/Utils";
 import Ship from "@/classes/Ship";
-
 import SpaceGame from "@/classes/SpaceGame";
 
 export default defineComponent({
   name: "Screen",
-  components: {
-    HUDInventoryDisplay,
-    HUDMeter
-  },
+  components: {},
   props: {
     resolution: {
       type: Number,
       default: 0.75
-    },
-    oneBit: {
-      type: Boolean,
-      default: false
-    },
-    oneBitColor: {
-      type: String,
-      default: "rgb(255, 255, 255)"
     },
     aspectRatio: {
       type: Number,
@@ -57,7 +37,7 @@ export default defineComponent({
   setup(props) {
     const { resolution } = toRefs(props);
     const filterSize = computed(() => {
-      return `${(1 / resolution.value) * 2}px`;
+      return `${Math.floor((1 / resolution.value) * 2)}px`;
     });
 
     onMounted(() => {
@@ -68,8 +48,7 @@ export default defineComponent({
         // set initial canvas size
         resizeCanvas(ctx, props.resolution);
         // setup and start space game
-        const game = new SpaceGame(ctx, props.ship, props.resolution);
-        game.start();
+        const game = new SpaceGame(ctx, props.resolution, props.ship);
 
         // resize canvas on window resize
         window.addEventListener("resize", () => {
@@ -86,7 +65,7 @@ export default defineComponent({
 });
 </script>
 
-<style lang="scss" scoped vars="{ filterSize }">
+<style lang="scss" scoped>
 /* http://aleclownes.com/2017/02/01/crt-display.html */
 .crt::before {
   content: " ";
@@ -105,13 +84,19 @@ export default defineComponent({
       rgba(0, 0, 255, 0.06)
     );
   z-index: 2;
-  background-size: 100% var(--filterSize), var(--filterSize) 100%;
+  background-size: 100% 2px, 2px 100%;
+  // background-size: 100% v-bind(filterSize), v-bind(filterSize) 100%;
   pointer-events: none;
+  border-radius: 0.5rem;
 }
 .screen-container {
   position: relative;
   width: 100%;
   height: 100%;
+  border: 0.8rem solid #eee;
+  background: #eee;
+  border-radius: 0.8rem;
+  overflow: hidden;
 }
 .hud {
   width: 20%;
@@ -131,8 +116,12 @@ export default defineComponent({
   height: 100%;
 }
 canvas {
+  border-radius: 0.5rem;
+  overflow: hidden;
+  box-shadow: 0 0 10rem rgba($color: #000000, $alpha: 0.6) inset;
   width: 100%;
   height: 100%;
+  background: white;
   user-select: none;
   image-rendering: -moz-crisp-edges;
   image-rendering: -webkit-crisp-edges;

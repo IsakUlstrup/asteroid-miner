@@ -18,15 +18,16 @@ export default class Asteroid extends CanvasObject {
         x: Math.random() - 0.5,
         y: Math.random() - 0.5,
         z: cameraPosition + Math.random(),
-        r: Math.random()
+        r: Math.random(),
+        s: radius * 2
       },
       {
         x: (Math.random() - 0.5) * 0.00001,
         y: (Math.random() - 0.5) * 0.00001,
         z: (Math.random() - 0.5) * 0.00007,
-        r: (Math.random() - 0.5) * 0.01
+        r: (Math.random() - 0.5) * 0.01,
+        s: 1
       },
-      radius * 2,
       color
     );
 
@@ -39,7 +40,7 @@ export default class Asteroid extends CanvasObject {
       m: 0,
       y: 0,
       k: 0
-    }
+    };
   }
   setColor(color: RGBColor | CMYKColor) {
     this.color.setColor(color);
@@ -92,8 +93,8 @@ export default class Asteroid extends CanvasObject {
   }
   createOffscreenCanvas(color: string) {
     const offScreenCanvas = document.createElement("canvas");
-    offScreenCanvas.width = this.size;
-    offScreenCanvas.height = this.size;
+    offScreenCanvas.width = this.transfrom.s;
+    offScreenCanvas.height = this.transfrom.s;
     const context = offScreenCanvas.getContext("2d");
     if (context) {
       // context.fillRect(0, 0, offScreenCanvas.width, offScreenCanvas.height);
@@ -103,11 +104,15 @@ export default class Asteroid extends CanvasObject {
       context.beginPath();
       for (let i = 0; i < this.points; i++) {
         const x =
-          this.size / 2 +
-          (this.size / 2) * 0.9 * Math.cos((2 * Math.PI * i) / this.points);
+          this.transfrom.s / 2 +
+          (this.transfrom.s / 2) *
+            0.9 *
+            Math.cos((2 * Math.PI * i) / this.points);
         const y =
-          this.size / 2 +
-          (this.size / 2) * 0.9 * Math.sin((2 * Math.PI * i) / this.points);
+          this.transfrom.s / 2 +
+          (this.transfrom.s / 2) *
+            0.9 *
+            Math.sin((2 * Math.PI * i) / this.points);
         context.lineTo(Math.floor(x), Math.floor(y));
       }
       context.closePath();

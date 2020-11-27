@@ -1,132 +1,45 @@
-import { ShipType, ModuleType, OreType } from "../types/enums";
-import Module from "./Module";
+import Module from "@/classes/Module";
+import CanvasObject from "./CanvasObject";
 
-export default class Ship {
-  modules: Module[];
-  moduleSlots: number;
+export default class Ship extends CanvasObject {
+  id = Math.random();
+  // modules that don't need direct control
   internalModules: Module[] = [];
   internalModuleSlots: number;
-  name: string;
-  type: ShipType;
-  position: number;
-  vector: number;
-  inventory: CMYKColor;
-  inventorySize: number;
-  energy: number;
-  surplusEnergy: number;
+  // main modules
+  modules: Module[] = [];
+  moduleSlots: number;
+  position: Transform;
+  constructor(
+    internalModuleSlots = 4,
+    moduleSlots = 4,
+    position: Transform = { x: 0, y: 0, z: 0, r: 0, s: 0 },
+    vector: Transform = { x: 0, y: 0, z: 0, r: 0, s: 0 },
+    color: RGBColor = { r: 255, g: 0, b: 0 }
+  ) {
+    super(position, vector, color);
+    this.internalModuleSlots = internalModuleSlots;
+    this.moduleSlots = moduleSlots;
+    this.position = position;
 
-  constructor(name: string, slots: number, internalSlots = 4) {
-    this.name = name;
-    this.moduleSlots = slots;
-    this.internalModuleSlots = internalSlots;
-    this.modules = new Array(slots);
-    this.modules.fill(new Module({ moduleType: ModuleType.none }));
-    this.type = ShipType.eve;
-    this.position = 0;
-    this.vector = 0;
-    this.inventory = {
-      c: 0,
-      m: 0,
-      y: 0,
-      k: 0
-    };
-    this.inventorySize = 2000;
-    this.energy = 0;
-    this.surplusEnergy = 0;
+    // fill module slots with empty modules
+    this.internalModules = new Array(this.internalModuleSlots).fill(
+      new Module()
+    );
+    this.modules = new Array(this.moduleSlots).fill(new Module());
   }
-  get reactors() {
-    return this.internalModules.filter(e => e && e.type === ModuleType.reactor);
-  }
-  get engines() {
-    return this.internalModules.filter(e => e && e.type === ModuleType.engine);
-  }
-  setModule(module: Module, slot: number) {
-    if (slot > this.moduleSlots) return;
-    this.modules[slot] = module;
-  }
-  setInternalModule(module: Module, slot: number) {
-    if (slot > this.internalModuleSlots) return;
-    this.internalModules[slot] = module;
-  }
-  setReactorPower(power: number) {
-    this.reactors.forEach(reactor => reactor.setPower(power));
-  }
-  setEnginePower(power: number) {
-    this.engines.forEach(engine => engine.setPower(power));
-  }
-  lootOre(type: OreType, amount: number) {
-    if (this.availableInventorySpace < amount) return false;
-    switch (type) {
-      case OreType.cyan:
-        this.inventory.c += amount;
-        break;
-      case OreType.magenta:
-        this.inventory.m += amount;
-        break;
-      case OreType.yellow:
-        this.inventory.y += amount;
-        break;
-      case OreType.black:
-        this.inventory.k += amount;
-        break;
-      default:
-        break;
-    }
-    return true;
-  }
-  generateEnergy() {
-    let energy = 0;
-    this.reactors.forEach(reactor => {
-      energy += reactor.use();
-    });
-    return energy;
-  }
-  chargeEquipment(amount: number) {
-    let energyLeft = amount;
-    this.poweredModules.forEach(module => {
-      energyLeft -= module.setEnergy(
-        Math.min(
-          amount / this.poweredModules.length,
-          module.derivedStats.energyUse
-        )
-      );
-    });
-    this.surplusEnergy = energyLeft;
+
+  setModule(module: Module, slot: number, internal = false) {
+    if (!internal) this.modules[slot] = module;
   }
   update(dt: number) {
-    // energy distribution
-    if (this.poweredModules.length > 0) {
-      this.energy = this.generateEnergy();
-      // energy distribution
-      this.chargeEquipment(this.energy);
-    }
-    // vector / movement
-    this.engines.forEach(engine => {
-      this.vector += engine.use() * dt;
+    this.modules.forEach(m => {
+      m.update(dt);
     });
-    this.position += this.vector;
   }
-  get availableInventorySpace() {
-    return (
-      this.inventorySize -
-      this.inventory.c -
-      this.inventory.m -
-      this.inventory.y -
-      this.inventory.k
-    );
-  }
-  get poweredModules() {
-    // get non-reactor equipment that wants energy, sort by energy amount
-    return [...this.modules, ...this.internalModules]
-      .filter(e => e && e.type !== ModuleType.reactor && e.desiredEnergy > 0)
-      .sort((n1, n2) => {
-        if (n1 && n2 && n1.state.powerModifier > n2.state.powerModifier) {
-          return 1;
-        }
-        if (n1 && n2 && n1.state.powerModifier < n2.state.powerModifier) {
-          return -1;
-        }
-        return 0;
-      });
+  draw(context: CanvasRenderingContext2D) {
+    this.modules.forEach(m => {
+      m.draw(context);
+    });
   }
 }

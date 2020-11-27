@@ -1,12 +1,7 @@
-declare interface Vector3D {
+declare interface Transform {
   x: number;
   y: number;
   z: number;
   r: number;
-}
-
-declare interface Projected {
-  x: number;
-  y: number;
   s: number;
 }
