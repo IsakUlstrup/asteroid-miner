@@ -1,11 +1,11 @@
 <template>
   <div class="laser">
     <h1>{{ module.name }}</h1>
-    <p v-if="target">
-      target cmyk: {{ target.color.cmyk().c.toFixed(0) }},
-      {{ target.color.cmyk().m.toFixed(0) }},
-      {{ target.color.cmyk().y.toFixed(0) }},
-      {{ target.color.cmyk().k.toFixed(0) }}
+    <p v-if="module.target">
+      target cmyk: {{ module.target.color.cmyk().c.toFixed(0) }},
+      {{ module.target.color.cmyk().m.toFixed(0) }},
+      {{ module.target.color.cmyk().y.toFixed(0) }},
+      {{ module.target.color.cmyk().k.toFixed(0) }}
     </p>
     Power:
     <input
@@ -22,6 +22,8 @@
 
     <ColorSelect :colors="colorPresets" @color="setColor" />
 
+    <UITargetModeSelect />
+
     <br />
     effect: {{ module.derivedStats.effect }}<br />
     energy: {{ module.state.energy.toFixed(0) }}/
@@ -32,23 +34,19 @@
 <script lang="ts">
 import { defineComponent, ref } from "vue";
 import Module from "../classes/Module";
-import Asteroid from "../classes/Asteroid";
 import ColorSelect from "@/components/UIColorSelect.vue";
+import UITargetModeSelect from "@/components/UITargetModeSelect.vue";
 
 export default defineComponent({
   name: "Laser",
   components: {
-    ColorSelect
+    ColorSelect,
+    UITargetModeSelect
   },
   props: {
     module: {
       type: Module,
       required: true
-    },
-    target: {
-      type: Asteroid,
-      required: false,
-      default: undefined
     }
   },
   setup(props) {

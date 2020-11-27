@@ -1,13 +1,17 @@
-import { ItemType, ModuleType } from "../types/enums";
+import { ItemType, ModuleType, TargetMode } from "../types/enums";
 import { Item, ModuleStats } from "../types/types";
+import Asteroid from "./Asteroid";
 import Color from "./Color";
+import Ore from "./Ore";
 
 export default class Module implements Item {
   // metadata
   name: string;
   id: string;
-  itemType: ItemType.equipment;
+  itemType: ItemType.module;
   type: ModuleType;
+  targetMode: TargetMode;
+  target: Asteroid | Ore | undefined;
 
   // stats
   effect: number;
@@ -41,7 +45,7 @@ export default class Module implements Item {
     // set metadata
     this.name = stats.name !== undefined ? stats.name : "unnamed equipment";
     this.id = stats.id !== undefined ? stats.id : "89345-43534-234";
-    this.itemType = ItemType.equipment;
+    this.itemType = ItemType.module;
 
     // set base stats
     this.type = stats.moduleType;
@@ -64,6 +68,7 @@ export default class Module implements Item {
       g: 0,
       b: 0
     });
+    this.targetMode = TargetMode.manual;
   }
   setEnergy(amount: number) {
     this.state.energy = amount;
@@ -71,6 +76,12 @@ export default class Module implements Item {
       this.state.energy = this.derivedStats.energyUse;
     }
     return this.state.energy;
+  }
+  setTargetingMode(mode: TargetMode) {
+    this.targetMode = mode;
+  }
+  setTarget(target: Asteroid | Ore | undefined) {
+    this.target = target;
   }
   useFuel(amount: number) {
     if (amount <= 0) return;

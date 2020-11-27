@@ -10,7 +10,7 @@
 import { defineComponent, watch, ref, PropType } from "vue";
 
 export default defineComponent({
-  name: "Laser",
+  name: "UIColorSelect",
   components: {},
   props: {
     colors: {

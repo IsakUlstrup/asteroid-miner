@@ -8,7 +8,7 @@ export enum ModuleType {
 }
 
 export enum ItemType {
-  equipment
+  module
 }
 
 export enum ShipType {
@@ -21,4 +21,10 @@ export enum OreType {
   magenta,
   yellow,
   black
+}
+
+export enum TargetMode {
+  none,
+  manual,
+  auto
 }
