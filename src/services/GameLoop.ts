@@ -2,9 +2,7 @@ import { reactive } from "vue";
 
 const listeners: Function[] = [];
 let speedModifier = 1;
-
 let paused = false;
-
 const timing = reactive({
   dt: 0,
   last: 0,

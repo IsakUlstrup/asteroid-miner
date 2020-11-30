@@ -1,5 +1,6 @@
 import Color from "./Color";
 import CanvasWrapper from "@/classes/CanvasWrapper";
+import config from '@/config';
 
 export default class CanvasObject {
   id = Math.random();
@@ -85,11 +86,11 @@ export default class CanvasObject {
     this.projected.x = Math.round(scaledX * this.scale + centerX);
     this.projected.y = Math.round(scaledY * this.scale + centerY);
 
-    if (this.hasChanged()) {
-      // rerender if object has changed position/size
-      this.bufferCanvas = this.render(this.color.rgbString());
-      this.storepreviousPosition();
-    }
+    // if (this.hasChanged()) {
+    //   // rerender if object has changed position/size
+    //   this.bufferCanvas = this.render(this.color.rgbString());
+    //   this.storepreviousPosition();
+    // }
   }
   update(dt: number) {
     this.transfrom.x += this.vector.x * dt;
@@ -114,16 +115,20 @@ export default class CanvasObject {
     canvas.context.drawImage(
       this.bufferCanvas,
       this.projected.x - (this.size * this.scale) / 2,
-      this.projected.y - (this.size * this.scale) / 2
+      this.projected.y - (this.size * this.scale) / 2,
+      this.size * this.scale,
+      this.size * this.scale
     );
     // center of rotation debug
-    // canvas.context.fillStyle = "rgb(255, 255, 255)";
-    // canvas.context.fillRect(
-    //   this.projected.x - 2.5,
-    //   this.projected.y - 2.5,
-    //   5,
-    //   5
-    // );
+    if (config.debug) {
+      canvas.context.fillStyle = "rgb(255, 255, 255)";
+      canvas.context.fillRect(
+        this.projected.x - 2.5,
+        this.projected.y - 2.5,
+        5,
+        5
+      );
+    }
   }
   get isOffscreen() {
     if (

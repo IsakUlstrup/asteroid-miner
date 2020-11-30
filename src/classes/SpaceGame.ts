@@ -30,12 +30,19 @@ export default class SpaceGame {
       this.canvasObjects,
       TargetMode.manual
     );
+    const laser4 = new Laser(
+      "laser three",
+      this.canvasObjects,
+      TargetMode.auto
+    );
 
     laser2.setColor({ c: 100, m: 0, y: 0, k: 0 });
     laser3.setColor({ c: 0, m: 100, y: 0, k: 0 });
+    laser4.setColor({ c: 0, m: 0, y: 100, k: 0 });
 
     this.ship.setModule(laser2, 1);
     this.ship.setModule(laser3, 2);
+    this.ship.setModule(laser4, 3);
 
     this.renderer = new RenderManager(
       context,
@@ -72,7 +79,7 @@ export default class SpaceGame {
           c: Math.random() * 100,
           m: Math.random() * 100,
           y: Math.random() * 100,
-          k: Math.random() * 100
+          k: Math.random() * 10
         },
         this.ship.transfrom.z
       )
