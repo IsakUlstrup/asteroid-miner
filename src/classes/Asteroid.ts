@@ -1,10 +1,11 @@
 import Color from "@/classes/Color";
 import CanvasObject from "@/classes/CanvasObject";
+import config from "@/config";
 
 export default class Asteroid extends CanvasObject {
   points: number;
   bufferCanvas: HTMLCanvasElement;
-  baseColor: Color;
+  baseColor: string;
   color: Color;
   minedBuffer: CMYKColor;
   constructor(
@@ -30,7 +31,7 @@ export default class Asteroid extends CanvasObject {
     );
 
     this.points = points;
-    this.baseColor = new Color(color);
+    this.baseColor = new Color(color).rgbString();
     this.color = new Color(color);
     this.bufferCanvas = this.render(this.color.rgbString());
     this.minedBuffer = {
@@ -95,9 +96,11 @@ export default class Asteroid extends CanvasObject {
     offScreenCanvas.height = this.size * this.scale;
     const context = offScreenCanvas.getContext("2d");
     if (context) {
-      // context.fillRect(0, 0, offScreenCanvas.width, offScreenCanvas.height);
+      if (config.debug)
+        context.fillRect(0, 0, offScreenCanvas.width, offScreenCanvas.height);
+
       context.fillStyle = color;
-      if (this.baseColor) context.strokeStyle = this.baseColor.rgbString();
+      if (this.baseColor) context.strokeStyle = this.baseColor;
       context.lineWidth = 4;
       context.beginPath();
       for (let i = 0; i < this.points; i++) {

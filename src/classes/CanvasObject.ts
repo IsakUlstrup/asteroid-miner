@@ -100,8 +100,8 @@ export default class CanvasObject {
     this.visible = this.isOffscreen ? false : true;
   }
   draw(canvas: CanvasWrapper, cameraPosition: number) {
-    this.project(canvas, cameraPosition);
     if (!this.visible) return;
+    this.project(canvas, cameraPosition);
     canvas.context.save();
     // rotate
     canvas.context.translate(

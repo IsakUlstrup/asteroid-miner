@@ -41,8 +41,9 @@ export default class Ship extends CanvasObject {
     });
   }
   draw(canvas: CanvasWrapper) {
-    this.modules.forEach(m => {
-      m.draw(canvas);
-    });
+    for (let index = 0; index < this.modules.length; index++) {
+      const module = this.modules[index];
+      module.draw(canvas, index, this.modules.length);
+    }
   }
 }
