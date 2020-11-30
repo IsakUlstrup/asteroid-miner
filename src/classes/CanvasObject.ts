@@ -1,6 +1,6 @@
 import Color from "./Color";
 import CanvasWrapper from "@/classes/CanvasWrapper";
-import config from '@/config';
+import config from "@/config";
 
 export default class CanvasObject {
   id = Math.random();
@@ -85,12 +85,6 @@ export default class CanvasObject {
       perspective / (perspective + this.transfrom.z - cameraPosition);
     this.projected.x = Math.round(scaledX * this.scale + centerX);
     this.projected.y = Math.round(scaledY * this.scale + centerY);
-
-    // if (this.hasChanged()) {
-    //   // rerender if object has changed position/size
-    //   this.bufferCanvas = this.render(this.color.rgbString());
-    //   this.storepreviousPosition();
-    // }
   }
   update(dt: number) {
     this.transfrom.x += this.vector.x * dt;

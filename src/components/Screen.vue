@@ -20,7 +20,7 @@ export default defineComponent({
   props: {
     resolution: {
       type: Number,
-      default: 0.75
+      default: 0.5
     },
     aspectRatio: {
       type: Number,
