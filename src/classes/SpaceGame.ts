@@ -1,7 +1,7 @@
 import RenderManager from "@/classes/RenderManager";
 import Asteroid from "./Asteroid";
 import CanvasObject from "./CanvasObject";
-import Laser from "./Laser";
+import Laser, { TargetMode } from "./Laser";
 import Ship from "./Ship";
 
 export default class SpaceGame {
@@ -15,7 +15,15 @@ export default class SpaceGame {
     ship: Ship
   ) {
     this.ship = ship;
-    this.ship.setModule(new Laser("laser", this.canvasObjects), 0);
+    this.ship.setModule(
+      new Laser("laser", this.canvasObjects, TargetMode.auto),
+      0
+    );
+
+    this.ship.setModule(
+      new Laser("laser two", this.canvasObjects, TargetMode.manual),
+      1
+    );
 
     this.renderer = new RenderManager(
       context,
