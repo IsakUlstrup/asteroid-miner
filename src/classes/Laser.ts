@@ -1,6 +1,6 @@
 import Module from "@/classes/Module";
 import CanvasObject from "./CanvasObject";
-import { getScaledCanvasDimendsions } from "@/services/Utils";
+import CanvasWrapper from "@/classes/CanvasWrapper";
 
 export default class Laser extends Module {
   canvasObjects: CanvasObject[];
@@ -9,31 +9,26 @@ export default class Laser extends Module {
     super(name);
     this.canvasObjects = canvasObjects;
   }
-  draw(context: CanvasRenderingContext2D, resolutionScale: number) {
+  draw(canvas: CanvasWrapper) {
     if (this.target) {
-      context.fillStyle = "rgb(255, 0, 0)";
-      // context.lineWidth = this.intensity * 5;
-      context.lineCap = "round";
-      const canvasSize = getScaledCanvasDimendsions(
-        context.canvas,
-        resolutionScale
-      );
+      canvas.context.fillStyle = "rgb(255, 0, 0)";
+      canvas.context.lineCap = "round";
 
       const perspective = 1;
 
-      context.beginPath();
-      context.lineJoin = "round";
-      context.moveTo(0, canvasSize.height);
-      context.lineTo(
+      canvas.context.beginPath();
+      canvas.context.lineJoin = "round";
+      canvas.context.moveTo(0, canvas.size.height);
+      canvas.context.lineTo(
         this.target.projected.x - perspective,
         this.target.projected.y
       );
-      context.lineTo(
+      canvas.context.lineTo(
         this.target.projected.x + perspective,
         this.target.projected.y
       );
-      context.lineTo(10, canvasSize.height);
-      context.fill();
+      canvas.context.lineTo(10, canvas.size.height);
+      canvas.context.fill();
     }
   }
   isValidTarget(target: CanvasObject) {

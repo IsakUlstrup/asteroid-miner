@@ -1,5 +1,5 @@
 import Color from "./Color";
-import { getScaledCanvasDimendsions } from "../services/Utils";
+import CanvasWrapper from "@/classes/CanvasWrapper";
 
 export default class CanvasObject {
   transfrom: Transform;
@@ -36,22 +36,14 @@ export default class CanvasObject {
     }
     return offScreenCanvas;
   }
-  project(
-    context: CanvasRenderingContext2D,
-    resolutionScale: number,
-    cameraPosition = 0
-  ) {
+  project(canvas: CanvasWrapper, cameraPosition = 0) {
     const perspective = 1;
-    const canvasSize = getScaledCanvasDimendsions(
-      context.canvas,
-      resolutionScale
-    );
     // center of canvas
-    const centerX = canvasSize.width / 2;
-    const centerY = canvasSize.height / 2;
+    const centerX = canvas.size.width / 2;
+    const centerY = canvas.size.height / 2;
     // object position scaled to canvas resolution
-    const scaledX = this.transfrom.x * canvasSize.width;
-    const scaledY = this.transfrom.y * canvasSize.height;
+    const scaledX = this.transfrom.x * canvas.size.width;
+    const scaledY = this.transfrom.y * canvas.size.height;
 
     // set 2d coordinates and scale based on 3d position
     this.projected.s =
@@ -65,23 +57,19 @@ export default class CanvasObject {
     this.transfrom.z += this.vector.z * dt;
     this.transfrom.r += this.vector.r * dt;
   }
-  draw(
-    context: CanvasRenderingContext2D,
-    resolutionScale: number,
-    cameraPosition: number
-  ) {
+  draw(canvas: CanvasWrapper, cameraPosition: number) {
     if (!this.visible) return;
-    this.project(context, resolutionScale, cameraPosition);
-    context.save();
+    this.project(canvas, cameraPosition);
+    canvas.context.save();
     // rotate
-    context.translate(
+    canvas.context.translate(
       this.projected.x + (this.transfrom.s * this.projected.s) / 2,
       this.projected.y + (this.transfrom.s * this.projected.s) / 2
     );
-    context.rotate((this.transfrom.r * Math.PI) / 180);
-    context.restore();
+    canvas.context.rotate((this.transfrom.r * Math.PI) / 180);
+    canvas.context.restore();
     // draw
-    context.drawImage(
+    canvas.context.drawImage(
       this.bufferCanvas,
       Math.floor(this.projected.x - (this.transfrom.s * this.projected.s) / 2),
       Math.floor(this.projected.y - (this.transfrom.s * this.projected.s) / 2),

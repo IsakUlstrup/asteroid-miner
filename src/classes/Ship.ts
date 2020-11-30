@@ -1,5 +1,6 @@
 import Module from "@/classes/Module";
 import CanvasObject from "./CanvasObject";
+import CanvasWrapper from "@/classes/CanvasWrapper";
 
 export default class Ship extends CanvasObject {
   id = Math.random();
@@ -37,9 +38,9 @@ export default class Ship extends CanvasObject {
       m.update(dt);
     });
   }
-  draw(context: CanvasRenderingContext2D, resolutionScale: number) {
+  draw(canvas: CanvasWrapper) {
     this.modules.forEach(m => {
-      m.draw(context, resolutionScale);
+      m.draw(canvas);
     });
   }
 }

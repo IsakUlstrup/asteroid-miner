@@ -1,26 +1,24 @@
 import GameLoop from "@/services/GameLoop";
 import CanvasObject from "@/classes/CanvasObject";
-import { getScaledCanvasDimendsions } from "@/services/Utils";
+import CanvasWrapper from "@/classes/CanvasWrapper";
 
 export default class RenderManager {
-  private context: CanvasRenderingContext2D;
-  private resolutionScale: number;
+  private canvas: CanvasWrapper;
   private canvasObjects: CanvasObject[];
   private hudObjects: CanvasObject[];
   private cameraPosition: Transform;
   constructor(
-    context: CanvasRenderingContext2D,
+    canvasContext: CanvasRenderingContext2D,
     canvasObjects: CanvasObject[],
     hudObjects: CanvasObject[],
     cameraPosition: Transform,
     resolutionScale = 1
   ) {
-    this.context = context;
-    this.resolutionScale = resolutionScale;
+    this.canvas = new CanvasWrapper(canvasContext, resolutionScale);
     this.canvasObjects = canvasObjects;
     this.hudObjects = hudObjects;
     this.cameraPosition = cameraPosition;
-    this.context.save();
+    this.canvas.context.save();
 
     GameLoop.addListener((dt: number) => {
       this.mainLoop(dt);
@@ -58,27 +56,23 @@ export default class RenderManager {
       object.update(dt);
     });
   }
-  private draw(context: CanvasRenderingContext2D) {
-    const canvasSize = getScaledCanvasDimendsions(
-      context.canvas,
-      this.resolutionScale
-    );
-    context.clearRect(0, 0, canvasSize.width, canvasSize.height);
+  private draw(canvas: CanvasWrapper) {
+    canvas.context.clearRect(0, 0, canvas.size.width, canvas.size.height);
 
     // draw canvasObjects
     this.canvasObjects.forEach(object => {
-      context.restore();
-      object.draw(context, this.resolutionScale, this.cameraPosition.z);
+      canvas.context.restore();
+      object.draw(canvas, this.cameraPosition.z);
     });
 
     // draw HUD
     this.hudObjects.forEach(object => {
-      context.restore();
-      object.draw(context, this.resolutionScale, this.cameraPosition.z);
+      canvas.context.restore();
+      object.draw(canvas, this.cameraPosition.z);
     });
   }
   private mainLoop(dt: number) {
     this.update(dt);
-    this.draw(this.context);
+    this.draw(this.canvas);
   }
 }

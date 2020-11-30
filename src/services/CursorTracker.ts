@@ -1,13 +1,11 @@
 export default class CursorTracker {
-  position: Vector3D;
+  position: Vector2;
   active: boolean;
   element: HTMLElement;
   constructor(element: HTMLElement) {
     this.position = {
       x: 0,
-      y: 0,
-      z: 0,
-      r: 0
+      y: 0
     };
     this.active = false;
     this.element = element;
