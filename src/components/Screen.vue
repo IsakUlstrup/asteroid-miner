@@ -1,7 +1,7 @@
 <template>
   <div class="screen-container">
     <div class="screen crt">
-      <div class="hud"></div>
+      <div class="hud">FPS: {{ (1000 / gameLoop.timing.dt).toFixed(1) }}</div>
       <canvas id="canvas"></canvas>
     </div>
   </div>
@@ -12,6 +12,7 @@ import { computed, defineComponent, onMounted, toRefs } from "vue";
 import { resizeCanvas } from "@/services/Utils";
 import Ship from "@/classes/Ship";
 import SpaceGame from "@/classes/SpaceGame";
+import gameLoop from "@/services/GameLoop";
 
 export default defineComponent({
   name: "Screen",
@@ -59,7 +60,8 @@ export default defineComponent({
       }
     });
     return {
-      filterSize
+      filterSize,
+      gameLoop
     };
   }
 });

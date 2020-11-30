@@ -5,6 +5,7 @@ import Laser, { TargetMode } from "./Laser";
 import Ship from "./Ship";
 import GameLoop from "@/services/GameLoop";
 import config from "@/config";
+import { randomInt } from "@/services/Utils";
 
 export default class SpaceGame {
   renderer: RenderManager;
@@ -40,7 +41,7 @@ export default class SpaceGame {
       context,
       this.canvasObjects,
       this.hudObjects,
-      this.ship.transfrom,
+      this.ship.transfrom.z,
       resolutionScale
     );
 
@@ -58,21 +59,21 @@ export default class SpaceGame {
       this.addAsteroid();
     }
 
+    this.renderer.setCameraPosition(this.ship.transfrom.z);
     this.renderer.update(dt);
     this.renderer.draw();
   }
   addAsteroid() {
-    const color = {
-      c: Math.random() * 100,
-      m: Math.random() * 100,
-      y: Math.random() * 100,
-      k: Math.random() * 100
-    };
     this.canvasObjects.push(
       new Asteroid(
-        Math.round(Math.random() + 2) * 4,
+        randomInt(4, 9),
         50,
-        color,
+        {
+          c: Math.random() * 100,
+          m: Math.random() * 100,
+          y: Math.random() * 100,
+          k: Math.random() * 100
+        },
         this.ship.transfrom.z
       )
     );

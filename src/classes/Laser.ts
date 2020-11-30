@@ -81,8 +81,10 @@ export default class Laser extends Module {
     return targets[Math.floor(Math.random() * this.canvasObjects.length)];
   }
   update() {
+    // untarget if current target is invalid
     if (this.target && !this.isValidTarget(this.target))
       this.target = undefined;
+
     if (
       !this.target &&
       this.canvasObjects.length > 0 &&

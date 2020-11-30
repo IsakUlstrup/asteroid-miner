@@ -5,12 +5,12 @@ export default class RenderManager {
   private canvas: CanvasWrapper;
   private canvasObjects: CanvasObject[];
   private hudObjects: CanvasObject[];
-  private cameraPosition: Vector3;
+  private cameraPosition: number;
   constructor(
     canvasContext: CanvasRenderingContext2D,
     canvasObjects: CanvasObject[],
     hudObjects: CanvasObject[],
-    cameraPosition: Vector3,
+    cameraPosition: number,
     resolutionScale = 1
   ) {
     this.canvas = new CanvasWrapper(canvasContext, resolutionScale);
@@ -20,6 +20,9 @@ export default class RenderManager {
     this.canvas.context.save();
   }
 
+  public setCameraPosition(position: number) {
+    this.cameraPosition = position;
+  }
   public addCanvasObject(object: CanvasObject) {
     this.canvasObjects.push(object);
     return true;
@@ -59,13 +62,13 @@ export default class RenderManager {
     // draw canvasObjects
     this.canvasObjects.forEach(object => {
       canvas.context.restore();
-      object.draw(canvas, this.cameraPosition.z);
+      object.draw(canvas, this.cameraPosition);
     });
 
     // draw HUD
     this.hudObjects.forEach(object => {
       canvas.context.restore();
-      object.draw(canvas, this.cameraPosition.z);
+      object.draw(canvas, this.cameraPosition);
     });
   }
 }
