@@ -1,6 +1,7 @@
 import GameLoop from "@/services/GameLoop";
 import CanvasObject from "@/classes/CanvasObject";
 import CanvasWrapper from "@/classes/CanvasWrapper";
+import config from "@/config";
 
 export default class RenderManager {
   private canvas: CanvasWrapper;
@@ -20,6 +21,7 @@ export default class RenderManager {
     this.cameraPosition = cameraPosition;
     this.canvas.context.save();
 
+    GameLoop.setFPSLimit(config.framerateLimit || 60);
     GameLoop.addListener((dt: number) => {
       this.mainLoop(dt);
     });

@@ -7,19 +7,26 @@ let paused = false;
 
 const timing = reactive({
   dt: 0,
-  last: 0
+  last: 0,
+  fpsLimit: 60,
+  minFrameTime: (1000 / 60) * (60 / 60) - (1000 / 60) * 0.5
 });
 
 function loop() {
-  window.requestAnimationFrame(loop);
+  // window.requestAnimationFrame(loop);
   const now = performance.now();
   timing.dt = now - timing.last;
+  if (timing.dt < timing.minFrameTime) {
+    //skip the frame if the call is too early
+    requestAnimationFrame(loop);
+    return;
+  }
   timing.last = now;
-
   if (paused) return;
   listeners.forEach(l => {
     l(timing.dt * speedModifier);
   });
+  requestAnimationFrame(loop);
 }
 loop();
 
@@ -29,6 +36,10 @@ export default {
     console.log(`
       Speed:${speedModifier}, dt: ${timing.dt}, listeners: ${listeners}
     `);
+  },
+  setFPSLimit(limit: number) {
+    this.timing.fpsLimit = limit;
+    this.timing.minFrameTime = (1000 / 60) * (60 / limit) - (1000 / 60) * 0.5;
   },
   addListener(listener: Function) {
     // console.log("adding listener", listener);
