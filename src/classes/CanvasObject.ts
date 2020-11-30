@@ -12,6 +12,12 @@ export default class CanvasObject {
   color: Color;
   bufferCanvas: HTMLCanvasElement;
   visible = true;
+  reRender = false;
+  previousPosition = {
+    x: 0,
+    y: 0,
+    scale: 0
+  };
   constructor(
     transfrom: Vector3,
     vector: Vector3,
@@ -44,6 +50,25 @@ export default class CanvasObject {
     }
     return offScreenCanvas;
   }
+  storepreviousPosition() {
+    this.previousPosition = {
+      x: this.projected.x,
+      y: this.projected.y,
+      scale: this.size * this.scale
+    };
+  }
+  hasChanged() {
+    if (
+      this.previousPosition.x === this.projected.x &&
+      this.previousPosition.y === this.projected.y &&
+      this.previousPosition.scale.toFixed(1) ===
+        (this.size * this.scale).toFixed(1)
+    ) {
+      return false;
+    } else {
+      return true;
+    }
+  }
   project(canvas: CanvasWrapper, cameraPosition = 0) {
     const perspective = 1;
     // center of canvas
@@ -56,10 +81,14 @@ export default class CanvasObject {
     // set 2d coordinates and scale based on 3d position
     this.scale =
       perspective / (perspective + this.transfrom.z - cameraPosition);
-    this.projected.x = scaledX * this.scale + centerX;
-    this.projected.y = scaledY * this.scale + centerY;
+    this.projected.x = Math.round(scaledX * this.scale + centerX);
+    this.projected.y = Math.round(scaledY * this.scale + centerY);
 
-    this.bufferCanvas = this.render(this.color.rgbString());
+    if (this.hasChanged()) {
+      // rerender if object has changed position/size
+      this.bufferCanvas = this.render(this.color.rgbString());
+      this.storepreviousPosition();
+    }
   }
   update(dt: number) {
     this.transfrom.x += this.vector.x * dt;
@@ -68,8 +97,8 @@ export default class CanvasObject {
     this.rotation += this.rotationVector * dt;
   }
   draw(canvas: CanvasWrapper, cameraPosition: number) {
-    if (!this.visible) return;
     this.project(canvas, cameraPosition);
+    if (!this.visible) return;
     canvas.context.save();
     // rotate
     canvas.context.translate(
@@ -81,8 +110,8 @@ export default class CanvasObject {
     // draw
     canvas.context.drawImage(
       this.bufferCanvas,
-      Math.round(this.projected.x - (this.size * this.scale) / 2),
-      Math.round(this.projected.y - (this.size * this.scale) / 2)
+      this.projected.x - (this.size * this.scale) / 2,
+      this.projected.y - (this.size * this.scale) / 2
     );
     // center of rotation debug
     // canvas.context.fillStyle = "rgb(255, 255, 255)";
