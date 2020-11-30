@@ -3,6 +3,8 @@ import Asteroid from "./Asteroid";
 import CanvasObject from "./CanvasObject";
 import Laser, { TargetMode } from "./Laser";
 import Ship from "./Ship";
+import GameLoop from "@/services/GameLoop";
+import config from "@/config";
 
 export default class SpaceGame {
   renderer: RenderManager;
@@ -34,11 +36,22 @@ export default class SpaceGame {
       resolutionScale
     );
 
-    // generate some asteroids
-    for (let index = 0; index < 10; index++) {
+    this.hudObjects.push(this.ship);
+
+    // start main loop
+    GameLoop.setFPSLimit(config.framerateLimit || 60);
+    GameLoop.addListener((dt: number) => {
+      this.mainLoop(dt);
+    });
+  }
+  mainLoop(dt: number) {
+    // add new asteroids if count is below max
+    if (this.canvasObjects.length < config.maxAsteroids) {
       this.addAsteroid();
     }
-    this.hudObjects.push(this.ship);
+
+    this.renderer.update(dt);
+    this.renderer.draw();
   }
   addAsteroid() {
     const color = {
@@ -48,7 +61,7 @@ export default class SpaceGame {
       k: Math.random() * 100
     };
     this.canvasObjects.push(
-      new Asteroid(Math.round(Math.random() + 2) * 4, 100, color, 0)
+      new Asteroid(Math.round(Math.random() + 2) * 4, 50, color, this.ship.transfrom.z)
     );
   }
 }

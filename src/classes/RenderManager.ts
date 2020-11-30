@@ -1,7 +1,5 @@
-import GameLoop from "@/services/GameLoop";
 import CanvasObject from "@/classes/CanvasObject";
 import CanvasWrapper from "@/classes/CanvasWrapper";
-import config from "@/config";
 
 export default class RenderManager {
   private canvas: CanvasWrapper;
@@ -20,11 +18,6 @@ export default class RenderManager {
     this.hudObjects = hudObjects;
     this.cameraPosition = cameraPosition;
     this.canvas.context.save();
-
-    GameLoop.setFPSLimit(config.framerateLimit || 60);
-    GameLoop.addListener((dt: number) => {
-      this.mainLoop(dt);
-    });
   }
 
   public addCanvasObject(object: CanvasObject) {
@@ -32,8 +25,9 @@ export default class RenderManager {
     return true;
   }
   public removeCanvasObject(object: CanvasObject) {
+    // console.log("remove object", object, "\n", this.canvasObjects.indexOf(object), "\n", this.canvasObjects.length);
     const index = this.canvasObjects.indexOf(object);
-    if (index) {
+    if (typeof index !== "undefined") {
       this.canvasObjects.splice(index, 1);
       return true;
     } else {
@@ -41,7 +35,7 @@ export default class RenderManager {
       return false;
     }
   }
-  private update(dt: number) {
+  public update(dt: number) {
     // sort gameobjects based on z-position
     this.canvasObjects.sort((o1, o2) => {
       return o1.scale - o2.scale;
@@ -58,7 +52,8 @@ export default class RenderManager {
       object.update(dt);
     });
   }
-  private draw(canvas: CanvasWrapper) {
+  public draw() {
+    const canvas = this.canvas;
     canvas.context.clearRect(0, 0, canvas.size.width, canvas.size.height);
 
     // draw canvasObjects
@@ -72,9 +67,5 @@ export default class RenderManager {
       canvas.context.restore();
       object.draw(canvas, this.cameraPosition.z);
     });
-  }
-  private mainLoop(dt: number) {
-    this.update(dt);
-    this.draw(this.canvas);
   }
 }

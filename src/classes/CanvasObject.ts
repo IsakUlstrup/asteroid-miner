@@ -2,6 +2,7 @@ import Color from "./Color";
 import CanvasWrapper from "@/classes/CanvasWrapper";
 
 export default class CanvasObject {
+  id = Math.random();
   transfrom: Vector3;
   vector: Vector3;
   projected: Vector3;
@@ -95,6 +96,8 @@ export default class CanvasObject {
     this.transfrom.y += this.vector.y * dt;
     this.transfrom.z += this.vector.z * dt;
     this.rotation += this.rotationVector * dt;
+
+    this.visible = this.isOffscreen ? false : true;
   }
   draw(canvas: CanvasWrapper, cameraPosition: number) {
     this.project(canvas, cameraPosition);
