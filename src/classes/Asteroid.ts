@@ -17,24 +17,22 @@ export default class Asteroid extends CanvasObject {
       {
         x: Math.random() - 0.5,
         y: Math.random() - 0.5,
-        z: cameraPosition + Math.random(),
-        r: Math.random(),
-        s: radius * 2
+        z: cameraPosition + Math.random() - 0.5
       },
       {
         x: (Math.random() - 0.5) * 0.00001,
         y: (Math.random() - 0.5) * 0.00001,
-        z: (Math.random() - 0.5) * 0.00007,
-        r: (Math.random() - 0.5) * 0.01,
-        s: 1
+        z: (Math.random() - 0.5) * 0.00007
       },
+      radius * 2,
+      Math.random() - 0.5 * 0.01,
       color
     );
 
     this.points = points;
     this.baseColor = new Color(color);
     this.color = new Color(color);
-    this.bufferCanvas = this.createOffscreenCanvas(this.color.rgbString());
+    this.bufferCanvas = this.render(this.color.rgbString());
     this.minedBuffer = {
       c: 0,
       m: 0,
@@ -44,7 +42,7 @@ export default class Asteroid extends CanvasObject {
   }
   setColor(color: RGBColor | CMYKColor) {
     this.color.setColor(color);
-    this.bufferCanvas = this.createOffscreenCanvas(this.color.rgbString());
+    this.bufferCanvas = this.render(this.color.rgbString());
   }
   mine(color: CMYKColor): CMYKColor {
     const currentColor = this.color.cmyk();
@@ -80,7 +78,7 @@ export default class Asteroid extends CanvasObject {
       c: this.minedBuffer.c > 10 ? this.minedBuffer.c : 0,
       m: this.minedBuffer.m > 10 ? this.minedBuffer.m : 0,
       y: this.minedBuffer.y > 10 ? this.minedBuffer.y : 0,
-      k: this.minedBuffer.k > 10 ? this.minedBuffer.k : 0,
+      k: this.minedBuffer.k > 10 ? this.minedBuffer.k : 0
     };
 
     // subtract return color from buffer
@@ -91,10 +89,10 @@ export default class Asteroid extends CanvasObject {
 
     return returnColor;
   }
-  createOffscreenCanvas(color: string) {
+  render(color: string) {
     const offScreenCanvas = document.createElement("canvas");
-    offScreenCanvas.width = this.transfrom.s;
-    offScreenCanvas.height = this.transfrom.s;
+    offScreenCanvas.width = this.size * this.scale;
+    offScreenCanvas.height = this.size * this.scale;
     const context = offScreenCanvas.getContext("2d");
     if (context) {
       // context.fillRect(0, 0, offScreenCanvas.width, offScreenCanvas.height);
@@ -104,13 +102,13 @@ export default class Asteroid extends CanvasObject {
       context.beginPath();
       for (let i = 0; i < this.points; i++) {
         const x =
-          this.transfrom.s / 2 +
-          (this.transfrom.s / 2) *
+          (this.size * this.scale) / 2 +
+          ((this.size * this.scale) / 2) *
             0.9 *
             Math.cos((2 * Math.PI * i) / this.points);
         const y =
-          this.transfrom.s / 2 +
-          (this.transfrom.s / 2) *
+          (this.size * this.scale) / 2 +
+          ((this.size * this.scale) / 2) *
             0.9 *
             Math.sin((2 * Math.PI * i) / this.points);
         context.lineTo(Math.floor(x), Math.floor(y));

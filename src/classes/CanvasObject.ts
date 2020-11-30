@@ -2,15 +2,21 @@ import Color from "./Color";
 import CanvasWrapper from "@/classes/CanvasWrapper";
 
 export default class CanvasObject {
-  transfrom: Transform;
-  vector: Transform;
+  transfrom: Vector3;
+  vector: Vector3;
+  projected: Vector3;
+  size: number;
+  scale: number;
+  rotation: number;
+  rotationVector: number;
   color: Color;
-  projected: Transform;
   bufferCanvas: HTMLCanvasElement;
   visible = true;
   constructor(
-    transfrom: Transform,
-    vector: Transform,
+    transfrom: Vector3,
+    vector: Vector3,
+    size: number,
+    rotationVector: number,
     color: RGBColor | CMYKColor
   ) {
     this.transfrom = transfrom;
@@ -19,20 +25,22 @@ export default class CanvasObject {
     this.projected = {
       x: 0,
       y: 0,
-      z: 0,
-      r: 0,
-      s: 0
+      z: 0
     };
-    this.bufferCanvas = this.createOffscreenCanvas(this.color.rgbString());
+    this.size = size;
+    this.scale = 1;
+    this.rotation = 0;
+    this.rotationVector = rotationVector;
+    this.bufferCanvas = this.render(this.color.rgbString());
   }
-  createOffscreenCanvas(color: string) {
+  render(color: string) {
     const offScreenCanvas = document.createElement("canvas");
-    offScreenCanvas.width = this.transfrom.s;
-    offScreenCanvas.height = this.transfrom.s;
+    offScreenCanvas.width = this.size * this.scale;
+    offScreenCanvas.height = this.size * this.scale;
     const context = offScreenCanvas.getContext("2d");
     if (context) {
       context.fillStyle = color;
-      context.fillRect(0, 0, this.transfrom.s, this.transfrom.s);
+      context.fillRect(0, 0, offScreenCanvas.width, offScreenCanvas.height);
     }
     return offScreenCanvas;
   }
@@ -46,16 +54,18 @@ export default class CanvasObject {
     const scaledY = this.transfrom.y * canvas.size.height;
 
     // set 2d coordinates and scale based on 3d position
-    this.projected.s =
+    this.scale =
       perspective / (perspective + this.transfrom.z - cameraPosition);
-    this.projected.x = scaledX * this.projected.s + centerX;
-    this.projected.y = scaledY * this.projected.s + centerY;
+    this.projected.x = scaledX * this.scale + centerX;
+    this.projected.y = scaledY * this.scale + centerY;
+
+    this.bufferCanvas = this.render(this.color.rgbString());
   }
   update(dt: number) {
     this.transfrom.x += this.vector.x * dt;
     this.transfrom.y += this.vector.y * dt;
     this.transfrom.z += this.vector.z * dt;
-    this.transfrom.r += this.vector.r * dt;
+    this.rotation += this.rotationVector * dt;
   }
   draw(canvas: CanvasWrapper, cameraPosition: number) {
     if (!this.visible) return;
@@ -63,24 +73,25 @@ export default class CanvasObject {
     canvas.context.save();
     // rotate
     canvas.context.translate(
-      this.projected.x + (this.transfrom.s * this.projected.s) / 2,
-      this.projected.y + (this.transfrom.s * this.projected.s) / 2
+      this.projected.x + this.scale / 2,
+      this.projected.y + this.scale / 2
     );
-    canvas.context.rotate((this.transfrom.r * Math.PI) / 180);
+    canvas.context.rotate((this.rotation * Math.PI) / 180);
     canvas.context.restore();
     // draw
     canvas.context.drawImage(
       this.bufferCanvas,
-      Math.floor(this.projected.x - (this.transfrom.s * this.projected.s) / 2),
-      Math.floor(this.projected.y - (this.transfrom.s * this.projected.s) / 2),
-      this.transfrom.s * this.projected.s,
-      this.transfrom.s * this.projected.s
+      Math.round(this.projected.x - (this.size * this.scale) / 2),
+      Math.round(this.projected.y - (this.size * this.scale) / 2)
     );
     // center of rotation debug
-    // if (config.debug) {
-    //   context.fillStyle = "rgb(255, 255, 255)";
-    //   context.fillRect(this.projected.x - 2.5, this.projected.y - 2.5, 5, 5);
-    // }
+    // canvas.context.fillStyle = "rgb(255, 255, 255)";
+    // canvas.context.fillRect(
+    //   this.projected.x - 2.5,
+    //   this.projected.y - 2.5,
+    //   5,
+    //   5
+    // );
   }
   get isOffscreen() {
     if (
@@ -88,8 +99,8 @@ export default class CanvasObject {
       this.transfrom.x > 0.5 ||
       this.transfrom.y < -0.5 ||
       this.transfrom.y > 0.5 ||
-      this.projected.s < 0 ||
-      this.projected.s > 10
+      this.scale < 0 ||
+      this.scale > 10
     ) {
       return true;
     } else {

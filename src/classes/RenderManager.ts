@@ -6,12 +6,12 @@ export default class RenderManager {
   private canvas: CanvasWrapper;
   private canvasObjects: CanvasObject[];
   private hudObjects: CanvasObject[];
-  private cameraPosition: Transform;
+  private cameraPosition: number;
   constructor(
     canvasContext: CanvasRenderingContext2D,
     canvasObjects: CanvasObject[],
     hudObjects: CanvasObject[],
-    cameraPosition: Transform,
+    cameraPosition: number,
     resolutionScale = 1
   ) {
     this.canvas = new CanvasWrapper(canvasContext, resolutionScale);
@@ -42,7 +42,7 @@ export default class RenderManager {
   private update(dt: number) {
     // sort gameobjects based on z-position
     this.canvasObjects.sort((o1, o2) => {
-      return o1.projected.s - o2.projected.s;
+      return o1.scale - o2.scale;
     });
 
     this.canvasObjects.forEach(object => {
@@ -62,13 +62,13 @@ export default class RenderManager {
     // draw canvasObjects
     this.canvasObjects.forEach(object => {
       canvas.context.restore();
-      object.draw(canvas, this.cameraPosition.z);
+      object.draw(canvas, this.cameraPosition);
     });
 
     // draw HUD
     this.hudObjects.forEach(object => {
       canvas.context.restore();
-      object.draw(canvas, this.cameraPosition.z);
+      object.draw(canvas, this.cameraPosition);
     });
   }
   private mainLoop(dt: number) {

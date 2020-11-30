@@ -21,7 +21,7 @@ export default class SpaceGame {
       context,
       this.canvasObjects,
       this.hudObjects,
-      this.ship.position,
+      this.ship.transfrom.z,
       resolutionScale
     );
 

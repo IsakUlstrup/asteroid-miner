@@ -10,18 +10,16 @@ export default class Ship extends CanvasObject {
   // main modules
   modules: Module[] = [];
   moduleSlots: number;
-  position: Transform;
   constructor(
     internalModuleSlots = 4,
     moduleSlots = 4,
-    position: Transform = { x: 0, y: 0, z: 0, r: 0, s: 0 },
-    vector: Transform = { x: 0, y: 0, z: 0, r: 0, s: 0 },
+    position: Vector3 = { x: 0, y: 0, z: 0 },
+    vector: Vector3 = { x: 0, y: 0, z: 0 },
     color: RGBColor = { r: 255, g: 0, b: 0 }
   ) {
-    super(position, vector, color);
+    super(position, vector, 1, 0, color);
     this.internalModuleSlots = internalModuleSlots;
     this.moduleSlots = moduleSlots;
-    this.position = position;
 
     // fill module slots with empty modules
     this.internalModules = new Array(this.internalModuleSlots).fill(
