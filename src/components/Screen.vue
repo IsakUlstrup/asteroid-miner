@@ -1,6 +1,6 @@
 <template>
   <div class="screen-container">
-    <div class="screen">
+    <div class="screen crt">
       <div class="hud">FPS: {{ (1000 / gameLoop.timing.dt).toFixed(1) }}</div>
       <canvas id="canvas"></canvas>
     </div>
@@ -77,7 +77,7 @@ export default defineComponent({
   left: 0;
   bottom: 0;
   right: 0;
-  opacity: 0.8;
+  opacity: 0.6;
   background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%),
     linear-gradient(
       90deg,

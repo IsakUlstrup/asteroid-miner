@@ -1,6 +1,8 @@
 import Color from "@/classes/Color";
 import CanvasObject from "@/classes/CanvasObject";
 import config from "@/config";
+import trianglify from "trianglify";
+import { randomInt } from "@/services/Utils";
 
 export default class Asteroid extends CanvasObject {
   points: number;
@@ -33,7 +35,7 @@ export default class Asteroid extends CanvasObject {
     this.points = points;
     this.baseColor = new Color(color).rgbString();
     this.color = new Color(color);
-    this.bufferCanvas = this.render(this.color.rgbString());
+    this.bufferCanvas = this.fancyRender(this.color);
     this.minedBuffer = {
       c: 0,
       m: 0,
@@ -43,7 +45,7 @@ export default class Asteroid extends CanvasObject {
   }
   setColor(color: RGBColor | CMYKColor) {
     this.color.setColor(color);
-    this.bufferCanvas = this.render(this.color.rgbString());
+    this.bufferCanvas = this.fancyRender(this.color);
   }
   mine(color: CMYKColor): CMYKColor {
     const currentColor = this.color.cmyk();
@@ -89,6 +91,42 @@ export default class Asteroid extends CanvasObject {
     this.minedBuffer.k -= returnColor.k;
 
     return returnColor;
+  }
+  fancyRender(color: Color) {
+    const width = this.size;
+    const height = this.size;
+
+    // generate a spiral using polar coordinates
+    const points = [];
+    const NUM_POINTS = randomInt(30, 60);
+    const darkenedColor = color.darken(50);
+    let r = 0;
+    const rStep = width / 2 / NUM_POINTS;
+    let theta = 0;
+    const thetaStep = (Math.PI / NUM_POINTS) * 18;
+    for (let i = 0; i < NUM_POINTS; i++) {
+      const x = width / 2 + r * Math.cos(theta);
+      const y = height / 2 + r * Math.sin(theta);
+      const point = [x, y];
+      points.push(point);
+      r += rStep;
+      theta = (theta + thetaStep) % (2 * Math.PI);
+    }
+
+    // apply trianglify to convert the points to polygons and apply the color
+    // gradient
+    const pattern = trianglify({
+      height,
+      width,
+      points,
+      xColors: [
+        color.rgbString(),
+        `rgb(${darkenedColor.r}, ${darkenedColor.g}, ${darkenedColor.b})`
+      ],
+      yColors: "match",
+      colorFunction: trianglify.colorFunctions.shadows(0.2)
+    });
+    return pattern.toCanvas();
   }
   render(color: string) {
     const offScreenCanvas = document.createElement("canvas");

@@ -67,14 +67,22 @@ export default class Color {
       };
     }
   }
-  darken(amount: number) {
-    this.state.r -= amount;
-    if (this.state.r < 0) this.state.r = 0;
-    this.state.g -= amount;
-    if (this.state.g < 0) this.state.g = 0;
-    this.state.b -= amount;
-    if (this.state.b < 0) this.state.b = 0;
-    return this.state;
+  darken(amount: number): RGBColor {
+    let r = this.state.r,
+      g = this.state.g,
+      b = this.state.b;
+
+    r -= amount;
+    if (r < 0) r = 0;
+    g -= amount;
+    if (g < 0) g = 0;
+    b -= amount;
+    if (b < 0) b = 0;
+    return {
+      r,
+      g,
+      b
+    };
   }
   rgb() {
     return this.state;

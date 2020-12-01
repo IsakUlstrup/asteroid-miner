@@ -74,7 +74,7 @@ export default class SpaceGame {
     this.canvasObjects.push(
       new Asteroid(
         randomInt(4, 9),
-        50,
+        30,
         {
           c: Math.random() * 100,
           m: Math.random() * 100,

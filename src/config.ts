@@ -1,5 +1,5 @@
 export default {
-  framerateLimit: 30,
+  framerateLimit: 60,
   debug: false,
   maxAsteroids: 30
 };
