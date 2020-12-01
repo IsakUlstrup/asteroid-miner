@@ -36,9 +36,9 @@ export default class SpaceGame {
       TargetMode.auto
     );
 
-    laser2.setColor({ c: 100, m: 0, y: 0, k: 0 });
+    laser2.setColor({ c: 0, m: 100, y: 0, k: 0 });
     laser3.setColor({ c: 0, m: 100, y: 0, k: 0 });
-    laser4.setColor({ c: 0, m: 0, y: 100, k: 0 });
+    laser4.setColor({ c: 0, m: 0, y: 100, k: 50 });
 
     this.ship.setModule(laser2, 1);
     this.ship.setModule(laser3, 2);
@@ -62,7 +62,7 @@ export default class SpaceGame {
   }
   mainLoop(dt: number) {
     // add new asteroids if count is below max
-    if (this.canvasObjects.length < config.maxAsteroids) {
+    if (this.canvasObjects.filter(o => o instanceof Asteroid).length < config.maxAsteroids) {
       this.addAsteroid();
     }
 

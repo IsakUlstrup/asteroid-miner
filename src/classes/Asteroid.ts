@@ -2,7 +2,6 @@ import Color from "@/classes/Color";
 import CanvasObject from "@/classes/CanvasObject";
 import config from "@/config";
 import trianglify from "trianglify";
-import { randomInt } from "@/services/Utils";
 
 export default class Asteroid extends CanvasObject {
   points: number;
@@ -35,7 +34,7 @@ export default class Asteroid extends CanvasObject {
     this.points = points;
     this.baseColor = new Color(color).rgbString();
     this.color = new Color(color);
-    this.bufferCanvas = this.fancyRender(this.color);
+    this.bufferCanvas = this.render(this.color.rgbString());
     this.minedBuffer = {
       c: 0,
       m: 0,
@@ -45,7 +44,7 @@ export default class Asteroid extends CanvasObject {
   }
   setColor(color: RGBColor | CMYKColor) {
     this.color.setColor(color);
-    this.bufferCanvas = this.fancyRender(this.color);
+    this.bufferCanvas = this.render(this.color.rgbString());
   }
   mine(color: CMYKColor): CMYKColor {
     const currentColor = this.color.cmyk();
@@ -68,12 +67,11 @@ export default class Asteroid extends CanvasObject {
     this.minedBuffer.y += mined.y;
     this.minedBuffer.k += mined.k;
 
-    // console.log(mined);
     this.setColor({
-      c: this.color.cmyk().c - mined.c,
-      m: this.color.cmyk().m - mined.m,
-      y: this.color.cmyk().y - mined.y,
-      k: this.color.cmyk().k - mined.k
+      c: this.color.cmyk().c - mined.c > 0 ? this.color.cmyk().c - mined.c : 0,
+      m: this.color.cmyk().m - mined.m > 0 ? this.color.cmyk().m - mined.m : 0,
+      y: this.color.cmyk().y - mined.y > 0 ? this.color.cmyk().y - mined.y : 0,
+      k: this.color.cmyk().k - mined.k > 0 ? this.color.cmyk().k - mined.k : 0
     });
 
     // store color to return
@@ -98,7 +96,7 @@ export default class Asteroid extends CanvasObject {
 
     // generate a spiral using polar coordinates
     const points = [];
-    const NUM_POINTS = randomInt(30, 60);
+    const NUM_POINTS = this.points;
     const darkenedColor = color.darken(50);
     let r = 0;
     const rStep = width / 2 / NUM_POINTS;
@@ -124,14 +122,15 @@ export default class Asteroid extends CanvasObject {
         `rgb(${darkenedColor.r}, ${darkenedColor.g}, ${darkenedColor.b})`
       ],
       yColors: "match",
-      colorFunction: trianglify.colorFunctions.shadows(0.2)
+      colorFunction: trianglify.colorFunctions.shadows(0.2),
+      variance: 0
     });
     return pattern.toCanvas();
   }
   render(color: string) {
     const offScreenCanvas = document.createElement("canvas");
-    offScreenCanvas.width = this.size * this.scale;
-    offScreenCanvas.height = this.size * this.scale;
+    offScreenCanvas.width = this.size;
+    offScreenCanvas.height = this.size;
     const context = offScreenCanvas.getContext("2d");
     if (context) {
       if (config.debug)
@@ -139,19 +138,15 @@ export default class Asteroid extends CanvasObject {
 
       context.fillStyle = color;
       if (this.baseColor) context.strokeStyle = this.baseColor;
-      context.lineWidth = 4;
+      context.lineWidth = 3;
       context.beginPath();
       for (let i = 0; i < this.points; i++) {
         const x =
-          (this.size * this.scale) / 2 +
-          ((this.size * this.scale) / 2) *
-            0.9 *
-            Math.cos((2 * Math.PI * i) / this.points);
+          this.size / 2 +
+          (this.size / 2) * 0.9 * Math.cos((2 * Math.PI * i) / this.points);
         const y =
-          (this.size * this.scale) / 2 +
-          ((this.size * this.scale) / 2) *
-            0.9 *
-            Math.sin((2 * Math.PI * i) / this.points);
+          this.size / 2 +
+          (this.size / 2) * 0.9 * Math.sin((2 * Math.PI * i) / this.points);
         context.lineTo(Math.floor(x), Math.floor(y));
       }
       context.closePath();

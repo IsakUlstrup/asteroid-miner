@@ -85,7 +85,11 @@ export default class Color {
     };
   }
   rgb() {
-    return this.state;
+    return {
+      r: this.state.r,
+      g: this.state.g,
+      b: this.state.b
+    };
   }
   rgbString() {
     return `rgb(${this.rgb().r}, ${this.rgb().g}, ${this.rgb().b})`;
