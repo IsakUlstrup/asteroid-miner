@@ -14,12 +14,7 @@ export default class CanvasObject {
   color: Color;
   bufferCanvas: HTMLCanvasElement;
   visible = true;
-  reRender = false;
-  previousPosition = {
-    x: 0,
-    y: 0,
-    scale: 0
-  };
+  isOffscreen = false;
   constructor(
     transform: Vector3,
     vector: Vector3,
@@ -52,25 +47,6 @@ export default class CanvasObject {
     }
     return offScreenCanvas;
   }
-  storepreviousPosition() {
-    this.previousPosition = {
-      x: this.projected.x,
-      y: this.projected.y,
-      scale: this.size * this.scale
-    };
-  }
-  hasChanged() {
-    if (
-      this.previousPosition.x === this.projected.x &&
-      this.previousPosition.y === this.projected.y &&
-      this.previousPosition.scale.toFixed(1) ===
-        (this.size * this.scale).toFixed(1)
-    ) {
-      return false;
-    } else {
-      return true;
-    }
-  }
   project(canvas: CanvasWrapper, cameraPosition = 0) {
     const perspective = 1;
     // center of canvas
@@ -90,21 +66,28 @@ export default class CanvasObject {
     this.transform.x += this.vector.x * dt;
     this.transform.y += this.vector.y * dt;
     this.transform.z += this.vector.z * dt;
-    this.rotation += this.rotationVector * dt;
+    // this.rotation += this.rotationVector * dt;
 
     this.visible = this.isOffscreen ? false : true;
   }
   draw(canvas: CanvasWrapper, cameraPosition: number) {
     if (!this.visible) return;
     this.project(canvas, cameraPosition);
-    canvas.context.save();
-    // rotate
-    canvas.context.translate(
-      this.projected.x + this.scale / 2,
-      this.projected.y + this.scale / 2
-    );
-    canvas.context.rotate((this.rotation * Math.PI) / 180);
-    canvas.context.restore();
+
+    // offscreen status
+    if (
+      this.projected.x < 0 ||
+      this.projected.x > canvas.size.width ||
+      this.projected.y < 0 ||
+      this.projected.y > canvas.size.height ||
+      this.scale < 0 ||
+      this.scale > 20
+    ) {
+      this.isOffscreen = true;
+    } else {
+      this.isOffscreen = false;
+    }
+
     // draw
     canvas.context.drawImage(
       this.bufferCanvas,
@@ -122,20 +105,6 @@ export default class CanvasObject {
         5,
         5
       );
-    }
-  }
-  get isOffscreen() {
-    if (
-      this.transform.x < -0.5 ||
-      this.transform.x > 0.5 ||
-      this.transform.y < -0.5 ||
-      this.transform.y > 0.5 ||
-      this.scale < 0 ||
-      this.scale > 20
-    ) {
-      return true;
-    } else {
-      return false;
     }
   }
 }

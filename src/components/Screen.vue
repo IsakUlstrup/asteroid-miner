@@ -1,7 +1,9 @@
 <template>
   <div class="screen-container">
     <div class="screen crt">
-      <div class="hud">FPS: {{ (1000 / gameLoop.timing.dt).toFixed(1) }}</div>
+      <div class="hud">
+        <!-- FPS: {{ (1000 / gameLoop.timing.dt).toFixed(1) }} -->
+      </div>
       <canvas id="canvas"></canvas>
     </div>
   </div>
@@ -95,7 +97,7 @@ export default defineComponent({
   position: relative;
   width: 100%;
   height: 100%;
-  border: 1rem solid #eee;
+  border: 0.5rem solid #eee;
   background: #eee;
   border-radius: 1rem;
   overflow: hidden;
@@ -108,10 +110,6 @@ export default defineComponent({
   padding: 1rem;
   user-select: none;
   pointer-events: none;
-
-  * {
-    margin-bottom: 1rem;
-  }
 }
 .screen {
   width: 100%;
@@ -120,7 +118,6 @@ export default defineComponent({
 canvas {
   border-radius: 0.5rem;
   overflow: hidden;
-  border: 0.2rem solid #333;
   box-shadow: 0 0 15rem rgba($color: #000000, $alpha: 0.7) inset;
   width: 100%;
   height: 100%;

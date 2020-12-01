@@ -47,7 +47,7 @@ body {
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #2c3e50;
-  padding: 5%;
+  padding: 1%;
   height: 100vh;
   background: #262626;
 }
