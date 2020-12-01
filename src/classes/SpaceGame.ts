@@ -38,7 +38,7 @@ export default class SpaceGame {
 
     laser2.setColor({ c: 0, m: 100, y: 0, k: 0 });
     laser3.setColor({ c: 0, m: 100, y: 0, k: 0 });
-    laser4.setColor({ c: 0, m: 0, y: 100, k: 50 });
+    laser4.setColor({ c: 0, m: 0, y: 100, k: 0 });
 
     this.ship.setModule(laser2, 1);
     this.ship.setModule(laser3, 2);
@@ -48,7 +48,7 @@ export default class SpaceGame {
       context,
       this.canvasObjects,
       this.hudObjects,
-      this.ship.transfrom.z,
+      this.ship.transform.z,
       resolutionScale
     );
 
@@ -62,11 +62,14 @@ export default class SpaceGame {
   }
   mainLoop(dt: number) {
     // add new asteroids if count is below max
-    if (this.canvasObjects.filter(o => o instanceof Asteroid).length < config.maxAsteroids) {
+    if (
+      this.canvasObjects.filter(o => o instanceof Asteroid).length <
+      config.maxAsteroids
+    ) {
       this.addAsteroid();
     }
 
-    this.renderer.setCameraPosition(this.ship.transfrom.z);
+    this.renderer.setCameraPosition(this.ship.transform.z);
     this.renderer.update(dt);
     this.renderer.draw();
   }
@@ -81,7 +84,7 @@ export default class SpaceGame {
           y: Math.random() * 100,
           k: Math.random() * 10
         },
-        this.ship.transfrom.z
+        this.ship.transform.z
       )
     );
   }

@@ -4,7 +4,7 @@ import config from "@/config";
 
 export default class CanvasObject {
   id = Math.random();
-  transfrom: Vector3;
+  transform: Vector3;
   vector: Vector3;
   projected: Vector3;
   size: number;
@@ -21,13 +21,13 @@ export default class CanvasObject {
     scale: 0
   };
   constructor(
-    transfrom: Vector3,
+    transform: Vector3,
     vector: Vector3,
     size: number,
     rotationVector: number,
     color: RGBColor | CMYKColor
   ) {
-    this.transfrom = transfrom;
+    this.transform = transform;
     this.vector = vector;
     this.color = new Color(color);
     this.projected = {
@@ -77,19 +77,19 @@ export default class CanvasObject {
     const centerX = canvas.size.width / 2;
     const centerY = canvas.size.height / 2;
     // object position scaled to canvas resolution
-    const scaledX = this.transfrom.x * canvas.size.width;
-    const scaledY = this.transfrom.y * canvas.size.height;
+    const scaledX = this.transform.x * canvas.size.width;
+    const scaledY = this.transform.y * canvas.size.height;
 
     // set 2d coordinates and scale based on 3d position
     this.scale =
-      perspective / (perspective + this.transfrom.z - cameraPosition);
+      perspective / (perspective + this.transform.z - cameraPosition);
     this.projected.x = Math.round(scaledX * this.scale + centerX);
     this.projected.y = Math.round(scaledY * this.scale + centerY);
   }
   update(dt: number) {
-    this.transfrom.x += this.vector.x * dt;
-    this.transfrom.y += this.vector.y * dt;
-    this.transfrom.z += this.vector.z * dt;
+    this.transform.x += this.vector.x * dt;
+    this.transform.y += this.vector.y * dt;
+    this.transform.z += this.vector.z * dt;
     this.rotation += this.rotationVector * dt;
 
     this.visible = this.isOffscreen ? false : true;
@@ -126,10 +126,10 @@ export default class CanvasObject {
   }
   get isOffscreen() {
     if (
-      this.transfrom.x < -0.5 ||
-      this.transfrom.x > 0.5 ||
-      this.transfrom.y < -0.5 ||
-      this.transfrom.y > 0.5 ||
+      this.transform.x < -0.5 ||
+      this.transform.x > 0.5 ||
+      this.transform.y < -0.5 ||
+      this.transform.y > 0.5 ||
       this.scale < 0 ||
       this.scale > 10
     ) {

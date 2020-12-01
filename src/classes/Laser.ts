@@ -4,7 +4,7 @@ import CanvasWrapper from "@/classes/CanvasWrapper";
 import Color from "@/classes/Color";
 import { isWithinCircle } from "@/services/Utils";
 import Asteroid from "./Asteroid";
-import Ore from "@/classes/Ore";
+import Ore, { OreType } from "@/classes/Ore";
 
 export enum TargetMode {
   manual,
@@ -44,43 +44,59 @@ export default class Laser extends Module {
     canvas.context.lineTo(this.position + 10, canvas.size.height);
     canvas.context.fill();
   }
-  draw(canvas: CanvasWrapper, index: number, slotAmount: number) {
-    const spacing = canvas.size.width / slotAmount;
-    this.position = spacing * index;
-    if (this.targetMode === TargetMode.auto && this.target) {
-      this.laserTo(this.target.projected.x, this.target.projected.y, canvas);
+  mine(target: Asteroid, effect: number) {
+    const miningColor = this.color.cmyk();
+    const mined = target.mine({
+      c: miningColor.c * effect,
+      m: miningColor.m * effect,
+      y: miningColor.y * effect,
+      k: miningColor.k * effect
+    });
+
+    if (mined.c > 0) {
+      this.canvasObjects.push(
+        this.generateOre(target.transform, target.vector, OreType.cyan)
+      );
     }
-    if (this.targetMode === TargetMode.manual && canvas.cursor.active) {
-      this.laserTo(canvas.cursor.position.x, canvas.cursor.position.y, canvas);
+
+    if (mined.m > 0) {
+      this.canvasObjects.push(
+        this.generateOre(target.transform, target.vector, OreType.magenta)
+      );
+    }
+
+    if (mined.y > 0) {
+      this.canvasObjects.push(
+        this.generateOre(target.transform, target.vector, OreType.yellow)
+      );
+    }
+
+    if (mined.k > 0) {
+      this.canvasObjects.push(
+        this.generateOre(target.transform, target.vector, OreType.black)
+      );
     }
   }
-  hitScan(x: number, y: number, asteroids: CanvasObject[]) {
-    for (let index = asteroids.length - 1; index >= 0; index--) {
-      const asteroid = asteroids[index] as Asteroid;
-      if (
-        isWithinCircle(
-          x,
-          y,
-          asteroid.projected.x,
-          asteroid.projected.y,
-          (asteroid.size * asteroid.scale) / 2
-        )
-      ) {
-        // mine if any laser is active and wehave a target
-        this.target = asteroid;
-        return asteroid;
-      }
-    }
+  generateOre(transform: Vector3, vector: Vector3, type: OreType) {
+    return new Ore(
+      {
+        x: transform.x + (Math.random() - 0.5) * 0.1,
+        y: transform.y + (Math.random() - 0.5) * 0.1,
+        z: transform.z
+      },
+      vector,
+      type
+    );
   }
   isValidTarget(target: Asteroid) {
     if (target.isOffscreen) return false;
     const targetColor = target.color.cmyk();
     const miningColor = this.color.cmyk();
     if (
-      miningColor.c > 0 && targetColor.c <= 0 ||
-      miningColor.m > 0 && targetColor.m <= 0 ||
-      miningColor.y > 0 && targetColor.y <= 0 ||
-      miningColor.k > 0 && targetColor.k <= 0
+      (miningColor.c > 0 && targetColor.c <= 0) ||
+      (miningColor.m > 0 && targetColor.m <= 0) ||
+      (miningColor.y > 0 && targetColor.y <= 0) ||
+      (miningColor.k > 0 && targetColor.k <= 0)
     )
       return false;
 
@@ -109,68 +125,7 @@ export default class Laser extends Module {
       this.target = undefined;
 
     if (this.target) {
-      const miningColor = this.color.cmyk();
-      const mined = this.target.mine({
-        c: miningColor.c * dt * 0.001,
-        m: miningColor.m * dt * 0.001,
-        y: miningColor.y * dt * 0.001,
-        k: miningColor.k * dt * 0.001
-      });
-
-      if (mined.c <= 0 && mined.m <= 0 && mined.y <= 0 && mined.k <= 0) return;
-
-      if (mined.c > 0) {
-        const ore = new Ore(
-          {
-            x: this.target.transfrom.x + (Math.random() - 0.5) * 0.1,
-            y: this.target.transfrom.y + (Math.random() - 0.5) * 0.1,
-            z: this.target.transfrom.z
-          },
-          this.target.vector,
-          10,
-          { c: 100, m: 0, y: 0, k: 0 }
-        );
-        this.canvasObjects.push(ore);
-      }
-      if (mined.m > 0) {
-        const ore = new Ore(
-          {
-            x: this.target.transfrom.x + (Math.random() - 0.5) * 0.1,
-            y: this.target.transfrom.y + (Math.random() - 0.5) * 0.1,
-            z: this.target.transfrom.z
-          },
-          this.target.vector,
-          10,
-          { c: 0, m: 100, y: 0, k: 0 }
-        );
-        this.canvasObjects.push(ore);
-      }
-      if (mined.y > 0) {
-        const ore = new Ore(
-          {
-            x: this.target.transfrom.x + (Math.random() - 0.5) * 0.1,
-            y: this.target.transfrom.y + (Math.random() - 0.5) * 0.1,
-            z: this.target.transfrom.z
-          },
-          this.target.vector,
-          10,
-          { c: 0, m: 0, y: 100, k: 0 }
-        );
-        this.canvasObjects.push(ore);
-      }
-      if (mined.k > 0) {
-        const ore = new Ore(
-          {
-            x: this.target.transfrom.x + (Math.random() - 0.5) * 0.1,
-            y: this.target.transfrom.y + (Math.random() - 0.5) * 0.1,
-            z: this.target.transfrom.z
-          },
-          this.target.vector,
-          10,
-          { c: 0, m: 0, y: 0, k: 100 }
-        );
-        this.canvasObjects.push(ore);
-      }
+      this.mine(this.target, dt * 0.001);
     }
 
     if (
@@ -180,6 +135,16 @@ export default class Laser extends Module {
     ) {
       // find target
       this.target = this.findTarget(this.canvasObjects);
+    }
+  }
+  draw(canvas: CanvasWrapper, index: number, slotAmount: number) {
+    const spacing = canvas.size.width / slotAmount;
+    this.position = spacing * index;
+    if (this.targetMode === TargetMode.auto && this.target) {
+      this.laserTo(this.target.projected.x, this.target.projected.y, canvas);
+    }
+    if (this.targetMode === TargetMode.manual && canvas.cursor.active) {
+      this.laserTo(canvas.cursor.position.x, canvas.cursor.position.y, canvas);
     }
   }
 }

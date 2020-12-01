@@ -32,7 +32,7 @@ export default class Ship extends CanvasObject {
     if (!internal) this.modules[slot] = module;
   }
   update(dt: number) {
-    this.transfrom.z += this.vector.z * dt;
+    this.transform.z += this.vector.z * dt;
 
     this.modules.forEach(m => {
       m.update(dt);
