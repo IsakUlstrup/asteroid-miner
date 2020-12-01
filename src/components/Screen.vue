@@ -1,6 +1,6 @@
 <template>
   <div class="screen-container">
-    <div class="screen crt">
+    <div class="screen">
       <div class="hud">FPS: {{ (1000 / gameLoop.timing.dt).toFixed(1) }}</div>
       <canvas id="canvas"></canvas>
     </div>
