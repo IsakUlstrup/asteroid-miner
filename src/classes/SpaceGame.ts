@@ -20,7 +20,7 @@ export default class SpaceGame {
     this.ship = ship;
     this.ship.vector = { x: 0, y: 0, z: 0.0002 };
     this.ship.setModule(
-      new Laser("laser", this.canvasObjects, TargetMode.auto, 0.0001),
+      new Laser("laser", this.canvasObjects, TargetMode.auto, 0.001),
       0
     );
 
@@ -28,19 +28,19 @@ export default class SpaceGame {
       "laser two",
       this.canvasObjects,
       TargetMode.auto,
-      0.0001
+      0.002
     );
     const laser3 = new Laser(
       "laser three",
       this.canvasObjects,
       TargetMode.auto,
-      0.0001
+      0.003
     );
     const laser4 = new Laser(
       "laser three",
       this.canvasObjects,
       TargetMode.auto,
-      0.0001
+      0.0005
     );
 
     laser2.setColor({ c: 0, m: 100, y: 0, k: 0 });
@@ -84,7 +84,7 @@ export default class SpaceGame {
     this.canvasObjects.push(
       new Asteroid(
         randomInt(4, 9),
-        30,
+        32,
         {
           c: Math.random() * 100,
           m: Math.random() * 100,
