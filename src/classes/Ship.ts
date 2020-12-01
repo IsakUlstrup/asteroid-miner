@@ -23,9 +23,11 @@ export default class Ship extends CanvasObject {
 
     // fill module slots with empty modules
     this.internalModules = new Array(this.internalModuleSlots).fill(
-      new Module()
+      new Module("empty module", 1)
     );
-    this.modules = new Array(this.moduleSlots).fill(new Module());
+    this.modules = new Array(this.moduleSlots).fill(
+      new Module("empty module", 1)
+    );
   }
 
   setModule(module: Module, slot: number, internal = false) {

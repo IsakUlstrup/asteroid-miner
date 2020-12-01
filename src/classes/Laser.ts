@@ -21,9 +21,10 @@ export default class Laser extends Module {
   constructor(
     name = "a laser",
     canvasObjects: CanvasObject[],
-    targetMode: TargetMode
+    targetMode: TargetMode,
+    effect: number
   ) {
-    super(name);
+    super(name, effect);
     this.canvasObjects = canvasObjects;
     this.targetMode = targetMode;
     this.color = new Color({ c: 100, m: 0, y: 0, k: 0 });
@@ -109,15 +110,14 @@ export default class Laser extends Module {
     const asteroids = this.canvasObjects.filter(
       o => o instanceof Asteroid
     ) as Asteroid[];
-    // return asteroids[Math.floor(Math.random() * asteroids.length)];
+
     const validTargets = asteroids.filter(a => {
       return this.isValidTarget(a);
     });
     if (validTargets.length > 0) {
-      return validTargets[0];
-    } else {
-      return undefined;
+      return validTargets[Math.round(Math.random() * validTargets.length)];
     }
+    return undefined;
   }
   update(dt: number) {
     // untarget if current target is invalid
@@ -125,7 +125,7 @@ export default class Laser extends Module {
       this.target = undefined;
 
     if (this.target) {
-      this.mine(this.target, dt * 0.001);
+      this.mine(this.target, dt * this.effect);
     }
 
     if (

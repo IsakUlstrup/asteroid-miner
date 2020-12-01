@@ -131,7 +131,7 @@ export default class CanvasObject {
       this.transform.y < -0.5 ||
       this.transform.y > 0.5 ||
       this.scale < 0 ||
-      this.scale > 10
+      this.scale > 20
     ) {
       return true;
     } else {
