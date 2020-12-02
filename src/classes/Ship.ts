@@ -10,6 +10,12 @@ export default class Ship extends CanvasObject {
   // main modules
   modules: Module[] = [];
   moduleSlots: number;
+  inventory = {
+    c: 0,
+    m: 0,
+    y: 0,
+    k: 0
+  };
   constructor(
     internalModuleSlots = 4,
     moduleSlots = 4,

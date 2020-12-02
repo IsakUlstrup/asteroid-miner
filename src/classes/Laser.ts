@@ -79,9 +79,7 @@ export default class Laser extends Module {
     }
   }
   get asteroids() {
-    return this.canvasObjects.filter(
-      o => o instanceof Asteroid
-    ) as Asteroid[];
+    return this.canvasObjects.filter(o => o instanceof Asteroid) as Asteroid[];
   }
   generateOre(transform: Vector3, vector: Vector3, type: OreType) {
     return new Ore(
