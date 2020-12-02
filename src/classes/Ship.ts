@@ -17,8 +17,8 @@ export default class Ship extends CanvasObject {
     k: 0
   };
   constructor(
-    internalModuleSlots = 4,
-    moduleSlots = 4,
+    internalModuleSlots = 6,
+    moduleSlots = 6,
     position: Vector3 = { x: 0, y: 0, z: 0 },
     vector: Vector3 = { x: 0, y: 0, z: 0 },
     color: RGBColor = { r: 255, g: 0, b: 0 }

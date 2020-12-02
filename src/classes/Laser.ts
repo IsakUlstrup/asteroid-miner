@@ -12,6 +12,7 @@ export default class Laser extends TargetedModule {
   perspective = 1;
   color: Color;
   position: number;
+  target: Asteroid | undefined;
   constructor(
     name = "a laser",
     canvasObjects: CanvasObject[],
@@ -48,29 +49,49 @@ export default class Laser extends TargetedModule {
 
     if (mined.c > 0) {
       this.canvasObjects.push(
-        this.generateOre(target.transform, target.vector, OreType.cyan)
+        this.generateOre(target.transform, target.vector, OreType.cyan, mined.c)
       );
     }
 
     if (mined.m > 0) {
       this.canvasObjects.push(
-        this.generateOre(target.transform, target.vector, OreType.magenta)
+        this.generateOre(
+          target.transform,
+          target.vector,
+          OreType.magenta,
+          mined.m
+        )
       );
     }
 
     if (mined.y > 0) {
       this.canvasObjects.push(
-        this.generateOre(target.transform, target.vector, OreType.yellow)
+        this.generateOre(
+          target.transform,
+          target.vector,
+          OreType.yellow,
+          mined.y
+        )
       );
     }
 
     if (mined.k > 0) {
       this.canvasObjects.push(
-        this.generateOre(target.transform, target.vector, OreType.black)
+        this.generateOre(
+          target.transform,
+          target.vector,
+          OreType.black,
+          mined.k
+        )
       );
     }
   }
-  generateOre(transform: Vector3, vector: Vector3, type: OreType) {
+  generateOre(
+    transform: Vector3,
+    vector: Vector3,
+    type: OreType,
+    amount: number
+  ) {
     return new Ore(
       {
         x: transform.x + (Math.random() - 0.5) * 0.1,
@@ -78,7 +99,8 @@ export default class Laser extends TargetedModule {
         z: transform.z
       },
       vector,
-      type
+      type,
+      amount
     );
   }
   isValidTarget(target: CanvasObject) {
@@ -95,10 +117,10 @@ export default class Laser extends TargetedModule {
 
     return true;
   }
-  use(target: CanvasObject, effect: number) {
-    // console.log(target, effect);
-    this.mine(target as Asteroid, effect);
-    // placeholder
+  use(targets: Asteroid[], effect: number) {
+    // this.mine(target, effect)
+    this.target = targets[0];
+    this.mine(this.target, effect);
   }
   filterTargets() {
     return this.canvasObjects.filter(o => o instanceof Asteroid) as Asteroid[];

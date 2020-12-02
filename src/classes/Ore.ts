@@ -10,7 +10,13 @@ export enum OreType {
 
 export default class Ore extends CanvasObject {
   points: number;
-  constructor(transform: Vector3, vector: Vector3, type: OreType) {
+  amount: number;
+  constructor(
+    transform: Vector3,
+    vector: Vector3,
+    type: OreType,
+    amount: number
+  ) {
     let color: CMYKColor = { c: 0, m: 0, y: 0, k: 0 };
     switch (type) {
       case OreType.cyan:
@@ -39,7 +45,25 @@ export default class Ore extends CanvasObject {
         : type === OreType.black
         ? 8
         : 5;
+    this.amount = amount;
     this.bufferCanvas = this.render(new Color(color).rgbString());
+  }
+  gather(amount: number) {
+    this.amount -= amount;
+    if (this.amount < 0) {
+      this.amount = 0;
+      return 0;
+    }
+    return amount;
+  }
+  update(dt: number) {
+    this.transform.x += this.vector.x * dt;
+    this.transform.y += this.vector.y * dt;
+    this.transform.z += this.vector.z * dt;
+    // this.rotation += this.rotationVector * dt;
+
+    this.visible = this.isOffscreen ? false : true;
+    this.visible = this.amount <= 0 ? false : true;
   }
   render(color: string) {
     const offScreenCanvas = document.createElement("canvas");

@@ -16,7 +16,7 @@ export enum HitScanType {
 export default class TargetedModule extends Module {
   targetMode: TargetMode;
   canvasObjects: CanvasObject[];
-  target: CanvasObject | undefined;
+  targets: CanvasObject[] = [];
   hitScanMethod: HitScanType;
   constructor(
     name: string,
@@ -48,7 +48,6 @@ export default class TargetedModule extends Module {
     if (validTargets.length > 0) {
       return validTargets[Math.round(Math.random() * validTargets.length)];
     }
-    return undefined;
   }
   pointHitScan(x: number, y: number, objects: CanvasObject[]) {
     for (let index = objects.length - 1; index >= 0; index--) {
@@ -62,10 +61,10 @@ export default class TargetedModule extends Module {
           (object.size * object.scale) / 2
         )
       ) {
-        return object;
+        return [object];
       }
     }
-    return undefined;
+    return [];
   }
   radiusHitScan(x: number, y: number, r: number, objects: CanvasObject[]) {
     const targets = objects.filter(o => {
@@ -79,9 +78,9 @@ export default class TargetedModule extends Module {
       );
     });
     if (targets.length > 0) return targets;
-    return undefined;
+    return [];
   }
-  use(target: CanvasObject, effect: number) {
+  use(target: CanvasObject[], effect: number) {
     // placeholder
   }
   // utility method that let children filter targets
@@ -89,46 +88,54 @@ export default class TargetedModule extends Module {
     return this.canvasObjects;
   }
   update(dt: number, canvas: CanvasWrapper) {
-    // untarget if current target is invalid
-    if (this.target && !this.isValidTarget(this.target)) {
-      this.target = undefined;
-    }
+    // remove invalid targets
+    this.targets = this.targets.filter(t => {
+      return this.isValidTarget(t);
+    });
 
     const filteredTargets = this.filterTargets();
 
     // manual target hitscan
     if (this.targetMode === TargetMode.manual) {
       if (!canvas.cursor.active) {
-        this.target = undefined;
-        return;
+        this.targets = [];
       }
       if (this.hitScanMethod === HitScanType.point) {
-        this.target = this.pointHitScan(
+        this.targets = this.pointHitScan(
           canvas.cursor.position.x,
           canvas.cursor.position.y,
           filteredTargets
         );
       } else if (this.hitScanMethod === HitScanType.radius) {
-        const targets = this.radiusHitScan(
+        this.targets = this.radiusHitScan(
           canvas.cursor.position.x,
           canvas.cursor.position.y,
-          10,
+          this.effect,
           filteredTargets
         );
-        if (targets) this.target = targets[0];
       }
     }
 
     // auto find target
     if (
-      !this.target &&
+      this.targets.length <= 0 &&
       this.canvasObjects.length > 0 &&
       this.targetMode === TargetMode.auto
     ) {
-      this.target = this.findTarget(filteredTargets);
+      const target = this.findTarget(filteredTargets);
+      if (this.hitScanMethod === HitScanType.point && target) {
+        this.targets = [target];
+      } else if (this.hitScanMethod === HitScanType.radius && target) {
+        this.targets = this.radiusHitScan(
+          target.projected.x,
+          target.projected.y,
+          this.effect,
+          filteredTargets
+        );
+      }
     }
 
     // use module if target is set
-    if (this.target) this.use(this.target, dt * this.effect);
+    if (this.targets.length > 0) this.use(this.targets, dt * this.effect);
   }
 }

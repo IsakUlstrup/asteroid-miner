@@ -2,6 +2,7 @@ import RenderManager from "@/classes/RenderManager";
 import Asteroid from "./Asteroid";
 import CanvasObject from "./CanvasObject";
 import Laser from "./Laser";
+import GravityVortex from "@/classes/GravityVortex";
 import { TargetMode } from "@/classes/TargetedModule";
 import Ship from "./Ship";
 import GameLoop from "@/services/GameLoop";
@@ -34,15 +35,17 @@ export default class SpaceGame {
     const laser3 = new Laser(
       "laser three",
       this.canvasObjects,
-      TargetMode.manual,
+      TargetMode.auto,
       0.003
     );
     const laser4 = new Laser(
       "laser three",
       this.canvasObjects,
-      TargetMode.manual,
+      TargetMode.auto,
       0.0005
     );
+
+    const vortex = new GravityVortex("Vortex", this.canvasObjects, TargetMode.auto, 50);
 
     laser2.setColor({ c: 0, m: 100, y: 0, k: 0 });
     laser3.setColor({ c: 0, m: 0, y: 0, k: 100 });
@@ -51,6 +54,7 @@ export default class SpaceGame {
     this.ship.setModule(laser2, 1);
     this.ship.setModule(laser3, 2);
     this.ship.setModule(laser4, 3);
+    this.ship.setModule(vortex, 4);
 
     this.renderer = new RenderManager(
       context,
