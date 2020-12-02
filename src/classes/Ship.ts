@@ -33,11 +33,11 @@ export default class Ship extends CanvasObject {
   setModule(module: Module, slot: number, internal = false) {
     if (!internal) this.modules[slot] = module;
   }
-  update(dt: number) {
+  update(dt: number, canvas: CanvasWrapper) {
     this.transform.z += this.vector.z * dt;
 
     this.modules.forEach(m => {
-      m.update(dt);
+      m.update(dt, canvas);
     });
   }
   draw(canvas: CanvasWrapper) {

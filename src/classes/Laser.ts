@@ -78,6 +78,11 @@ export default class Laser extends Module {
       );
     }
   }
+  get asteroids() {
+    return this.canvasObjects.filter(
+      o => o instanceof Asteroid
+    ) as Asteroid[];
+  }
   generateOre(transform: Vector3, vector: Vector3, type: OreType) {
     return new Ore(
       {
@@ -88,6 +93,23 @@ export default class Laser extends Module {
       vector,
       type
     );
+  }
+  asteroidHitScan(x: number, y: number, asteroids: Asteroid[]) {
+    for (let index = asteroids.length - 1; index >= 0; index--) {
+      const asteroid = asteroids[index];
+      if (
+        isWithinCircle(
+          x,
+          y,
+          asteroid.projected.x,
+          asteroid.projected.y,
+          (asteroid.size * asteroid.scale) / 2
+        )
+      ) {
+        return asteroid;
+      }
+    }
+    return undefined;
   }
   isValidTarget(target: Asteroid) {
     if (target.isOffscreen) return false;
@@ -106,12 +128,7 @@ export default class Laser extends Module {
   findTarget(targets: CanvasObject[]): Asteroid | undefined {
     if (targets.length <= 0) return undefined;
 
-    // random target, will elaborate on this later
-    const asteroids = this.canvasObjects.filter(
-      o => o instanceof Asteroid
-    ) as Asteroid[];
-
-    const validTargets = asteroids.filter(a => {
+    const validTargets = this.asteroids.filter(a => {
       return this.isValidTarget(a);
     });
     if (validTargets.length > 0) {
@@ -119,7 +136,17 @@ export default class Laser extends Module {
     }
     return undefined;
   }
-  update(dt: number) {
+  update(dt: number, canvas: CanvasWrapper) {
+    if (this.targetMode === TargetMode.manual && canvas.cursor.active) {
+      // hitscan
+      const target = this.asteroidHitScan(
+        canvas.cursor.position.x,
+        canvas.cursor.position.y,
+        this.asteroids
+      );
+      if (target) this.target = target;
+    }
+
     // untarget if current target is invalid
     if (this.target && !this.isValidTarget(this.target))
       this.target = undefined;

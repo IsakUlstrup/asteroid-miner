@@ -20,26 +20,26 @@ export default class SpaceGame {
     this.ship = ship;
     this.ship.vector = { x: 0, y: 0, z: 0.0002 };
     this.ship.setModule(
-      new Laser("laser", this.canvasObjects, TargetMode.auto, 0.001),
+      new Laser("laser", this.canvasObjects, TargetMode.manual, 0.001),
       0
     );
 
     const laser2 = new Laser(
       "laser two",
       this.canvasObjects,
-      TargetMode.auto,
+      TargetMode.manual,
       0.002
     );
     const laser3 = new Laser(
       "laser three",
       this.canvasObjects,
-      TargetMode.auto,
+      TargetMode.manual,
       0.003
     );
     const laser4 = new Laser(
       "laser three",
       this.canvasObjects,
-      TargetMode.auto,
+      TargetMode.manual,
       0.0005
     );
 

@@ -62,7 +62,7 @@ export default class CanvasObject {
     this.projected.x = Math.round(scaledX * this.scale + centerX);
     this.projected.y = Math.round(scaledY * this.scale + centerY);
   }
-  update(dt: number) {
+  update(dt: number, canvas: CanvasWrapper) {
     this.transform.x += this.vector.x * dt;
     this.transform.y += this.vector.y * dt;
     this.transform.z += this.vector.z * dt;

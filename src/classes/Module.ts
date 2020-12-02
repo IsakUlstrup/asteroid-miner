@@ -10,7 +10,7 @@ export default class Module extends Item {
   draw(canvas: CanvasWrapper, index: number, slotAmount: number) {
     // placeholder
   }
-  update(dt: number) {
+  update(dt: number, canvas: CanvasWrapper) {
     // placeholder
   }
 }

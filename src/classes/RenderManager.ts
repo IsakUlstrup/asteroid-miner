@@ -45,14 +45,14 @@ export default class RenderManager {
     });
 
     this.canvasObjects.forEach(object => {
-      object.update(dt);
+      object.update(dt, this.canvas);
       if (object.isOffscreen) {
         this.removeCanvasObject(object);
       }
     });
 
     this.hudObjects.forEach(object => {
-      object.update(dt);
+      object.update(dt, this.canvas);
     });
   }
   public draw() {
