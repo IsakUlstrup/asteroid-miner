@@ -42,7 +42,7 @@ export default class TargetedModule extends Module {
     if (objects.length <= 0) return undefined;
 
     const validTargets = objects.filter(o => {
-      this.isValidTarget(o);
+      return this.isValidTarget(o);
     });
 
     if (validTargets.length > 0) {
@@ -84,11 +84,17 @@ export default class TargetedModule extends Module {
   use(target: CanvasObject, effect: number) {
     // placeholder
   }
+  // utility method that let children filter targets
+  filterTargets() {
+    return this.canvasObjects;
+  }
   update(dt: number, canvas: CanvasWrapper) {
     // untarget if current target is invalid
     if (this.target && !this.isValidTarget(this.target)) {
       this.target = undefined;
     }
+
+    const filteredTargets = this.filterTargets();
 
     // manual target hitscan
     if (this.targetMode === TargetMode.manual) {
@@ -100,14 +106,14 @@ export default class TargetedModule extends Module {
         this.target = this.pointHitScan(
           canvas.cursor.position.x,
           canvas.cursor.position.y,
-          this.canvasObjects
+          filteredTargets
         );
       } else if (this.hitScanMethod === HitScanType.radius) {
         const targets = this.radiusHitScan(
           canvas.cursor.position.x,
           canvas.cursor.position.y,
           10,
-          this.canvasObjects
+          filteredTargets
         );
         if (targets) this.target = targets[0];
       }
@@ -119,7 +125,7 @@ export default class TargetedModule extends Module {
       this.canvasObjects.length > 0 &&
       this.targetMode === TargetMode.auto
     ) {
-      this.target = this.findTarget(this.canvasObjects);
+      this.target = this.findTarget(filteredTargets);
     }
 
     // use module if target is set

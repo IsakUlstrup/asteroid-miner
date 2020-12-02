@@ -1,7 +1,8 @@
 import RenderManager from "@/classes/RenderManager";
 import Asteroid from "./Asteroid";
 import CanvasObject from "./CanvasObject";
-import Laser, { TargetMode } from "./Laser";
+import Laser from "./Laser";
+import { TargetMode } from "@/classes/TargetedModule";
 import Ship from "./Ship";
 import GameLoop from "@/services/GameLoop";
 import config from "@/config";
@@ -27,7 +28,7 @@ export default class SpaceGame {
     const laser2 = new Laser(
       "laser two",
       this.canvasObjects,
-      TargetMode.manual,
+      TargetMode.auto,
       0.002
     );
     const laser3 = new Laser(

@@ -1,20 +1,14 @@
-import Module from "@/classes/Module";
-import CanvasObject from "./CanvasObject";
 import CanvasWrapper from "@/classes/CanvasWrapper";
 import Color from "@/classes/Color";
-import { isWithinCircle } from "@/services/Utils";
 import Asteroid from "./Asteroid";
 import Ore, { OreType } from "@/classes/Ore";
+import TargetedModule, {
+  TargetMode,
+  HitScanType
+} from "@/classes/TargetedModule";
+import CanvasObject from "./CanvasObject";
 
-export enum TargetMode {
-  manual,
-  auto
-}
-
-export default class Laser extends Module {
-  canvasObjects: CanvasObject[];
-  target: Asteroid | undefined;
-  targetMode: TargetMode;
+export default class Laser extends TargetedModule {
   perspective = 1;
   color: Color;
   position: number;
@@ -24,9 +18,7 @@ export default class Laser extends Module {
     targetMode: TargetMode,
     effect: number
   ) {
-    super(name, effect);
-    this.canvasObjects = canvasObjects;
-    this.targetMode = targetMode;
+    super(name, effect, targetMode, canvasObjects, HitScanType.point);
     this.color = new Color({ c: 100, m: 0, y: 0, k: 0 });
     this.position = 0;
   }
@@ -78,9 +70,6 @@ export default class Laser extends Module {
       );
     }
   }
-  get asteroids() {
-    return this.canvasObjects.filter(o => o instanceof Asteroid) as Asteroid[];
-  }
   generateOre(transform: Vector3, vector: Vector3, type: OreType) {
     return new Ore(
       {
@@ -92,24 +81,7 @@ export default class Laser extends Module {
       type
     );
   }
-  asteroidHitScan(x: number, y: number, asteroids: Asteroid[]) {
-    for (let index = asteroids.length - 1; index >= 0; index--) {
-      const asteroid = asteroids[index];
-      if (
-        isWithinCircle(
-          x,
-          y,
-          asteroid.projected.x,
-          asteroid.projected.y,
-          (asteroid.size * asteroid.scale) / 2
-        )
-      ) {
-        return asteroid;
-      }
-    }
-    return undefined;
-  }
-  isValidTarget(target: Asteroid) {
+  isValidTarget(target: CanvasObject) {
     if (target.isOffscreen) return false;
     const targetColor = target.color.cmyk();
     const miningColor = this.color.cmyk();
@@ -123,44 +95,13 @@ export default class Laser extends Module {
 
     return true;
   }
-  findTarget(targets: CanvasObject[]): Asteroid | undefined {
-    if (targets.length <= 0) return undefined;
-
-    const validTargets = this.asteroids.filter(a => {
-      return this.isValidTarget(a);
-    });
-    if (validTargets.length > 0) {
-      return validTargets[Math.round(Math.random() * validTargets.length)];
-    }
-    return undefined;
+  use(target: CanvasObject, effect: number) {
+    // console.log(target, effect);
+    this.mine(target as Asteroid, effect);
+    // placeholder
   }
-  update(dt: number, canvas: CanvasWrapper) {
-    if (this.targetMode === TargetMode.manual && canvas.cursor.active) {
-      // hitscan
-      const target = this.asteroidHitScan(
-        canvas.cursor.position.x,
-        canvas.cursor.position.y,
-        this.asteroids
-      );
-      if (target) this.target = target;
-    }
-
-    // untarget if current target is invalid
-    if (this.target && !this.isValidTarget(this.target))
-      this.target = undefined;
-
-    if (this.target) {
-      this.mine(this.target, dt * this.effect);
-    }
-
-    if (
-      !this.target &&
-      this.canvasObjects.length > 0 &&
-      this.targetMode === TargetMode.auto
-    ) {
-      // find target
-      this.target = this.findTarget(this.canvasObjects);
-    }
+  filterTargets() {
+    return this.canvasObjects.filter(o => o instanceof Asteroid) as Asteroid[];
   }
   draw(canvas: CanvasWrapper, index: number, slotAmount: number) {
     const spacing = canvas.size.width / slotAmount;
