@@ -15,6 +15,13 @@
         value="LSR"
         @click="toggleLasers"
       />
+      <input
+        type="button"
+        class="toggle-button"
+        :class="{ inactive: !moduleState.attractors }"
+        value="ATT"
+        @click="toggleAttractors"
+      />
       <p>INV: {{ ship.inventory.length }}</p>
     </div>
     <canvas id="game-canvas"></canvas>
@@ -27,6 +34,7 @@ import Game from "@/classes/Game";
 import ShipPlayer from "@/classes/ShipPlayer";
 import Engine from "@/classes/Engine";
 import Laser from "@/classes/Laser";
+import Attractor from "@/classes/Attractor";
 
 export default defineComponent({
   name: "Game",
@@ -36,10 +44,12 @@ export default defineComponent({
     ) as ShipPlayer;
     ship.addModule(new Engine({ x: -14, y: 0 }, ship, 0.07, 16));
     ship.addModule(new Laser({ x: 0, y: 0 }, ship));
+    ship.addModule(new Attractor({ x: 0, y: 0 }, ship));
 
     const moduleState = reactive({
       engines: true,
-      lasers: true
+      lasers: true,
+      attractors: true
     });
 
     onMounted(() => {
@@ -58,10 +68,17 @@ export default defineComponent({
         l.powerModifier = moduleState.lasers ? 1 : 0;
       });
     }
+    function toggleAttractors() {
+      moduleState.attractors = !moduleState.attractors;
+      ship.attractors.forEach(a => {
+        a.powerModifier = moduleState.attractors ? 1 : 0;
+      });
+    }
     return {
       ship,
       toggleEngines,
       toggleLasers,
+      toggleAttractors,
       moduleState
     };
   }

@@ -1,9 +1,9 @@
-import type GameObject from "../engine/GameObject";
+import GameObject from "../engine/GameObject";
 import Module from "./Module";
-import type CanvasWrapper from "../engine/CanvasWrapper";
+import CanvasWrapper from "../engine/CanvasWrapper";
 import DestroyableObject from "./DestroyableObject";
 import { isWithinCircle } from "../services/Utils";
-import type Ship from "./Ship";
+import Ship from "./Ship";
 import ParticleEmitter from "../engine/ParticleEmitter";
 
 export default class Laser extends Module {
@@ -20,7 +20,7 @@ export default class Laser extends Module {
       this.transform,
       this.color.rgbObject
     );
-    this.targetVector = {x: 0, y: 0};
+    this.targetVector = { x: 0, y: 0 };
     this.hitDistance = 0;
   }
 
@@ -57,10 +57,10 @@ export default class Laser extends Module {
     if (canvas.cursor.active) {
       this.targetVector = {
         x: Math.cos(this.parent.rotation),
-        y: Math.sin(this.parent.rotation),
+        y: Math.sin(this.parent.rotation)
       };
       const possibleTargets = gameObjects.filter(
-        (o) => o instanceof DestroyableObject && o !== this.parent
+        o => o instanceof DestroyableObject && o !== this.parent
       ) as DestroyableObject[];
       const nearby = this.getNearbyObjects(
         this.parent.transform,
@@ -73,11 +73,11 @@ export default class Laser extends Module {
         this.particleEmitter.emit(
           {
             x: this.parent.transform.x + this.targetVector.x * this.hitDistance,
-            y: this.parent.transform.y + this.targetVector.y * this.hitDistance,
+            y: this.parent.transform.y + this.targetVector.y * this.hitDistance
           },
           {
             x: (Math.random() - 0.5) * 0.3,
-            y: (Math.random() - 0.5) * 0.3,
+            y: (Math.random() - 0.5) * 0.3
           },
           this.hit.color.rgbObject
         );

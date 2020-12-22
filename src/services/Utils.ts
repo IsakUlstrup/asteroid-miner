@@ -71,7 +71,7 @@ export function getPointInCircle(radius: number) {
   const angle = Math.random() * Math.PI * 2;
   return {
     x: Math.cos(angle) * radius,
-    y: Math.sin(angle) * radius,
+    y: Math.sin(angle) * radius
   };
 }
 
@@ -82,12 +82,12 @@ export function radianToPoint(cx: number, cy: number, ex: number, ey: number) {
   return theta;
 }
 
-export function rotateVector(vector: Vector2, radian: number) {
+export function rotateVector(vector: Vector2, radian: number): Vector2 {
   // radian = -radian;
   const cos = Math.cos(-radian);
   const sin = Math.sin(-radian);
   return {
     x: Math.round(10000 * (vector.x * cos - vector.y * sin)) / 10000,
-    y: Math.round(10000 * (vector.x * sin + vector.y * cos)) / 10000,
+    y: Math.round(10000 * (vector.x * sin + vector.y * cos)) / 10000
   };
 }

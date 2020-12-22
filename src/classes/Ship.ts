@@ -5,6 +5,7 @@ import GameObject from "../engine/GameObject";
 import RigidBody from "../engine/RigidBody";
 import Engine from "@/classes/Engine";
 import Laser from "@/classes/Laser";
+import Attractor from "./Attractor";
 
 export default class Ship extends DestroyableObject {
   modules: Module[];
@@ -19,6 +20,9 @@ export default class Ship extends DestroyableObject {
   get lasers(): Laser[] {
     return this.modules.filter(m => m instanceof Laser) as Laser[];
   }
+  get attractors(): Attractor[] {
+    return this.modules.filter(m => m instanceof Attractor) as Attractor[];
+  }
 
   addModule(module: Module) {
     this.modules.push(module);
@@ -32,11 +36,11 @@ export default class Ship extends DestroyableObject {
       this.destroy(gameObjects);
       return;
     }
-    this.handleCollision(
-      gameObjects.filter((go) => go instanceof RigidBody) as RigidBody[]
-    );
     this.handleInput(canvas);
-    this.modules.forEach((m) => m.update(dt, canvas, gameObjects));
+    this.handleCollision(
+      gameObjects.filter(go => go instanceof RigidBody) as RigidBody[]
+    );
     this.updateTransform(dt);
+    this.modules.forEach(m => m.update(dt, canvas, gameObjects));
   }
 }
