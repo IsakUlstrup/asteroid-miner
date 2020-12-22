@@ -1,55 +1,42 @@
-import Module from "@/classes/Module";
-import CanvasObject from "./CanvasObject";
-import CanvasWrapper from "@/classes/CanvasWrapper";
+import DestroyableObject from "./DestroyableObject";
+import Module from "./Module";
+import CanvasWrapper from "../engine/CanvasWrapper";
+import GameObject from "../engine/GameObject";
+import RigidBody from "../engine/RigidBody";
+import Engine from "@/classes/Engine";
+import Laser from "@/classes/Laser";
 
-export default class Ship extends CanvasObject {
-  id = Math.random();
-  // modules that don't need direct control
-  internalModules: Module[] = [];
-  internalModuleSlots: number;
-  // main modules
-  modules: Module[] = [];
-  moduleSlots: number;
-  inventory = {
-    c: 0,
-    m: 0,
-    y: 0,
-    k: 0
-  };
-  constructor(
-    internalModuleSlots = 6,
-    moduleSlots = 6,
-    position: Vector3 = { x: 0, y: 0, z: 0 },
-    vector: Vector3 = { x: 0, y: 0, z: 0 },
-    color: RGBColor = { r: 255, g: 0, b: 0 }
-  ) {
-    super(position, vector, 1, 0, color);
-    this.internalModuleSlots = internalModuleSlots;
-    this.moduleSlots = moduleSlots;
-
-    // fill module slots with empty modules
-    this.internalModules = new Array(this.internalModuleSlots).fill(
-      new Module("empty module", 1)
-    );
-    this.modules = new Array(this.moduleSlots).fill(
-      new Module("empty module", 1)
-    );
+export default class Ship extends DestroyableObject {
+  modules: Module[];
+  constructor(transform: Vector2, size = 64, color = { r: 255, g: 0, b: 0 }) {
+    super(transform, size, color);
+    this.modules = [];
   }
 
-  setModule(module: Module, slot: number, internal = false) {
-    if (!internal) this.modules[slot] = module;
+  get engines(): Engine[] {
+    return this.modules.filter(m => m instanceof Engine) as Engine[];
   }
-  update(dt: number, canvas: CanvasWrapper) {
-    this.transform.z += this.vector.z * dt;
+  get lasers(): Laser[] {
+    return this.modules.filter(m => m instanceof Laser) as Laser[];
+  }
 
-    this.modules.forEach(m => {
-      m.update(dt, canvas);
-    });
+  addModule(module: Module) {
+    this.modules.push(module);
   }
-  draw(canvas: CanvasWrapper) {
-    for (let index = 0; index < this.modules.length; index++) {
-      const module = this.modules[index];
-      module.draw(canvas, index, this.modules.length);
+  loot(object: RigidBody) {
+    this.inventory = [...this.inventory, object];
+    this.objectStore.remove(object);
+  }
+  public update(dt: number, canvas: CanvasWrapper, gameObjects: GameObject[]) {
+    if (!this.isAlive) {
+      this.destroy(gameObjects);
+      return;
     }
+    this.handleCollision(
+      gameObjects.filter((go) => go instanceof RigidBody) as RigidBody[]
+    );
+    this.handleInput(canvas);
+    this.modules.forEach((m) => m.update(dt, canvas, gameObjects));
+    this.updateTransform(dt);
   }
 }

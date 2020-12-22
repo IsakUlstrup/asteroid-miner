@@ -1,16 +1,29 @@
-import Item from "@/classes/Item";
-import CanvasWrapper from "@/classes/CanvasWrapper";
+import GameObject from "../engine/GameObject";
+import Ship from "./Ship";
 
-export default class Module extends Item {
+export default class Module extends GameObject {
+  positionOffset: Vector2;
+  parent: Ship;
   effect: number;
-  constructor(name = "unnamed module", effect: number) {
-    super(name);
+  powerModifier: number;
+  active: boolean;
+  constructor(offset: Vector2, parent: Ship, effect = 1, size = 16) {
+    super(parent.transform, size);
+    this.positionOffset = offset;
+    this.parent = parent;
     this.effect = effect;
+    this.active = false;
+    this.powerModifier = 1;
   }
-  draw(canvas: CanvasWrapper, index: number, slotAmount: number) {
-    // placeholder
+
+  public get derivedEffect() {
+    return this.effect * this.powerModifier;
   }
-  update(dt: number, canvas: CanvasWrapper) {
-    // placeholder
+
+  setPowerModifier(power: number) {
+    this.powerModifier = power;
+  }
+  use() {
+    return 0;
   }
 }

@@ -1,138 +1,121 @@
-import CanvasWrapper from "@/classes/CanvasWrapper";
-import Color from "@/classes/Color";
-import Asteroid from "./Asteroid";
-import Ore, { OreType } from "@/classes/Ore";
-import TargetedModule, {
-  TargetMode,
-  HitScanType
-} from "@/classes/TargetedModule";
-import CanvasObject from "./CanvasObject";
+import type GameObject from "../engine/GameObject";
+import Module from "./Module";
+import type CanvasWrapper from "../engine/CanvasWrapper";
+import DestroyableObject from "./DestroyableObject";
+import { isWithinCircle } from "../services/Utils";
+import type Ship from "./Ship";
+import ParticleEmitter from "../engine/ParticleEmitter";
 
-export default class Laser extends TargetedModule {
-  perspective = 1;
-  color: Color;
-  position: number;
-  target: Asteroid | undefined;
-  constructor(
-    name = "a laser",
-    canvasObjects: CanvasObject[],
-    targetMode: TargetMode,
-    effect: number
-  ) {
-    super(name, effect, targetMode, canvasObjects, HitScanType.point);
-    this.color = new Color({ c: 100, m: 0, y: 0, k: 0 });
-    this.position = 0;
-  }
-
-  setColor(color: RGBColor | CMYKColor) {
-    this.color.setColor(color);
-  }
-  laserTo(x: number, y: number, canvas: CanvasWrapper) {
-    canvas.context.fillStyle = this.color.rgbString();
-    canvas.context.lineCap = "round";
-    canvas.context.beginPath();
-    canvas.context.lineJoin = "round";
-    canvas.context.moveTo(this.position, canvas.size.height);
-    canvas.context.lineTo(x - this.perspective, y);
-    canvas.context.lineTo(x + this.perspective, y);
-    canvas.context.lineTo(this.position + 10, canvas.size.height);
-    canvas.context.fill();
-  }
-  mine(target: Asteroid, effect: number) {
-    const miningColor = this.color.cmyk();
-    const mined = target.mine({
-      c: miningColor.c * effect,
-      m: miningColor.m * effect,
-      y: miningColor.y * effect,
-      k: miningColor.k * effect
-    });
-
-    if (mined.c > 0) {
-      this.canvasObjects.push(
-        this.generateOre(target.transform, target.vector, OreType.cyan, mined.c)
-      );
-    }
-
-    if (mined.m > 0) {
-      this.canvasObjects.push(
-        this.generateOre(
-          target.transform,
-          target.vector,
-          OreType.magenta,
-          mined.m
-        )
-      );
-    }
-
-    if (mined.y > 0) {
-      this.canvasObjects.push(
-        this.generateOre(
-          target.transform,
-          target.vector,
-          OreType.yellow,
-          mined.y
-        )
-      );
-    }
-
-    if (mined.k > 0) {
-      this.canvasObjects.push(
-        this.generateOre(
-          target.transform,
-          target.vector,
-          OreType.black,
-          mined.k
-        )
-      );
-    }
-  }
-  generateOre(
-    transform: Vector3,
-    vector: Vector3,
-    type: OreType,
-    amount: number
-  ) {
-    return new Ore(
-      {
-        x: transform.x + (Math.random() - 0.5) * 0.1,
-        y: transform.y + (Math.random() - 0.5) * 0.1,
-        z: transform.z
-      },
-      vector,
-      type,
-      amount
+export default class Laser extends Module {
+  range: number;
+  targetVector: Vector2;
+  hitDistance: number;
+  hit: DestroyableObject | undefined;
+  particleEmitter: ParticleEmitter;
+  constructor(offset: Vector2, parent: Ship) {
+    super(offset, parent, 1);
+    this.color.rgb(255, 0, 0);
+    this.range = 500;
+    this.particleEmitter = new ParticleEmitter(
+      this.transform,
+      this.color.rgbObject
     );
+    this.targetVector = {x: 0, y: 0};
+    this.hitDistance = 0;
   }
-  isValidTarget(target: CanvasObject) {
-    if (target.isOffscreen) return false;
-    const targetColor = target.color.cmyk();
-    const miningColor = this.color.cmyk();
-    if (
-      (miningColor.c > 0 && targetColor.c <= 0) ||
-      (miningColor.m > 0 && targetColor.m <= 0) ||
-      (miningColor.y > 0 && targetColor.y <= 0) ||
-      (miningColor.k > 0 && targetColor.k <= 0)
-    )
-      return false;
 
-    return true;
+  get derivedRange() {
+    return this.range * this.powerModifier;
   }
-  use(targets: Asteroid[], effect: number) {
-    // this.mine(target, effect)
-    this.target = targets[0];
-    this.mine(this.target, effect);
-  }
-  filterTargets() {
-    return this.canvasObjects.filter(o => o instanceof Asteroid) as Asteroid[];
-  }
-  draw(canvas: CanvasWrapper, index: number, slotAmount: number) {
-    const spacing = canvas.size.width / slotAmount;
-    this.position = spacing * index;
-    if (this.targetMode === TargetMode.auto && this.target) {
-      this.laserTo(this.target.projected.x, this.target.projected.y, canvas);
+
+  private hitScan(objects: DestroyableObject[]) {
+    if (objects.length <= 0) {
+      this.hitDistance = this.derivedRange;
+      return;
     }
-    if (this.targetMode === TargetMode.manual && canvas.cursor.active) {
-      this.laserTo(canvas.cursor.position.x, canvas.cursor.position.y, canvas);
+    let distance = 0;
+    for (distance; distance < this.derivedRange; distance += 5) {
+      for (let index = 0; index < objects.length; index++) {
+        const obj = objects[index];
+        const hit = isWithinCircle(
+          this.parent.transform.x + this.targetVector.x * distance,
+          this.parent.transform.y + this.targetVector.y * distance,
+          obj.transform.x,
+          obj.transform.y,
+          obj.radius
+        );
+        this.hitDistance = distance;
+        if (hit) {
+          return obj;
+        }
+      }
+    }
+    return undefined;
+  }
+  public update(dt: number, canvas: CanvasWrapper, gameObjects: GameObject[]) {
+    this.particleEmitter.update(dt);
+    if (canvas.cursor.active) {
+      this.targetVector = {
+        x: Math.cos(this.parent.rotation),
+        y: Math.sin(this.parent.rotation),
+      };
+      const possibleTargets = gameObjects.filter(
+        (o) => o instanceof DestroyableObject && o !== this.parent
+      ) as DestroyableObject[];
+      const nearby = this.getNearbyObjects(
+        this.parent.transform,
+        possibleTargets,
+        this.range * 1.2
+      ) as DestroyableObject[];
+      this.hit = this.hitScan(nearby);
+      if (this.hit) {
+        this.hit.hit(1, this.parent);
+        this.particleEmitter.emit(
+          {
+            x: this.parent.transform.x + this.targetVector.x * this.hitDistance,
+            y: this.parent.transform.y + this.targetVector.y * this.hitDistance,
+          },
+          {
+            x: (Math.random() - 0.5) * 0.3,
+            y: (Math.random() - 0.5) * 0.3,
+          },
+          this.hit.color.rgbObject
+        );
+      }
+      this.active = true;
+    } else {
+      this.active = false;
+    }
+  }
+  public draw(context: CanvasRenderingContext2D) {
+    this.particleEmitter.draw(context);
+    if (!this.active || this.derivedEffect <= 0) return;
+
+    context.save();
+    // context.translate(this.parent.transform.x, this.parent.transform.y);
+    context.strokeStyle = this.color.rgbString;
+    context.lineWidth = 2;
+    context.beginPath();
+    context.moveTo(this.parent.transform.x, this.parent.transform.y);
+    context.lineTo(
+      this.parent.transform.x + this.targetVector.x * this.hitDistance,
+      this.parent.transform.y + this.targetVector.y * this.hitDistance
+    );
+    context.stroke();
+
+    // laser hit
+    if (this.hit) {
+      context.beginPath();
+      context.arc(
+        this.parent.transform.x + this.targetVector.x * this.hitDistance,
+        this.parent.transform.y + this.targetVector.y * this.hitDistance,
+        5,
+        0,
+        2 * Math.PI
+      );
+      context.fillStyle = this.color.rgbString;
+      context.fill();
+      context.restore();
     }
   }
 }

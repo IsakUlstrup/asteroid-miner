@@ -1,17 +1,14 @@
-import { reactive } from "vue";
-
 const listeners: Function[] = [];
 let speedModifier = 1;
 let paused = false;
-const timing = reactive({
+const timing = {
   dt: 0,
   last: 0,
   fpsLimit: 60,
   minFrameTime: (1000 / 60) * (60 / 60) - (1000 / 60) * 0.5
-});
+};
 
 function loop() {
-  // window.requestAnimationFrame(loop);
   const now = performance.now();
   timing.dt = now - timing.last;
   if (timing.dt < timing.minFrameTime) {
