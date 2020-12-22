@@ -15,12 +15,13 @@ export default defineComponent({
 </script>
 
 <style>
+@import url("../node_modules/normalize.css/normalize.css");
 * {
   margin: 0;
   box-sizing: border-box;
 }
 #app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
+  font-family: Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   height: 100vh;
