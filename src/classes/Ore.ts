@@ -31,7 +31,7 @@ class Ore extends RigidBody {
     }
     super(transform, 16, color);
     this.type = type;
-    this.mass = 0;
+    this.mass = 0.1;
   }
 }
 

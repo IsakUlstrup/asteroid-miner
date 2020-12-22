@@ -3,8 +3,10 @@ import { distanceBetweenPoints } from "../services/Utils";
 import config from "../config";
 import Color from "./Color";
 import ObjectStore from "./GameObjectStore";
+import { v4 } from "uuid";
 
 export default class GameObject {
+  private id: string;
   public transform: Vector2;
   public vector: Vector2;
   public rotation: number;
@@ -14,6 +16,7 @@ export default class GameObject {
   public objectStore: ObjectStore;
   protected bufferCanvas: HTMLCanvasElement;
   constructor(transform: Vector2, size = 64, color = { r: 255, g: 0, b: 0 }) {
+    this.id = v4();
     this.size = Math.round(size);
     this.transform = transform;
     this.vector = { x: 0, y: 0 };

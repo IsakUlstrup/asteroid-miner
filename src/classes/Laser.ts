@@ -15,7 +15,7 @@ export default class Laser extends Module {
   constructor(offset: Vector2, parent: Ship) {
     super(offset, parent, 1);
     this.color.rgb(255, 0, 0);
-    this.range = 500;
+    this.range = 600;
     this.particleEmitter = new ParticleEmitter(
       this.transform,
       this.color.rgbObject

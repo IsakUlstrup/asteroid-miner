@@ -38,7 +38,9 @@ export default class ShipPlayer extends Ship {
     if (target instanceof Ore) {
       // pickup ore
       this.loot(target);
+      return false;
     }
+    return true;
   }
   handleInput(canvas: CanvasWrapper) {
     this.rotation = radianToPoint(
@@ -64,9 +66,6 @@ export default class ShipPlayer extends Ship {
 
       this.force.x = force.x / this.mass;
       this.force.y = force.y / this.mass;
-    } else {
-      this.force.x = 0;
-      this.force.y = 0;
     }
   }
   public draw(context: CanvasRenderingContext2D) {

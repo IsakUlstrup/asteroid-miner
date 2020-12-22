@@ -12,6 +12,7 @@ export default class Ship extends DestroyableObject {
   constructor(transform: Vector2, size = 64, color = { r: 255, g: 0, b: 0 }) {
     super(transform, size, color);
     this.modules = [];
+    this.minSpeed = 0.1;
   }
 
   get engines(): Engine[] {

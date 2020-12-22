@@ -5,5 +5,5 @@ export default {
   scrollZoomSensitivity: 0.001,
   maxAsteroidCount: 200,
   drawDistanceModifier: 1,
-  updateDistance: 5000,
+  updateDistance: 5000
 };

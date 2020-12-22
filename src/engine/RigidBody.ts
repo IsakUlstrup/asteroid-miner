@@ -18,7 +18,7 @@ export default class RigidBody extends GameObject {
     this.nearbyObjectsThreshold = 256;
     this.force = { x: 0, y: 0 };
     this.mass = 1;
-    this.minSpeed = 0.1;
+    this.minSpeed = 0;
     this.maxSpeed = 10;
     this.collisionRadius = this.radius;
   }
@@ -93,9 +93,14 @@ export default class RigidBody extends GameObject {
     context.stroke();
   }
   protected collisionInteraction(target: RigidBody) {
-    return;
+    return true;
   }
   protected collideMass(a: RigidBody, b: RigidBody) {
+    // skip physics calc if either of the objects doesn't want to
+    if (!a.collisionInteraction(b) || !b.collisionInteraction(a)) {
+      return;
+    }
+
     const m1 = a.mass;
     const m2 = b.mass;
     const x = a.transform.x - b.transform.x;
@@ -138,9 +143,6 @@ export default class RigidBody extends GameObject {
     const newY = a.transform.y - b.transform.y;
     // const newd = Math.pow(newX, 2) + Math.pow(newY, 2);
     const dist = Math.sqrt(Math.pow(newX, 2) + Math.pow(newY, 2));
-
-    a.collisionInteraction(b);
-    b.collisionInteraction(a);
 
     if (dist < a.radius + b.radius) {
       console.log("invalid collision!");
@@ -193,6 +195,9 @@ export default class RigidBody extends GameObject {
     this.rotation += this.torque * dt;
     this.transform.x += this.vector.x * dt;
     this.transform.y += this.vector.y * dt;
+
+    this.force.x = 0;
+    this.force.y = 0;
   }
   public update(dt: number, canvas: CanvasWrapper, gameObjects: GameObject[]) {
     if (this.isMoving)
