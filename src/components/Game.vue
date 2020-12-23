@@ -15,13 +15,13 @@
         value="LSR"
         @click="toggleLasers"
       />
-      <input
+      <!-- <input
         type="button"
         class="toggle-button"
         :class="{ inactive: !moduleState.attractors }"
         value="ATT"
         @click="toggleAttractors"
-      />
+      /> -->
       <p>INV: {{ ship.inventory.length }}</p>
     </div>
     <canvas id="game-canvas"></canvas>

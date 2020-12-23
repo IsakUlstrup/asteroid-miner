@@ -15,16 +15,24 @@ export default class CanasWrapper {
     this.cursor = new CursorTracker(this.context.canvas, this.resolutionScale);
     this.cameraZoom = config.defaultCameraZoom;
     this.zoom = new ZoomTracker(context.canvas, (zoomModifier: number) => {
-      this.setZoom(zoomModifier);
+      if (config.autoZoom) return;
+      this.setRelativeZoom(zoomModifier);
     });
   }
 
-  public setZoom(level: number) {
+  public setRelativeZoom(level: number) {
     this.cameraZoom += level * this.resolutionScale;
     if (this.cameraZoom < 0.1 * window.devicePixelRatio)
       this.cameraZoom = 0.1 * window.devicePixelRatio;
-    if (this.cameraZoom > 1 * window.devicePixelRatio)
-      this.cameraZoom = window.devicePixelRatio * 1;
+    if (this.cameraZoom > 0.6 * window.devicePixelRatio)
+      this.cameraZoom = window.devicePixelRatio * 0.6;
+  }
+  public setAbsoluteZoom(level: number) {
+    this.cameraZoom = level * this.resolutionScale;
+    if (this.cameraZoom < 0.1 * window.devicePixelRatio)
+      this.cameraZoom = 0.1 * window.devicePixelRatio;
+    if (this.cameraZoom > 0.6 * window.devicePixelRatio)
+      this.cameraZoom = window.devicePixelRatio * 0.6;
   }
   get size() {
     return {

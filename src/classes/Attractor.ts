@@ -2,6 +2,7 @@ import Module from "./Module";
 import Ship from "./Ship";
 import { distanceBetweenPoints } from "@/services/Utils";
 import Ore from "./Ore";
+import config from "@/config";
 
 export default class Attractor extends Module {
   range: number;
@@ -50,16 +51,18 @@ export default class Attractor extends Module {
   public draw(context: CanvasRenderingContext2D) {
     if (this.powerModifier <= 0) return;
 
-    context.strokeStyle = this.color.rgbString;
-    context.lineWidth = 1;
-    context.beginPath();
-    context.arc(
-      this.parent.transform.x,
-      this.parent.transform.y,
-      this.range,
-      0,
-      2 * Math.PI
-    );
-    context.stroke();
+    if (config.debug) {
+      context.strokeStyle = this.color.rgbString;
+      context.lineWidth = 1;
+      context.beginPath();
+      context.arc(
+        this.parent.transform.x,
+        this.parent.transform.y,
+        this.range,
+        0,
+        2 * Math.PI
+      );
+      context.stroke();
+    }
   }
 }

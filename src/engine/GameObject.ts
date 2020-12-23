@@ -36,6 +36,9 @@ export default class GameObject {
       ? true
       : false;
   }
+  get speed() {
+    return distanceBetweenPoints({ x: 0, y: 0 }, this.vector);
+  }
 
   // METHODS
   protected render() {

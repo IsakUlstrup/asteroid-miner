@@ -1,7 +1,6 @@
 import DestroyableObject from "./DestroyableObject";
 import Module from "./Module";
 import CanvasWrapper from "../engine/CanvasWrapper";
-import GameObject from "../engine/GameObject";
 import RigidBody from "../engine/RigidBody";
 import Engine from "@/classes/Engine";
 import Laser from "@/classes/Laser";

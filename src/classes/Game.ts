@@ -1,6 +1,6 @@
 import gameLoop from "../services/GameLoop";
 import GameObjectManager from "../engine/GameObjectManager";
-import type ShipPlayer from "./ShipPlayer";
+import ShipPlayer from "./ShipPlayer";
 import WorldGeneration from "./WordGeneration";
 import ShipStation from "./ShipStation";
 
@@ -20,7 +20,7 @@ export default class Game {
     this.initCanvas(canvas);
     const context = canvas.getContext("2d") as CanvasRenderingContext2D;
 
-    this.renderer = new GameObjectManager(context, this.ship.transform);
+    this.renderer = new GameObjectManager(context, this.ship);
     this.worldGen = new WorldGeneration(this.ship.transform, this.renderer);
   }
   public start() {
