@@ -29,19 +29,21 @@ export default class Ship extends DestroyableObject {
     this.modules.push(module);
   }
   loot(object: RigidBody) {
-    this.inventory = [...this.inventory, object];
+    this.inventory.push(object);
     this.objectStore.remove(object);
   }
-  public update(dt: number, canvas: CanvasWrapper, gameObjects: GameObject[]) {
+  public update(dt: number, canvas: CanvasWrapper) {
     if (!this.isAlive) {
-      this.destroy(gameObjects);
+      this.destroy();
       return;
     }
     this.handleInput(canvas);
     this.handleCollision(
-      gameObjects.filter(go => go instanceof RigidBody) as RigidBody[]
+      this.objectStore.store.filter(
+        go => go instanceof RigidBody
+      ) as RigidBody[]
     );
     this.updateTransform(dt);
-    this.modules.forEach(m => m.update(dt, canvas, gameObjects));
+    this.modules.forEach(m => m.update(dt, canvas));
   }
 }

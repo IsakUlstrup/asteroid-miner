@@ -6,7 +6,7 @@ import ObjectStore from "./GameObjectStore";
 
 export default class GameObjectManager {
   private canvas: CanvasWrapper;
-  public gameObjects: GameObject[] = [];
+  // public gameObjects: GameObject[] = [];
   public objectStore: ObjectStore;
   public parallaxObjects: GameObject[] = [];
   private parallaxAmount: number;
@@ -21,7 +21,7 @@ export default class GameObjectManager {
 
   public update(dt: number) {
     this.updateObjects.forEach((object) => {
-      object.update(dt, this.canvas, this.objects);
+      object.update(dt, this.canvas);
     });
   }
   public draw() {
@@ -66,11 +66,11 @@ export default class GameObjectManager {
         "onscreen objects:",
         this.onScreenObjects.length,
         "/",
-        this.gameObjects.length,
+        this.objectStore.store.length,
         "\nUpdated objects:",
         this.updateObjects.length,
         "/",
-        this.gameObjects.length
+        this.objectStore.store.length
       );
 
       // draw distance

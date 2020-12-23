@@ -1,4 +1,5 @@
 import GameObject from "../engine/GameObject";
+import DestroyableObject from "./DestroyableObject";
 import Ship from "./Ship";
 
 export default class Module extends GameObject {
@@ -18,6 +19,11 @@ export default class Module extends GameObject {
 
   public get derivedEffect() {
     return this.effect * this.powerModifier;
+  }
+  public get destroyableObjects() {
+    return this.objectStore.store.filter(
+      o => o instanceof DestroyableObject && o !== this.parent
+    ) as DestroyableObject[];
   }
 
   setPowerModifier(power: number) {

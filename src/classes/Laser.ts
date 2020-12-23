@@ -52,22 +52,22 @@ export default class Laser extends Module {
     }
     return undefined;
   }
-  public update(dt: number, canvas: CanvasWrapper, gameObjects: GameObject[]) {
+  public update(dt: number, canvas: CanvasWrapper) {
     this.particleEmitter.update(dt);
     if (canvas.cursor.active) {
       this.targetVector = {
         x: Math.cos(this.parent.rotation),
         y: Math.sin(this.parent.rotation)
       };
-      const possibleTargets = gameObjects.filter(
-        o => o instanceof DestroyableObject && o !== this.parent
-      ) as DestroyableObject[];
+
       const nearby = this.getNearbyObjects(
         this.parent.transform,
-        possibleTargets,
+        this.destroyableObjects,
         this.range * 1.2
       ) as DestroyableObject[];
+
       this.hit = this.hitScan(nearby);
+
       if (this.hit) {
         this.hit.hit(1, this.parent);
         this.particleEmitter.emit(

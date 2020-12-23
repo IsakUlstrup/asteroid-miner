@@ -47,7 +47,7 @@ export default class Engine extends Module {
     }
     return this.derivedEffect;
   }
-  public update(dt: number, canvas: CanvasWrapper, gameObjects: GameObject[]) {
+  public update(dt: number, canvas: CanvasWrapper) {
     if (canvas.cursor.active) {
       this.use();
       this.active = true;

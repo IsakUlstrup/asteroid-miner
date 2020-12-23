@@ -22,17 +22,20 @@ export default class DestroyableObject extends RigidBody {
     this.hitPoints = this.hitPoints - damage > 0 ? this.hitPoints - damage : 0;
     // console.log("taking hit, current hp", this.hitPoints);
   }
-  public destroy(gameObjects: GameObject[]) {
-    gameObjects.splice(gameObjects.indexOf(this), 1);
+  public destroy() {
+    this.objectStore.remove(this);
+    // gameObjects.splice(gameObjects.indexOf(this), 1);
   }
-  public update(dt: number, canvas: CanvasWrapper, gameObjects: GameObject[]) {
+  public update(dt: number, canvas: CanvasWrapper) {
     if (!this.isAlive) {
-      this.destroy(gameObjects);
+      this.destroy();
       return;
     }
     if (this.isMoving)
       this.handleCollision(
-        gameObjects.filter(go => go instanceof RigidBody) as RigidBody[]
+        this.objectStore.store.filter(
+          go => go instanceof RigidBody
+        ) as RigidBody[]
       );
     this.handleInput(canvas);
     this.updateTransform(dt);

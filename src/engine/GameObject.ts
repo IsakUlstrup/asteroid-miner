@@ -70,7 +70,7 @@ export default class GameObject {
     this.transform.y += this.vector.y * dt;
     this.rotation += this.torque * dt;
   }
-  public update(dt: number, canvas: CanvasWrapper, gameObjects: GameObject[]) {
+  public update(dt: number, canvas: CanvasWrapper) {
     this.handleInput(canvas);
     this.updateTransform(dt);
   }

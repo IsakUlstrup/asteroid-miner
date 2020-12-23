@@ -23,16 +23,16 @@ export default class Asteroid extends DestroyableObject {
     this.inventory.push(new Ore(this.transform, Ore.Type.white));
   }
 
-  public destroy(gameObjects: GameObject[]) {
+  public destroy() {
     this.inventory.forEach((i) => {
       i.transform = {
         x: i.transform.x + (Math.random() - 0.5) * this.size,
         y: i.transform.y + (Math.random() - 0.5) * this.size,
       };
       i.vector = this.vector;
-      gameObjects.push(i);
+      this.objectStore.add(i);
     });
-    gameObjects.splice(gameObjects.indexOf(this), 1);
+    this.objectStore.remove(this);
   }
 
   public render() {
