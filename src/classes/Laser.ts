@@ -17,7 +17,7 @@ export default class Laser extends Module {
     this.color.rgb(255, 0, 0);
     this.range = 600;
     this.particleEmitter = new ParticleEmitter(
-      this.transform,
+      this.position,
       this.color.rgbObject
     );
     this.targetVector = new Vector2();
@@ -38,10 +38,10 @@ export default class Laser extends Module {
       for (let index = 0; index < objects.length; index++) {
         const obj = objects[index];
         const hit = isWithinCircle(
-          this.parent.transform.x + this.targetVector.x * distance,
-          this.parent.transform.y + this.targetVector.y * distance,
-          obj.transform.x,
-          obj.transform.y,
+          this.parent.position.x + this.targetVector.x * distance,
+          this.parent.position.y + this.targetVector.y * distance,
+          obj.position.x,
+          obj.position.y,
           obj.radius
         );
         this.hitDistance = distance;
@@ -63,7 +63,7 @@ export default class Laser extends Module {
       // };
 
       const nearby = this.getNearbyObjects(
-        this.parent.transform,
+        this.parent.position,
         this.destroyableObjects,
         this.range * 1.2
       ) as DestroyableObject[];
@@ -74,8 +74,8 @@ export default class Laser extends Module {
         this.hit.hit(1, this.parent);
         this.particleEmitter.emit(
           new Vector2(
-            this.parent.transform.x + this.targetVector.x * this.hitDistance,
-            this.parent.transform.y + this.targetVector.y * this.hitDistance
+            this.parent.position.x + this.targetVector.x * this.hitDistance,
+            this.parent.position.y + this.targetVector.y * this.hitDistance
           ),
           new Vector2((Math.random() - 0.5) * 0.3, (Math.random() - 0.5) * 0.3),
           this.hit.color.rgbObject
@@ -91,14 +91,14 @@ export default class Laser extends Module {
     if (!this.active || this.derivedEffect <= 0) return;
 
     context.save();
-    // context.translate(this.parent.transform.x, this.parent.transform.y);
+    // context.translate(this.parent.position.x, this.parent.position.y);
     context.strokeStyle = this.color.rgbString;
     context.lineWidth = 2;
     context.beginPath();
-    context.moveTo(this.parent.transform.x, this.parent.transform.y);
+    context.moveTo(this.parent.position.x, this.parent.position.y);
     context.lineTo(
-      this.parent.transform.x + this.targetVector.x * this.hitDistance,
-      this.parent.transform.y + this.targetVector.y * this.hitDistance
+      this.parent.position.x + this.targetVector.x * this.hitDistance,
+      this.parent.position.y + this.targetVector.y * this.hitDistance
     );
     context.stroke();
 
@@ -106,8 +106,8 @@ export default class Laser extends Module {
     if (this.hit) {
       context.beginPath();
       context.arc(
-        this.parent.transform.x + this.targetVector.x * this.hitDistance,
-        this.parent.transform.y + this.targetVector.y * this.hitDistance,
+        this.parent.position.x + this.targetVector.x * this.hitDistance,
+        this.parent.position.y + this.targetVector.y * this.hitDistance,
         5,
         0,
         2 * Math.PI

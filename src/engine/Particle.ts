@@ -4,11 +4,11 @@ import Vector2 from "@/engine/Vector2";
 export default class Particle extends GameObject {
   opacity: number;
   constructor(
-    transform: Vector2,
+    position: Vector2,
     vector: Vector2,
     color = { r: 255, g: 0, b: 0 }
   ) {
-    super(transform, 8, color);
+    super(position, 8, color);
     this.opacity = 1;
     this.vector = vector;
   }
@@ -29,14 +29,14 @@ export default class Particle extends GameObject {
   public update(dt: number) {
     this.opacity -= 0.001 * dt;
     if (this.opacity < 0) this.opacity = 0;
-    this.updateTransform(dt);
+    this.updatePosition(dt);
   }
   public draw(context: CanvasRenderingContext2D) {
     context.globalAlpha = this.opacity;
     context.drawImage(
       this.bufferCanvas,
-      this.transform.x - this.size / 2,
-      this.transform.y - this.size / 2
+      this.position.x - this.size / 2,
+      this.position.y - this.size / 2
     );
     context.globalAlpha = 1;
   }

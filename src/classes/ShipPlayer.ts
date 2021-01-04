@@ -1,4 +1,3 @@
-// import type GameObject from "../engine/GameObject";
 import CanvasWrapper from "../engine/CanvasWrapper";
 import config from "../config";
 import { radianToPoint } from "../services/Utils";
@@ -9,8 +8,8 @@ import Vector2 from "@/engine/Vector2";
 
 export default class ShipPlayer extends Ship {
   accelerationModifier: number;
-  constructor(transform: Vector2, color = { r: 255, g: 0, b: 0 }) {
-    super(transform, 32, color);
+  constructor(position: Vector2, color = { r: 255, g: 0, b: 0 }) {
+    super(position, 32, color);
     this.accelerationModifier = 0.1;
     this.mass = 1;
     this.minSpeed = 0.1;
@@ -75,8 +74,8 @@ export default class ShipPlayer extends Ship {
 
     context.drawImage(
       this.bufferCanvas,
-      this.transform.x - this.radius,
-      this.transform.y - this.radius
+      this.position.x - this.radius,
+      this.position.y - this.radius
     );
     context.restore();
     if (config.debug) this.drawDebug(context);

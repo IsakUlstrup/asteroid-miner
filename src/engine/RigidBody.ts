@@ -10,12 +10,8 @@ export default class RigidBody extends GameObject {
   minSpeed: number;
   maxSpeed: number;
   collisionRadius: number;
-  constructor(
-    transform: Vector2,
-    size: number,
-    color = { r: 255, g: 0, b: 0 }
-  ) {
-    super(transform, size, color);
+  constructor(position: Vector2, size: number, color = { r: 255, g: 0, b: 0 }) {
+    super(position, size, color);
     this.nearbyObjectsThreshold = 256;
     this.force = new Vector2();
     this.mass = 1;
@@ -36,13 +32,13 @@ export default class RigidBody extends GameObject {
     limit: number
   ) {
     return rigidBodies.filter(body => {
-      const distance = distanceBetweenPoints(position, body.transform);
+      const distance = distanceBetweenPoints(position, body.position);
       return distance < limit && body !== this;
     });
   }
   public collisionDetection(source: RigidBody, bodies: RigidBody[]) {
     return bodies.filter(body => {
-      return distanceBetweenPoints(source.transform, body.transform) <
+      return distanceBetweenPoints(source.position, body.position) <
         source.collisionRadius + body.collisionRadius
         ? true
         : false;
@@ -51,7 +47,7 @@ export default class RigidBody extends GameObject {
   public drawDebug(context: CanvasRenderingContext2D) {
     // object center
     context.beginPath();
-    context.arc(this.transform.x, this.transform.y, 3, 0, 2 * Math.PI);
+    context.arc(this.position.x, this.position.y, 3, 0, 2 * Math.PI);
     context.strokeStyle = "rgb(250, 0, 0)";
     context.stroke();
 
@@ -60,23 +56,17 @@ export default class RigidBody extends GameObject {
     context.lineCap = "round";
     context.lineWidth = 3;
     context.beginPath();
-    context.moveTo(this.transform.x, this.transform.y);
+    context.moveTo(this.position.x, this.position.y);
     context.lineTo(
-      this.transform.x + this.vector.x * 500,
-      this.transform.y + this.vector.y * 500
+      this.position.x + this.vector.x * 500,
+      this.position.y + this.vector.y * 500
     );
     context.stroke();
 
     // size
     context.lineWidth = 1;
     context.beginPath();
-    context.arc(
-      this.transform.x,
-      this.transform.y,
-      this.radius,
-      0,
-      2 * Math.PI
-    );
+    context.arc(this.position.x, this.position.y, this.radius, 0, 2 * Math.PI);
     context.strokeStyle = "white";
     context.stroke();
 
@@ -84,8 +74,8 @@ export default class RigidBody extends GameObject {
     context.lineWidth = 1;
     context.beginPath();
     context.arc(
-      this.transform.x,
-      this.transform.y,
+      this.position.x,
+      this.position.y,
       this.collisionRadius,
       0,
       2 * Math.PI
@@ -105,8 +95,8 @@ export default class RigidBody extends GameObject {
 
     const m1 = a.mass;
     const m2 = b.mass;
-    const x = a.transform.x - b.transform.x;
-    const y = a.transform.y - b.transform.y;
+    const x = a.position.x - b.position.x;
+    const y = a.position.y - b.position.y;
     const d = Math.pow(x, 2) + Math.pow(y, 2);
 
     const u1 = (a.vector.x * x + a.vector.y * y) / d;
@@ -120,16 +110,16 @@ export default class RigidBody extends GameObject {
 
     // resolve overlap
     const distance = Math.sqrt(
-      (a.transform.x - b.transform.x) * (a.transform.x - b.transform.x) +
-        (a.transform.y - b.transform.y) * (a.transform.y - b.transform.y)
+      (a.position.x - b.position.x) * (a.position.x - b.position.x) +
+        (a.position.y - b.position.y) * (a.position.y - b.position.y)
     );
     const overlap = 0.5 * (distance - a.radius - b.radius);
 
-    a.transform.x -= (overlap * (a.transform.x - b.transform.x)) / distance;
-    a.transform.y -= (overlap * (a.transform.y - b.transform.y)) / distance;
+    a.position.x -= (overlap * (a.position.x - b.position.x)) / distance;
+    a.position.y -= (overlap * (a.position.y - b.position.y)) / distance;
 
-    b.transform.x += (overlap * (a.transform.x - b.transform.x)) / distance;
-    b.transform.y += (overlap * (a.transform.y - b.transform.y)) / distance;
+    b.position.x += (overlap * (a.position.x - b.position.x)) / distance;
+    b.position.y += (overlap * (a.position.y - b.position.y)) / distance;
 
     // set new vectors
     b.vector.x = x * vu1 - y * u4;
@@ -145,8 +135,8 @@ export default class RigidBody extends GameObject {
     a.vector.x = x * vu3 - y * u2;
     a.vector.y = y * vu3 + x * u2;
 
-    const newX = a.transform.x - b.transform.x;
-    const newY = a.transform.y - b.transform.y;
+    const newX = a.position.x - b.position.x;
+    const newY = a.position.y - b.position.y;
     // const newd = Math.pow(newX, 2) + Math.pow(newY, 2);
     const dist = Math.sqrt(Math.pow(newX, 2) + Math.pow(newY, 2));
 
@@ -164,7 +154,7 @@ export default class RigidBody extends GameObject {
     // collision detection, only if we are moving
     if (Math.abs(this.vector.x) > 0 || Math.abs(this.vector.y) > 0) {
       const nearby = this.getNearbyBodies(
-        this.transform,
+        this.position,
         rigidBodies,
         this.nearbyObjectsThreshold
       );
@@ -199,8 +189,8 @@ export default class RigidBody extends GameObject {
     }
 
     this.rotation += this.torque * dt;
-    this.transform.x += this.vector.x * dt;
-    this.transform.y += this.vector.y * dt;
+    this.position.x += this.vector.x * dt;
+    this.position.y += this.vector.y * dt;
 
     this.force.x = 0;
     this.force.y = 0;

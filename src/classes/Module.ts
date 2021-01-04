@@ -10,7 +10,7 @@ export default class Module extends GameObject {
   powerModifier: number;
   active: boolean;
   constructor(offset: Vector2, parent: Ship, effect = 1, size = 16) {
-    super(parent.transform, size);
+    super(parent.position, size);
     this.positionOffset = offset;
     this.parent = parent;
     this.effect = effect;

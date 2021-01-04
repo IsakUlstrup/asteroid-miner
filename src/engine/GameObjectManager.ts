@@ -48,9 +48,9 @@ export default class GameObjectManager {
     // camera position for parallax objects
     this.canvas.context.translate(
       this.canvas.context.canvas.width / 2 / this.canvas.cameraZoom -
-        this.playerShip.transform.x * this.parallaxAmount,
+        this.playerShip.position.x * this.parallaxAmount,
       this.canvas.context.canvas.height / 2 / this.canvas.cameraZoom -
-        this.playerShip.transform.y * this.parallaxAmount
+        this.playerShip.position.y * this.parallaxAmount
     );
 
     // parallax objects
@@ -60,8 +60,8 @@ export default class GameObjectManager {
 
     // camera position for normal objects
     this.canvas.context.translate(
-      -(this.playerShip.transform.x * (1 - this.parallaxAmount)),
-      -(this.playerShip.transform.y * (1 - this.parallaxAmount))
+      -(this.playerShip.position.x * (1 - this.parallaxAmount)),
+      -(this.playerShip.position.y * (1 - this.parallaxAmount))
     );
 
     // draw gameObjects
@@ -86,8 +86,8 @@ export default class GameObjectManager {
       const context = this.canvas.context;
       context.beginPath();
       context.arc(
-        this.playerShip.transform.x,
-        this.playerShip.transform.y,
+        this.playerShip.position.x,
+        this.playerShip.position.y,
         this.drawDistance,
         0,
         2 * Math.PI
@@ -98,8 +98,8 @@ export default class GameObjectManager {
       // parallax draw distance
       context.beginPath();
       context.arc(
-        this.playerShip.transform.x,
-        this.playerShip.transform.y,
+        this.playerShip.position.x,
+        this.playerShip.position.y,
         this.drawDistance * (1 / (1 - this.parallaxAmount)),
         0,
         2 * Math.PI
@@ -148,7 +148,7 @@ export default class GameObjectManager {
   get onScreenParallaxObjects() {
     return this.parallaxObjects.filter(o => {
       if (
-        distanceBetweenPoints(this.playerShip.transform, o.transform) <
+        distanceBetweenPoints(this.playerShip.position, o.position) <
         this.parallaxDrawDistance + o.radius
       ) {
         return o;
@@ -158,7 +158,7 @@ export default class GameObjectManager {
   get onScreenObjects() {
     return this.updateObjects.filter(o => {
       if (
-        distanceBetweenPoints(this.playerShip.transform, o.transform) <
+        distanceBetweenPoints(this.playerShip.position, o.position) <
         this.drawDistance + o.radius
       ) {
         return o;
@@ -168,7 +168,7 @@ export default class GameObjectManager {
   get updateObjects() {
     return this.objects.filter(o => {
       if (
-        distanceBetweenPoints(this.playerShip.transform, o.transform) <
+        distanceBetweenPoints(this.playerShip.position, o.position) <
         config.updateDistance * (1 / this.canvas.cameraZoom)
       ) {
         return o;

@@ -2,8 +2,8 @@ import GameObject from "../engine/GameObject";
 import Vector2 from "@/engine/Vector2";
 
 export default class Star extends GameObject {
-  constructor(transform: Vector2, color = { r: 255, g: 0, b: 0 }) {
-    super(transform, 12, color);
+  constructor(position: Vector2, color = { r: 255, g: 0, b: 0 }) {
+    super(position, 12, color);
   }
 
   protected render() {
@@ -28,8 +28,8 @@ export default class Star extends GameObject {
     // draw buffer canvas
     context.drawImage(
       this.bufferCanvas,
-      Math.round(this.transform.x - this.radius),
-      Math.round(this.transform.y - this.radius)
+      Math.round(this.position.x - this.radius),
+      Math.round(this.position.y - this.radius)
     );
   }
 }

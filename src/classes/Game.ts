@@ -22,7 +22,7 @@ export default class Game {
     const context = canvas.getContext("2d") as CanvasRenderingContext2D;
 
     this.renderer = new GameObjectManager(context, this.ship);
-    this.worldGen = new WorldGeneration(this.ship.transform, this.renderer);
+    this.worldGen = new WorldGeneration(this.ship.position, this.renderer);
   }
   public start() {
     this.renderer.addGameObject(this.worldGen);

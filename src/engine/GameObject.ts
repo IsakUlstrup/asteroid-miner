@@ -3,42 +3,24 @@ import { distanceBetweenPoints } from "../services/Utils";
 import config from "../config";
 import Color from "./Color";
 import ObjectStore from "./GameObjectStore";
-import { v4 } from "uuid";
 import Vector2 from "./Vector2";
 
-export default class GameObject {
-  private id: string;
-  public transform: Vector2;
-  public vector: Vector2;
-  public rotation: number;
-  public torque: number;
-  public size: number;
+import Entity from "@/engine/Entity";
+import { Size, Id, Position, Move } from "@/behaviours";
+
+const Base = Id(Size(Move(Position(Entity))));
+
+export default class GameObject extends Base {
   public color: Color;
   public objectStore: ObjectStore;
   protected bufferCanvas: HTMLCanvasElement;
-  constructor(transform: Vector2, size = 64, color = { r: 255, g: 0, b: 0 }) {
-    this.id = v4();
+  constructor(position: Vector2, size = 64, color = { r: 255, g: 0, b: 0 }) {
+    super();
     this.size = Math.round(size);
-    this.transform = transform;
-    this.vector = new Vector2();
-    this.rotation = 0;
-    this.torque = 0;
+    this.position = position;
     this.color = new Color(color.r, color.g, color.b);
     this.bufferCanvas = this.render();
     this.objectStore = new ObjectStore();
-  }
-
-  // GETTERS
-  get radius() {
-    return this.size / 2;
-  }
-  get isMoving() {
-    return Math.abs(this.vector.x) > 0 || Math.abs(this.vector.y) > 0
-      ? true
-      : false;
-  }
-  get speed() {
-    return distanceBetweenPoints(new Vector2(0, 0), this.vector);
   }
 
   // METHODS
@@ -64,7 +46,7 @@ export default class GameObject {
     limit: number
   ) {
     return gameObjects.filter(go => {
-      const distance = distanceBetweenPoints(position, go.transform);
+      const distance = distanceBetweenPoints(position, go.position);
       return distance < limit && go !== this;
     });
   }
@@ -72,26 +54,26 @@ export default class GameObject {
   handleInput(canvas: CanvasWrapper) {
     return;
   }
-  protected updateTransform(dt: number) {
-    this.transform.x += this.vector.x * dt;
-    this.transform.y += this.vector.y * dt;
-    this.rotation += this.torque * dt;
-  }
+  // protected updatePosition(dt: number) {
+  //   this.position.x += this.vector.x * dt;
+  //   this.position.y += this.vector.y * dt;
+  //   this.rotation += this.torque * dt;
+  // }
   public update(dt: number, canvas: CanvasWrapper) {
     this.handleInput(canvas);
-    this.updateTransform(dt);
+    this.updatePosition(dt);
   }
   public rotateContext(context: CanvasRenderingContext2D, radian: number) {
     // rotation
     context.save();
-    context.translate(this.transform.x, this.transform.y);
+    context.translate(this.position.x, this.position.y);
     context.rotate(radian);
-    context.translate(-this.transform.x, -this.transform.y);
+    context.translate(-this.position.x, -this.position.y);
   }
   public drawDebug(context: CanvasRenderingContext2D) {
     // object center
     context.beginPath();
-    context.arc(this.transform.x, this.transform.y, 3, 0, 2 * Math.PI);
+    context.arc(this.position.x, this.position.y, 3, 0, 2 * Math.PI);
     context.strokeStyle = "rgb(250, 0, 0)";
     context.stroke();
 
@@ -100,23 +82,17 @@ export default class GameObject {
     context.lineCap = "round";
     context.lineWidth = 3;
     context.beginPath();
-    context.moveTo(this.transform.x, this.transform.y);
+    context.moveTo(this.position.x, this.position.y);
     context.lineTo(
-      this.transform.x + this.vector.x * 500,
-      this.transform.y + this.vector.y * 500
+      this.position.x + this.vector.x * 500,
+      this.position.y + this.vector.y * 500
     );
     context.stroke();
 
     // size
     context.lineWidth = 1;
     context.beginPath();
-    context.arc(
-      this.transform.x,
-      this.transform.y,
-      this.radius,
-      0,
-      2 * Math.PI
-    );
+    context.arc(this.position.x, this.position.y, this.radius, 0, 2 * Math.PI);
     context.strokeStyle = "white";
     context.stroke();
   }
@@ -126,8 +102,8 @@ export default class GameObject {
     // draw buffer canvas
     context.drawImage(
       this.bufferCanvas,
-      Math.round(this.transform.x - this.size / 2),
-      Math.round(this.transform.y - this.size / 2)
+      Math.round(this.position.x - this.size / 2),
+      Math.round(this.position.y - this.size / 2)
     );
     context.restore();
     if (config.debug) this.drawDebug(context);

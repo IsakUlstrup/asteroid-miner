@@ -8,7 +8,7 @@ export default class Engine extends Module {
   private particleEmitter: ParticleEmitter;
   constructor(offset: Vector2, parent: Ship, effect = 1, size = 16) {
     super(offset, parent, effect, size);
-    this.particleEmitter = new ParticleEmitter(this.transform, {
+    this.particleEmitter = new ParticleEmitter(this.position, {
       r: 255,
       g: 255,
       b: 255
@@ -35,9 +35,8 @@ export default class Engine extends Module {
   }
   public use() {
     const rotatedPosition = {
-      x:
-        this.size * Math.cos(this.parent.rotation + Math.PI) + this.transform.x,
-      y: this.size * Math.sin(this.parent.rotation + Math.PI) + this.transform.y
+      x: this.size * Math.cos(this.parent.rotation + Math.PI) + this.position.x,
+      y: this.size * Math.sin(this.parent.rotation + Math.PI) + this.position.y
     };
 
     if (this.derivedEffect > 0) {
@@ -60,14 +59,14 @@ export default class Engine extends Module {
     this.particleEmitter.draw(context);
 
     context.save();
-    context.translate(this.transform.x, this.transform.y);
+    context.translate(this.position.x, this.position.y);
     context.rotate(this.parent.rotation);
-    context.translate(-this.transform.x, -this.transform.y);
+    context.translate(-this.position.x, -this.position.y);
     if (this.active && this.powerModifier > 0) {
       context.drawImage(
         this.bufferCanvas,
-        this.transform.x + this.positionOffset.x - this.size / 2,
-        this.transform.y + this.positionOffset.y - this.size / 2
+        this.position.x + this.positionOffset.x - this.size / 2,
+        this.position.y + this.positionOffset.y - this.size / 2
       );
     }
     context.restore();

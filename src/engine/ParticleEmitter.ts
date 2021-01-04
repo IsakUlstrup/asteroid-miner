@@ -4,17 +4,17 @@ import Vector2 from "@/engine/Vector2";
 
 export default class ParticleEmitter extends GameObject {
   particles: Particle[];
-  constructor(transform: Vector2, color = { r: 255, g: 0, b: 0 }) {
-    super(transform, 0, color);
+  constructor(position: Vector2, color = { r: 255, g: 0, b: 0 }) {
+    super(position, 0, color);
     this.particles = [];
   }
 
   public emit(
-    transform = this.transform,
+    position = this.position,
     vector: Vector2 = new Vector2(0, 0),
     color = this.color.rgbObject
   ) {
-    this.particles.push(new Particle(transform, vector, color));
+    this.particles.push(new Particle(position, vector, color));
   }
   public update(dt: number) {
     this.particles.forEach(p => {

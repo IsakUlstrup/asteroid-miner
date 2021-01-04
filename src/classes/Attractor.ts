@@ -37,16 +37,15 @@ export default class Attractor extends Module {
     const ore = this.objectStore.store.filter(o => o instanceof Ore) as Ore[];
     const nearby = ore.filter(o => {
       return (
-        distanceBetweenPoints(o.transform, this.parent.transform) < this.range
+        distanceBetweenPoints(o.position, this.parent.position) < this.range
       );
     });
 
     nearby.forEach(o => {
       const speed =
-        (this.derivedRange /
-          distanceBetweenPoints(o.transform, this.transform)) *
+        (this.derivedRange / distanceBetweenPoints(o.position, this.position)) *
         0.1;
-      o.vector = this.moveTowardsEntity(o.transform, this.transform, speed);
+      o.vector = this.moveTowardsEntity(o.position, this.position, speed);
     });
   }
 
@@ -58,8 +57,8 @@ export default class Attractor extends Module {
       context.lineWidth = 1;
       context.beginPath();
       context.arc(
-        this.parent.transform.x,
-        this.parent.transform.y,
+        this.parent.position.x,
+        this.parent.position.y,
         this.range,
         0,
         2 * Math.PI

@@ -13,18 +13,18 @@ export default class Asteroid extends DestroyableObject {
     this.minSpeed = 0;
     this.collisionRadius = this.radius * 0.9;
 
-    this.inventory.push(new Ore(this.transform, Ore.Type.cyan));
-    this.inventory.push(new Ore(this.transform, Ore.Type.magenta));
-    this.inventory.push(new Ore(this.transform, Ore.Type.yellow));
-    this.inventory.push(new Ore(this.transform, Ore.Type.black));
-    this.inventory.push(new Ore(this.transform, Ore.Type.white));
+    this.inventory.push(new Ore(this.position, Ore.Type.cyan));
+    this.inventory.push(new Ore(this.position, Ore.Type.magenta));
+    this.inventory.push(new Ore(this.position, Ore.Type.yellow));
+    this.inventory.push(new Ore(this.position, Ore.Type.black));
+    this.inventory.push(new Ore(this.position, Ore.Type.white));
   }
 
   public destroy() {
     this.inventory.forEach(i => {
-      i.transform = new Vector2(
-        this.transform.x + (Math.random() - 0.5) * this.size,
-        this.transform.y + (Math.random() - 0.5) * this.size
+      i.position = new Vector2(
+        this.position.x + (Math.random() - 0.5) * this.size,
+        this.position.y + (Math.random() - 0.5) * this.size
       );
       // i.transform.x = this.transform.x + (Math.random() - 0.5) * this.size;
       // i.transform.y = this.transform.y + (Math.random() - 0.5) * this.size;
