@@ -4,6 +4,7 @@ import config from "../config";
 import { distanceBetweenPoints } from "../services/Utils";
 import ObjectStore from "./GameObjectStore";
 import ShipPlayer from "@/classes/ShipPlayer";
+import Vector2 from "./Vector2";
 
 export default class GameObjectManager {
   private canvas: CanvasWrapper;
@@ -120,25 +121,25 @@ export default class GameObjectManager {
     this.objectStore.remove(object);
   }
   get drawDistance() {
-    const center = {
-      x: this.canvas.context.canvas.width / 2,
-      y: this.canvas.context.canvas.height / 2
-    };
+    const center = new Vector2(
+      this.canvas.context.canvas.width / 2,
+      this.canvas.context.canvas.height / 2
+    );
 
     return (
-      distanceBetweenPoints({ x: 0, y: 0 }, center) *
+      distanceBetweenPoints(new Vector2(0, 0), center) *
       config.drawDistanceModifier *
       (1 / this.canvas.cameraZoom)
     );
   }
   get parallaxDrawDistance() {
-    const center = {
-      x: this.canvas.context.canvas.width / 2,
-      y: this.canvas.context.canvas.height / 2
-    };
+    const center = new Vector2(
+      this.canvas.context.canvas.width / 2,
+      this.canvas.context.canvas.height / 2
+    );
 
     return (
-      distanceBetweenPoints({ x: 0, y: 0 }, center) *
+      distanceBetweenPoints(new Vector2(0, 0), center) *
       config.drawDistanceModifier *
       (1 / this.canvas.cameraZoom) *
       (1 / (1 - this.parallaxAmount))

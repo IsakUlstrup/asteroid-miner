@@ -5,6 +5,7 @@ import { radianToPoint } from "../services/Utils";
 import RigidBody from "../engine/RigidBody";
 import Ship from "./Ship";
 import Ore from "./Ore";
+import Vector2 from "@/engine/Vector2";
 
 export default class ShipPlayer extends Ship {
   accelerationModifier: number;

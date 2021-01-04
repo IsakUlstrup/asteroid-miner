@@ -1,7 +1,7 @@
 export default {
   debug: false,
   defaultCameraZoom: 1,
-  autoZoom: true,
+  autoZoom: false,
   pinchZoomSensitivity: 0.0001,
   scrollZoomSensitivity: 0.001,
   maxAsteroidCount: 200,

@@ -1,6 +1,7 @@
 import GameObject from "./GameObject";
 import { distanceBetweenPoints } from "../services/Utils";
 import CanvasWrapper from "./CanvasWrapper";
+import Vector2 from "./Vector2";
 
 export default class RigidBody extends GameObject {
   nearbyObjectsThreshold: number;
@@ -16,7 +17,7 @@ export default class RigidBody extends GameObject {
   ) {
     super(transform, size, color);
     this.nearbyObjectsThreshold = 256;
-    this.force = { x: 0, y: 0 };
+    this.force = new Vector2();
     this.mass = 1;
     this.minSpeed = 0;
     this.maxSpeed = 10;
@@ -92,6 +93,7 @@ export default class RigidBody extends GameObject {
     context.strokeStyle = "red";
     context.stroke();
   }
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   protected collisionInteraction(target: RigidBody) {
     return true;
   }
@@ -130,14 +132,18 @@ export default class RigidBody extends GameObject {
     b.transform.y += (overlap * (a.transform.y - b.transform.y)) / distance;
 
     // set new vectors
-    b.vector = {
-      x: x * vu1 - y * u4,
-      y: y * vu1 + x * u4
-    };
-    a.vector = {
-      x: x * vu3 - y * u2,
-      y: y * vu3 + x * u2
-    };
+    b.vector.x = x * vu1 - y * u4;
+    b.vector.y = y * vu1 + x * u4;
+    // b.vector = {
+    //   x: x * vu1 - y * u4,
+    //   y: y * vu1 + x * u4
+    // };
+    // a.vector = {
+    //   x: x * vu3 - y * u2,
+    //   y: y * vu3 + x * u2
+    // };
+    a.vector.x = x * vu3 - y * u2;
+    a.vector.y = y * vu3 + x * u2;
 
     const newX = a.transform.x - b.transform.x;
     const newY = a.transform.y - b.transform.y;

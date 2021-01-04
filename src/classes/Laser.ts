@@ -1,10 +1,10 @@
-import GameObject from "../engine/GameObject";
 import Module from "./Module";
 import CanvasWrapper from "../engine/CanvasWrapper";
 import DestroyableObject from "./DestroyableObject";
 import { isWithinCircle } from "../services/Utils";
 import Ship from "./Ship";
 import ParticleEmitter from "../engine/ParticleEmitter";
+import Vector2 from "@/engine/Vector2";
 
 export default class Laser extends Module {
   range: number;
@@ -20,7 +20,7 @@ export default class Laser extends Module {
       this.transform,
       this.color.rgbObject
     );
-    this.targetVector = { x: 0, y: 0 };
+    this.targetVector = new Vector2();
     this.hitDistance = 0;
   }
 
@@ -55,10 +55,12 @@ export default class Laser extends Module {
   public update(dt: number, canvas: CanvasWrapper) {
     this.particleEmitter.update(dt);
     if (canvas.cursor.active) {
-      this.targetVector = {
-        x: Math.cos(this.parent.rotation),
-        y: Math.sin(this.parent.rotation)
-      };
+      this.targetVector.x = Math.cos(this.parent.rotation);
+      this.targetVector.y = Math.sin(this.parent.rotation);
+      // this.targetVector = {
+      //   x: Math.cos(this.parent.rotation),
+      //   y: Math.sin(this.parent.rotation)
+      // };
 
       const nearby = this.getNearbyObjects(
         this.parent.transform,
@@ -71,14 +73,11 @@ export default class Laser extends Module {
       if (this.hit) {
         this.hit.hit(1, this.parent);
         this.particleEmitter.emit(
-          {
-            x: this.parent.transform.x + this.targetVector.x * this.hitDistance,
-            y: this.parent.transform.y + this.targetVector.y * this.hitDistance
-          },
-          {
-            x: (Math.random() - 0.5) * 0.3,
-            y: (Math.random() - 0.5) * 0.3
-          },
+          new Vector2(
+            this.parent.transform.x + this.targetVector.x * this.hitDistance,
+            this.parent.transform.y + this.targetVector.y * this.hitDistance
+          ),
+          new Vector2((Math.random() - 0.5) * 0.3, (Math.random() - 0.5) * 0.3),
           this.hit.color.rgbObject
         );
       }

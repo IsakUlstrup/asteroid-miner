@@ -1,4 +1,5 @@
 import RigidBody from "../engine/RigidBody";
+import Vector2 from "@/engine/Vector2";
 
 class Ore extends RigidBody {
   type: Ore.Type;

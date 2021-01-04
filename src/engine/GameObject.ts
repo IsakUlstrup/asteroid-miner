@@ -4,6 +4,7 @@ import config from "../config";
 import Color from "./Color";
 import ObjectStore from "./GameObjectStore";
 import { v4 } from "uuid";
+import Vector2 from "./Vector2";
 
 export default class GameObject {
   private id: string;
@@ -19,7 +20,7 @@ export default class GameObject {
     this.id = v4();
     this.size = Math.round(size);
     this.transform = transform;
-    this.vector = { x: 0, y: 0 };
+    this.vector = new Vector2();
     this.rotation = 0;
     this.torque = 0;
     this.color = new Color(color.r, color.g, color.b);
@@ -37,7 +38,7 @@ export default class GameObject {
       : false;
   }
   get speed() {
-    return distanceBetweenPoints({ x: 0, y: 0 }, this.vector);
+    return distanceBetweenPoints(new Vector2(0, 0), this.vector);
   }
 
   // METHODS
@@ -45,7 +46,9 @@ export default class GameObject {
     const offScreenCanvas = document.createElement("canvas");
     offScreenCanvas.width = this.size;
     offScreenCanvas.height = this.size;
-    const context = offScreenCanvas.getContext("2d") as CanvasRenderingContext2D;
+    const context = offScreenCanvas.getContext(
+      "2d"
+    ) as CanvasRenderingContext2D;
 
     context.fillStyle = this.color.rgbString;
     context.lineWidth = 1;
@@ -60,11 +63,12 @@ export default class GameObject {
     gameObjects: GameObject[],
     limit: number
   ) {
-    return gameObjects.filter((go) => {
+    return gameObjects.filter(go => {
       const distance = distanceBetweenPoints(position, go.transform);
       return distance < limit && go !== this;
     });
   }
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   handleInput(canvas: CanvasWrapper) {
     return;
   }

@@ -1,4 +1,5 @@
 import Ship from "./Ship";
+import Vector2 from "@/engine/Vector2";
 
 export default class ShipStation extends Ship {
   constructor(transform: Vector2, color = { r: 255, g: 0, b: 0 }) {

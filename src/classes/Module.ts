@@ -1,6 +1,7 @@
 import GameObject from "../engine/GameObject";
 import DestroyableObject from "./DestroyableObject";
 import Ship from "./Ship";
+import Vector2 from "@/engine/Vector2";
 
 export default class Module extends GameObject {
   positionOffset: Vector2;

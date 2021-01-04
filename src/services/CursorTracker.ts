@@ -1,13 +1,12 @@
+import Vector2 from "@/engine/Vector2";
+
 export default class CursorTracker {
   position: Vector2;
   active: boolean;
   element: HTMLElement;
   resolutionScale: number;
   constructor(element: HTMLElement, resolutionScale: number) {
-    this.position = {
-      x: 0,
-      y: 0,
-    };
+    this.position = new Vector2();
     this.active = false;
     this.element = element;
     this.resolutionScale = resolutionScale;

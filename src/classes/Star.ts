@@ -1,4 +1,5 @@
 import GameObject from "../engine/GameObject";
+import Vector2 from "@/engine/Vector2";
 
 export default class Star extends GameObject {
   constructor(transform: Vector2, color = { r: 255, g: 0, b: 0 }) {

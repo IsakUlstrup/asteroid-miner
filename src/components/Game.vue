@@ -35,16 +35,17 @@ import ShipPlayer from "@/classes/ShipPlayer";
 import Engine from "@/classes/Engine";
 import Laser from "@/classes/Laser";
 import Attractor from "@/classes/Attractor";
+import Vector2 from "@/engine/Vector2";
 
 export default defineComponent({
   name: "Game",
   setup() {
     const ship = reactive(
-      new ShipPlayer({ x: 0, y: 0 }, { r: 255, g: 255, b: 255 })
+      new ShipPlayer(new Vector2(), { r: 255, g: 255, b: 255 })
     ) as ShipPlayer;
-    ship.addModule(new Engine({ x: -14, y: 0 }, ship, 0.07, 16));
-    ship.addModule(new Laser({ x: 0, y: 0 }, ship));
-    ship.addModule(new Attractor({ x: 0, y: 0 }, ship));
+    ship.addModule(new Engine(new Vector2(-14, 0), ship, 0.07, 16));
+    ship.addModule(new Laser(new Vector2(), ship));
+    ship.addModule(new Attractor(new Vector2(), ship));
 
     const moduleState = reactive({
       engines: true,

@@ -3,6 +3,7 @@ import GameObjectManager from "../engine/GameObjectManager";
 import ShipPlayer from "./ShipPlayer";
 import WorldGeneration from "./WordGeneration";
 import ShipStation from "./ShipStation";
+import Vector2 from "@/engine/Vector2";
 
 export default class Game {
   private renderer: GameObjectManager;
@@ -26,7 +27,7 @@ export default class Game {
   public start() {
     this.renderer.addGameObject(this.worldGen);
     this.renderer.addGameObject(
-      new ShipStation({ x: 200, y: 200 }, { r: 255, g: 255, b: 255 })
+      new ShipStation(new Vector2(200, 200), { r: 255, g: 255, b: 255 })
     );
     this.renderer.addGameObject(this.ship);
 

@@ -1,8 +1,8 @@
 import Module from "./Module";
 import ParticleEmitter from "../engine/ParticleEmitter";
-import type CanvasWrapper from "../engine/CanvasWrapper";
-import type GameObject from "../engine/GameObject";
-import type Ship from "./Ship";
+import CanvasWrapper from "../engine/CanvasWrapper";
+import Ship from "./Ship";
+import Vector2 from "@/engine/Vector2";
 
 export default class Engine extends Module {
   private particleEmitter: ParticleEmitter;
@@ -11,7 +11,7 @@ export default class Engine extends Module {
     this.particleEmitter = new ParticleEmitter(this.transform, {
       r: 255,
       g: 255,
-      b: 255,
+      b: 255
     });
   }
 
@@ -19,7 +19,9 @@ export default class Engine extends Module {
     const offScreenCanvas = document.createElement("canvas");
     offScreenCanvas.width = this.size;
     offScreenCanvas.height = this.size;
-    const context = offScreenCanvas.getContext("2d") as CanvasRenderingContext2D;
+    const context = offScreenCanvas.getContext(
+      "2d"
+    ) as CanvasRenderingContext2D;
 
     context.fillStyle = "orange";
     context.beginPath();
@@ -35,15 +37,13 @@ export default class Engine extends Module {
     const rotatedPosition = {
       x:
         this.size * Math.cos(this.parent.rotation + Math.PI) + this.transform.x,
-      y:
-        this.size * Math.sin(this.parent.rotation + Math.PI) + this.transform.y,
+      y: this.size * Math.sin(this.parent.rotation + Math.PI) + this.transform.y
     };
 
     if (this.derivedEffect > 0) {
-      this.particleEmitter.emit({
-        x: rotatedPosition.x,
-        y: rotatedPosition.y,
-      });
+      this.particleEmitter.emit(
+        new Vector2(rotatedPosition.x, rotatedPosition.y)
+      );
     }
     return this.derivedEffect;
   }

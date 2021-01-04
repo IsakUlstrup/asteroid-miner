@@ -1,6 +1,6 @@
 import RigidBody from "../engine/RigidBody";
 import CanvasWrapper from "../engine/CanvasWrapper";
-import GameObject from "../engine/GameObject";
+import Vector2 from "@/engine/Vector2";
 
 export default class DestroyableObject extends RigidBody {
   maxHitPoints: number;
@@ -17,6 +17,7 @@ export default class DestroyableObject extends RigidBody {
     return this.hitPoints > 0;
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   public hit(damage: number, source: DestroyableObject) {
     if (!this.isAlive) return;
     this.hitPoints = this.hitPoints - damage > 0 ? this.hitPoints - damage : 0;

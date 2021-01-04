@@ -1,17 +1,14 @@
 import trianglify from "trianglify";
-import type GameObject from "../engine/GameObject";
 import { randomInt } from "../services/Utils";
 import DestroyableObject from "./DestroyableObject";
 import Ore from "./Ore";
+import Vector2 from "@/engine/Vector2";
 
 export default class Asteroid extends DestroyableObject {
   constructor(transform: Vector2, color = { r: 255, g: 0, b: 0 }) {
     super(transform, 128, color);
     this.torque = (Math.random() - 0.5) * 0.0002;
-    this.vector = {
-      x: 0,
-      y: 0,
-    };
+    this.vector = new Vector2();
     this.mass = 4;
     this.minSpeed = 0;
     this.collisionRadius = this.radius * 0.9;
@@ -24,11 +21,14 @@ export default class Asteroid extends DestroyableObject {
   }
 
   public destroy() {
-    this.inventory.forEach((i) => {
-      i.transform = {
-        x: i.transform.x + (Math.random() - 0.5) * this.size,
-        y: i.transform.y + (Math.random() - 0.5) * this.size,
-      };
+    this.inventory.forEach(i => {
+      i.transform = new Vector2(
+        this.transform.x + (Math.random() - 0.5) * this.size,
+        this.transform.y + (Math.random() - 0.5) * this.size
+      );
+      // i.transform.x = this.transform.x + (Math.random() - 0.5) * this.size;
+      // i.transform.y = this.transform.y + (Math.random() - 0.5) * this.size;
+      // i.transform = this.transform;
       i.vector = this.vector;
       this.objectStore.add(i);
     });
@@ -67,9 +67,9 @@ export default class Asteroid extends DestroyableObject {
       points,
       xColors: [
         this.color.rgbString,
-        this.color.hueRotate(randomInt(50, 360)).rgbString,
+        this.color.hueRotate(randomInt(50, 360)).rgbString
       ],
-      colorFunction: trianglify.colorFunctions.shadows(0.15),
+      colorFunction: trianglify.colorFunctions.shadows(0.15)
     });
     return pattern.toCanvas(offScreenCanvas, { scaling: false });
   }

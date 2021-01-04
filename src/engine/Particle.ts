@@ -1,4 +1,5 @@
 import GameObject from "./GameObject";
+import Vector2 from "@/engine/Vector2";
 
 export default class Particle extends GameObject {
   opacity: number;
@@ -15,7 +16,9 @@ export default class Particle extends GameObject {
     const offScreenCanvas = document.createElement("canvas");
     offScreenCanvas.width = this.size;
     offScreenCanvas.height = this.size;
-    const context = offScreenCanvas.getContext("2d") as CanvasRenderingContext2D;
+    const context = offScreenCanvas.getContext(
+      "2d"
+    ) as CanvasRenderingContext2D;
 
     context.beginPath();
     context.arc(this.size / 2, this.size / 2, this.size / 2, 0, 2 * Math.PI);

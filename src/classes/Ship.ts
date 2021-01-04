@@ -5,6 +5,7 @@ import RigidBody from "../engine/RigidBody";
 import Engine from "@/classes/Engine";
 import Laser from "@/classes/Laser";
 import Attractor from "./Attractor";
+import Vector2 from "@/engine/Vector2";
 
 export default class Ship extends DestroyableObject {
   modules: Module[];

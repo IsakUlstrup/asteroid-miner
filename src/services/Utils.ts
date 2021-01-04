@@ -1,3 +1,5 @@
+import Vector2 from "@/engine/Vector2";
+
 export function randomInt(min = 0, max = 1) {
   return Math.floor(Math.random() * (max - min + 1) + min);
 }
@@ -35,7 +37,7 @@ export function circlesIntersect(
   c2r: number
 ) {
   if (
-    distanceBetweenPoints({ x: c1x, y: c1y }, { x: c2x, y: c2y }) <
+    distanceBetweenPoints(new Vector2(c1x, c1y), new Vector2(c2x, c2y)) <
     c1r + c2r
   ) {
     console.log("collide");
@@ -63,7 +65,7 @@ export function getScaledCanvasDimendsions(
 ) {
   return {
     width: canvas.width * (1 / resolutionScale),
-    height: canvas.height * (1 / resolutionScale),
+    height: canvas.height * (1 / resolutionScale)
   };
 }
 
@@ -86,8 +88,12 @@ export function rotateVector(vector: Vector2, radian: number): Vector2 {
   // radian = -radian;
   const cos = Math.cos(-radian);
   const sin = Math.sin(-radian);
-  return {
-    x: Math.round(10000 * (vector.x * cos - vector.y * sin)) / 10000,
-    y: Math.round(10000 * (vector.x * sin + vector.y * cos)) / 10000
-  };
+  // return {
+  //   x: Math.round(10000 * (vector.x * cos - vector.y * sin)) / 10000,
+  //   y: Math.round(10000 * (vector.x * sin + vector.y * cos)) / 10000
+  // };
+  return new Vector2(
+    Math.round(10000 * (vector.x * cos - vector.y * sin)) / 10000,
+    Math.round(10000 * (vector.x * sin + vector.y * cos)) / 10000
+  );
 }

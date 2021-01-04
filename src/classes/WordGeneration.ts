@@ -1,8 +1,9 @@
 import GameObject from "../engine/GameObject";
 import config from "../config";
-import type GameObjectManager from "../engine/GameObjectManager";
+import GameObjectManager from "../engine/GameObjectManager";
 import Asteroid from "./Asteroid";
 import Star from "./Star";
+import Vector2 from "@/engine/Vector2";
 
 export default class WorldGeneration extends GameObject {
   renderer: GameObjectManager;
@@ -15,28 +16,30 @@ export default class WorldGeneration extends GameObject {
 
   addAsteroid() {
     this.renderer.addGameObject(
-      new Asteroid({
-        x: (Math.random() - 0.5) * this.asteroidSpread,
-        y: (Math.random() - 0.5) * this.asteroidSpread,
-      })
+      new Asteroid(
+        new Vector2(
+          (Math.random() - 0.5) * this.asteroidSpread,
+          (Math.random() - 0.5) * this.asteroidSpread
+        )
+      )
     );
   }
   addStar() {
     this.renderer.addParallaxObject(
       new Star(
-        {
-          x: (Math.random() - 0.5) * 50000,
-          y: (Math.random() - 0.5) * 50000,
-        },
+        new Vector2(
+          (Math.random() - 0.5) * 50000,
+          (Math.random() - 0.5) * 50000
+        ),
         {
           r: 255,
           g: 255,
-          b: 255,
+          b: 255
         }
       )
     );
   }
-  update(dt: number) {
+  update() {
     if (this.renderer.objects.length < config.maxAsteroidCount) {
       this.addAsteroid();
       this.addStar();
