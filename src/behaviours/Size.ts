@@ -1,5 +1,5 @@
 export default function Size<TBase extends Constructor>(Base: TBase) {
-  return class extends Base {
+  return class Size extends Base {
     size = 0;
 
     get radius() {

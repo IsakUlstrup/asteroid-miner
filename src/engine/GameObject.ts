@@ -1,24 +1,22 @@
 import CanvasWrapper from "./CanvasWrapper";
 import { distanceBetweenPoints } from "../services/Utils";
 import config from "../config";
-import Color from "./Color";
 import ObjectStore from "./GameObjectStore";
 import Vector2 from "./Vector2";
 
 import Entity from "@/engine/Entity";
-import { Size, Id, Position, Move } from "@/behaviours";
+import { Color, Size, Id, Position, Move } from "@/behaviours";
 
-const Base = Id(Size(Move(Position(Entity))));
+const Base = Color(Id(Size(Move(Position(Entity)))));
 
 export default class GameObject extends Base {
-  public color: Color;
   public objectStore: ObjectStore;
   protected bufferCanvas: HTMLCanvasElement;
   constructor(position: Vector2, size = 64, color = { r: 255, g: 0, b: 0 }) {
     super();
-    this.size = Math.round(size);
     this.position = position;
-    this.color = new Color(color.r, color.g, color.b);
+    this.size = Math.round(size);
+    this.color.rgb(color.r, color.g, color.b);
     this.bufferCanvas = this.render();
     this.objectStore = new ObjectStore();
   }

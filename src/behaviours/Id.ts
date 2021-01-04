@@ -1,7 +1,7 @@
 import { v4 } from "uuid";
 
 export default function Id<TBase extends Constructor>(Base: TBase) {
-  return class extends Base {
+  return class Id extends Base {
     id = v4();
   };
 }

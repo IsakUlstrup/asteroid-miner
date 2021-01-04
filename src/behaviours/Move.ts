@@ -1,9 +1,14 @@
 import Vector2 from "@/engine/Vector2";
 
-type HasPosition = Constructor<{ position: Vector2; rotation: number }>;
+type HasPositionAndRotation = Constructor<{
+  position: Vector2;
+  rotation: number;
+}>;
 
-export default function Move<TBase extends HasPosition>(Base: TBase) {
-  return class extends Base {
+export default function Move<TBase extends HasPositionAndRotation>(
+  Base: TBase
+) {
+  return class Move extends Base {
     vector = new Vector2();
     torque = 0;
 
