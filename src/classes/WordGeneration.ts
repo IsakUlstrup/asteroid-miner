@@ -42,7 +42,7 @@ export default class WorldGeneration extends GameObject {
   update() {
     if (this.renderer.objects.length < config.maxAsteroidCount) {
       this.addAsteroid();
-      this.addStar();
+      // this.addStar();
     }
   }
   draw() {
